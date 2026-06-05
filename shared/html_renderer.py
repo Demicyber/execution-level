@@ -25,7 +25,7 @@ DOC_TYPE_LABELS = {
 SECTION_EMOJIS = {
     "opportunity snapshot": "📊",
     "key stakeholders": "👥",
-    "engagement roadmap": "🗺️",
+    "engagement roadmap": "📍",
     "next milestone detail": "📋",
     "estimate & contingency": "📐",
     "execution log": "📝",
@@ -67,14 +67,14 @@ def render_html(doc: dict) -> str:
     parts.append(_html_head(frontmatter, doc_type, css))
     parts.append('<body>\n<div class="page">\n')
     
-    # EB confidential banner (before header)
+    # Document header
+    parts.append(_render_header(frontmatter, doc_type))
+    
+    # EB confidential banner (after header, per DESIGN_PREVIEW L761)
     if doc_type == "executive-briefing":
         classification = frontmatter.get("classification", "")
         if classification:
             parts.append(f'<div class="confidential-banner">🔒 {_esc(classification)}</div>\n')
-    
-    # Document header
-    parts.append(_render_header(frontmatter, doc_type))
     
     # Render each section
     for section in sections:
@@ -220,9 +220,32 @@ def _render_section(section: dict, doc_type: str, frontmatter: dict) -> str:
     parts.append('<div class="section-card">')
     parts.append(f'  <div class="section-header"><span class="emoji">{emoji}</span> {_esc(title)}</div>')
     
-    # Render content blocks
-    for block in content_blocks:
-        parts.append(_render_block(block, doc_type))
+    # Check if section contains milestones at top level → wrap in roadmap
+    has_milestones = any(b.get("type") == "milestone" for b in content_blocks)
+    
+    if has_milestones:
+        # Separate non-milestone blocks (e.g. progress line) from milestones
+        pre_blocks = []
+        milestone_blocks = []
+        for block in content_blocks:
+            if block.get("type") == "milestone":
+                milestone_blocks.append(block)
+            elif not milestone_blocks:
+                pre_blocks.append(block)
+            else:
+                milestone_blocks.append(block)
+        
+        for block in pre_blocks:
+            parts.append(_render_block(block, doc_type))
+        
+        parts.append('  <div class="roadmap">')
+        for block in milestone_blocks:
+            parts.append(_render_block(block, doc_type))
+        parts.append('  </div>')
+    else:
+        # Render content blocks normally
+        for block in content_blocks:
+            parts.append(_render_block(block, doc_type))
     
     parts.append('</div>\n')
     return '\n'.join(parts)
@@ -733,7 +756,7 @@ def _render_footer(frontmatter: dict, doc_type: str) -> str:
     
     confidential = ""
     if doc_type == "executive-briefing":
-        confidential = "<br>CONFIDENTIAL — For Internal Use Only"
+        confidential = "<br>INTERNAL USE ONLY — AWS Confidential"
     
     return f'''<div class="doc-footer">
   {_esc(footer_line)}{confidential}<br>

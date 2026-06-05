@@ -88,7 +88,7 @@ def _build_margin_css(frontmatter: dict | None) -> str:
     # Build footer for EB
     footer_content = ""
     if doc_type == "executive-briefing":
-        footer_content = "CONFIDENTIAL — For Internal Use Only"
+        footer_content = "INTERNAL USE ONLY — AWS Confidential"
     
     css = f'''
 @page {{
