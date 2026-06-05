@@ -17,7 +17,6 @@ user_locked: true
 This skill executes: Input → PMR Generation → EP Update → Referrals → Email Draft. No step may be skipped.
 
 - §3 (PMR Template): **REQUIRED: Load `references/post-meeting-report.md`** before generating any PMR content — it contains the full template structure and agent guidance.
-- §7 (Document Output): **REQUIRED: Load `templates/sample_data.json`** for the output JSON schema, then render via `templates/render_pmr.py` using `templates/post-meeting-report.html.j2`.
 
 ## 1. Input
 
@@ -185,78 +184,4 @@ Sales reviews and edits before sending same day. Customer-facing content only.
 
 ---
 
-## 7. Document Output
 
-### Default: HTML (Material Design 3)
-
-**REQUIRED: Load `templates/sample_data.json`** for the JSON schema. Then render via `templates/render_pmr.py` using `templates/post-meeting-report.html.j2`. The agent:
-1. Generates structured data (JSON) matching the schema in `sample_data.json`
-2. Fills the template via `templates/render_pmr.py`
-3. Outputs the rendered HTML file
-
-Visual style: Material Design 3 (Inter + Noto Sans SC locally-installed fonts, MD3 color tokens, 16px rounded cards, emoji icons, desktop-optimized fixed-width layout with Tailwind CDN, pill badges for result/stance/priority/status). PDF-optimized: @page margins, break-inside:avoid, compact 9px root font-size.
-
-### On-Demand: PDF / Word
-
-- **PDF** — Generated from HTML via headless Chrome or weasyprint
-- **Word (.docx)** — Generated via python-docx (clean business format)
-
-Sales requests these explicitly; agent does not auto-generate.
-
-### File Naming Convention
-
-| Format | Naming |
-|--------|--------|
-| HTML | `PMR_{Customer}_{Date}_{MilestoneBrief}.html` |
-| PDF | `PMR_{Customer}_{Date}_{MilestoneBrief}.pdf` |
-| Word | `PMR_{Customer}_{Date}_{MilestoneBrief}.docx` |
-
-Example: `PMR_MinghuaHeavy_2026-05-15_Discovery-CTO.html`
-
-MilestoneBrief = Condensed EP Roadmap milestone description (2-4 English words, kebab-case). PMR and its corresponding CP/EB share the same `{Date}_{MilestoneBrief}` suffix for easy pairing (pre-meeting plan ↔ post-meeting report).
-
-### HTML 生成方式（强制）
-
-**不允许从零手写 HTML 或跳过 render 脚本。** 必须按以下顺序操作：
-
-1. 将 PMR 内容整理为符合 `templates/sample_data.json` schema 的 JSON 对象
-2. 调用 `templates/render_pmr.py` 填充 `templates/post-meeting-report.html.j2` 模板
-3. 不得修改 J2 模板中的 CSS class、颜色变量、字体或布局结构
-4. 若 render 脚本执行失败，停止并报错，**不得 fallback 为手写 HTML**
-
-**Pre-render Checklist（全部 ✅ 才输出最终文件）：**
-- [ ] JSON 数据符合 `sample_data.json` 中定义的所有 key 和类型
-- [ ] 调用了 `render_pmr.py`（不是手写 HTML）
-- [ ] Action Items 和 EP Update 部分有完整数据
-- [ ] 输出 HTML 中不含任何硬编码颜色或自创 CSS class
-- [ ] 文件命名遵循 `PMR_{Customer}_{Date}_{MilestoneBrief}.html` 规则
-
-### Storage Architecture
-
-**First-time setup:** On first interaction with sales, ask for the local storage path.
-
-**Constraint: Files are stored on the sales rep's local device, NOT in Feishu Docs or other cloud document platforms.**
-
-**Directory structure (Customer → Opportunity as the core):**
-
-```
-{sales_local_path}/
-├── {Customer}/
-│   ├── {Opportunity}/
-│   │   ├── EP_{Customer}_{Opportunity}.html
-│   │   ├── CP_{Customer}_{Date}_{MilestoneBrief}.html
-│   │   ├── PMR_{Customer}_{Date}_{MilestoneBrief}.html  ← PMR
-│   │   └── ...
-│   └── _account/              ← 客户级共享资料（跨 Opp）
-│       ├── org-chart.md
-│       └── contacts/
-```
-
-**Key rules:**
-- PMR is stored in the corresponding Opportunity folder (same level as EP and CP)
-- Each meeting produces a new PMR file (not a living document)
-- Agent locates the Opp directory via the associated CP/EB file
-- After generating, PMR auto-updates the EP in the same directory (Execution Log + Roadmap + Stakeholder stance)
-- Multi-Opp resolution: 1 active opp → auto-associate; multiple → ask sales to confirm
-
-See engagement-plan SKILL.md for the full directory structure specification (authoritative source).
