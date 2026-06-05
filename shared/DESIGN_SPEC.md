@@ -11,13 +11,14 @@ LLM generates Structured Markdown (per-skill spec)
          │
          ▼
    ┌──────────────┐
+   │   parse.py   │  → Markdown → Python dict (sections, tables, badges, metadata)
+   └──────┬───────┘
+          │
+          ▼
+   ┌──────────────┐
    │  validate.py │  → Checks required sections, badge values, frontmatter
    └──────┬───────┘
           │ PASS (auto-fix minor issues, flag missing sections)
-          ▼
-   ┌──────────────┐
-   │   parse.py   │  → Markdown → Python dict (sections, tables, badges, metadata)
-   └──────┬───────┘
           │
           ├──────────────────┬──────────────────┐
           ▼                  ▼                  ▼
@@ -112,7 +113,7 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
 .doc-type-label {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-primary);
 }
@@ -122,7 +123,7 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
 
 ```css
 .page {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 40px 48px;
   background: var(--color-bg);
@@ -201,8 +202,7 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
 }
 .provenance-sales    { color: #059669; background: #ECFDF5; }  /* [销售确认] */
 .provenance-web { color: #2563EB; background: #EFF6FF; }  /* [网络搜索] */
-.provenance-ai { color: #6B7280; background: #F3F4F6; }   /* [AI推断] *//* [网络搜索] */
-/* [AI推断] = no label shown (default) */
+.provenance-ai { color: #6B7280; background: #F3F4F6; }   /* [AI推断] */
 ```
 
 ### 2.5 Tables
@@ -276,7 +276,7 @@ tr:last-child td {
 ```css
 .roadmap {
   position: relative;
-  padding-left: 40px;
+  padding-left: 44px;
 }
 
 .roadmap::before {
@@ -286,13 +286,13 @@ tr:last-child td {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--color-primary-light);
+  background: linear-gradient(to bottom, var(--color-done), var(--color-primary), var(--color-border));
   border-radius: 1px;
 }
 
 .milestone {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding: 16px 20px;
   border: 1px solid var(--color-border);
   border-radius: 10px;
@@ -300,7 +300,7 @@ tr:last-child td {
 
 .milestone-marker {
   position: absolute;
-  left: -33px;
+  left: -37px;
   top: 18px;
   width: 28px;
   height: 28px;
@@ -484,7 +484,7 @@ shared/
 ├── pdf_renderer.py         ← HTML → PDF via WeasyPrint
 ├── docx_renderer.py        ← Dict → styled Word doc
 ├── theme.css               ← Full CSS (inlined into HTML)
-├── template.docx           ← Word style template
+├── template.docx           ← Word style template (optional — docx_renderer creates from scratch if absent)
 └── components/
     ├── header.html         ← Shared header fragment
     ├── stakeholder.html    ← Stakeholder card fragment
