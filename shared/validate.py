@@ -74,6 +74,40 @@ REQUIRED_SECTIONS = {
     ],
 }
 
+# Aliases: common LLM variations → canonical required section name(s)
+# If an existing section title matches an alias, it counts as the required section(s).
+# Values can be a string (single target) or list (multiple targets satisfied by one section).
+SECTION_ALIASES = {
+    # EP
+    "tcv estimate": ["Estimate & Contingency"],
+    "cost estimate": ["Estimate & Contingency"],
+    "estimate": ["Estimate & Contingency"],
+    # CP
+    "meeting attendees": ["Customer Attendees", "AWS Team"],
+    "attendees": ["Customer Attendees"],
+    "agenda": ["Meeting Agenda"],
+    "information gaps": ["Information Exchange"],
+    "questions": ["Information Exchange"],
+    "objection handling": ["Potential Objections & Responses"],
+    "objections": ["Potential Objections & Responses"],
+    "next steps": ["Potential Next Steps"],
+    "conversation strategy": ["Meeting Agenda"],
+    "pre-meeting preparation": ["Potential Next Steps"],
+    # EB
+    "customer business context": ["Company Profile"],
+    "business context": ["Company Profile"],
+    "account background": ["AWS Account Background"],
+    # PMR
+    "action items": ["Next Steps"],
+    "follow-up email draft": ["Next Steps"],
+    "follow-up email": ["Next Steps"],
+    "customer recap email": ["Next Steps"],
+    "ep update": ["What Changed"],
+    "changes": ["What Changed"],
+    "ep changes": ["What Changed"],
+    "stakeholder updates": ["What Changed"],
+}
+
 # Required frontmatter fields per type
 REQUIRED_FRONTMATTER = {
     "engagement-plan": ["type", "customer", "opportunity", "stage", "source", "created", "version"],
@@ -149,7 +183,12 @@ def _validate_frontmatter(frontmatter: dict, doc_type: str, warnings: list, erro
 
 
 def _check_required_sections(sections: list, doc_type: str, warnings: list, auto_fixes: list) -> list:
-    """Check for required sections, auto-insert missing ones with placeholder."""
+    """Check for required sections, auto-insert missing ones with placeholder.
+    
+    Matching logic (in order):
+    1. Substring match: req_title is a substring of existing title (or vice-versa)
+    2. Alias match: existing title matches a known alias for the required section
+    """
     required = REQUIRED_SECTIONS.get(doc_type, [])
     
     existing_titles = set()
@@ -157,12 +196,28 @@ def _check_required_sections(sections: list, doc_type: str, warnings: list, auto
         existing_titles.add(s["title"].lower())
         existing_titles.add(s["raw_title"].lower())
     
+    # Build reverse alias lookup: which required sections are satisfied by existing titles?
+    alias_satisfied = set()
+    for existing in existing_titles:
+        # Check if this existing title is an alias for a required section
+        for alias_key, canonicals in SECTION_ALIASES.items():
+            if alias_key in existing or existing in alias_key:
+                for c in canonicals:
+                    alias_satisfied.add(c.lower())
+    
     for req_title in required:
         found = False
+        req_lower = req_title.lower()
+        
+        # Strategy 1: substring match (bidirectional)
         for existing in existing_titles:
-            if req_title.lower() in existing:
+            if req_lower in existing or existing in req_lower:
                 found = True
                 break
+        
+        # Strategy 2: alias match
+        if not found and req_lower in alias_satisfied:
+            found = True
         
         if not found:
             # Auto-insert placeholder section
