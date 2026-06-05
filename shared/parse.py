@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 parse.py — Structured Markdown → Python dict parser.
 

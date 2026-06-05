@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
 render.py — Main entry point for the Execution-Level Document Renderer.
 
@@ -28,7 +30,7 @@ if str(_shared_dir) not in sys.path:
 from parse import parse_markdown, get_doc_type
 from validate import validate
 from html_renderer import render_html
-from pdf_renderer import render_pdf
+from reportlab_renderer import render_pdf as render_pdf_reportlab
 from docx_renderer import render_docx
 
 logger = logging.getLogger(__name__)
@@ -111,8 +113,7 @@ def render(
             result["html"] = html_content
             
         elif format == "pdf":
-            html_content = render_html(doc)
-            render_pdf(html_content, output_path, frontmatter=doc.get("frontmatter"))
+            render_pdf_reportlab(doc, output_path)
             
         elif format == "docx":
             render_docx(doc, output_path)
