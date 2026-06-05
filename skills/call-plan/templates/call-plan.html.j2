@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Plan – {{ customer_name }} | {{ meeting_title }}</title>
+    <!-- Fonts: locally-installed Inter + Noto Sans SC, with cross-platform fallbacks -->
+    
+    <style>
+    /* === Tailwind Replacement — Utility Classes (zero CDN dependency) === */
+        /* Layout */
+        .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-wrap { flex-wrap: wrap; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+
+        /* Spacing */
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Sizing */
+        .w-full { width: 100%; }
+        .w-1\/2 { width: 50%; }
+        .w-1\/3 { width: 33.333333%; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+        .max-w-6xl { max-width: 72rem; }
+        .min-h-screen { min-height: 100vh; }
+
+        /* Typography */
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .font-normal { font-weight: 400; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .uppercase { text-transform: uppercase; }
+        .whitespace-nowrap { white-space: nowrap; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .leading-tight { line-height: 1.25; }
+        .leading-relaxed { line-height: 1.625; }
+
+        /* Borders & Shapes */
+        .rounded { border-radius: 0.25rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        .border { border: 1px solid var(--md-sys-color-outline-variant); }
+        .border-b { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        .border-t { border-top: 1px solid var(--md-sys-color-outline-variant); }
+        .border-l { border-left: 1px solid var(--md-sys-color-outline-variant); }
+
+        /* Visibility & Overflow */
+        .hidden { display: none; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .inline-flex { display: inline-flex; }
+        .overflow-x-auto { overflow-x: auto; }
+        .overflow-hidden { overflow: hidden; }
+        .break-inside-avoid { break-inside: avoid; }
+
+        /* Position */
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .right-0 { right: 0; }
+
+        /* Shadow */
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1); }
+
+        /* Table */
+        table { border-collapse: collapse; }
+        th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        th { font-weight: 600; }
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-color-surface-container-lowest: #FFFFFF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F3EDF7;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            --md-sys-color-error: #B3261E;
+            --md-sys-color-error-container: #F9DEDC;
+            --md-sys-color-success: #386A20;
+            --md-sys-color-success-container: #C8E6C9;
+            --md-sys-color-warning: #F57F17;
+            --md-sys-color-warning-container: #FFF9C4;
+        }
+
+        * { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        html { font-size: 9px; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-size: 9px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm 8mm 10mm 8mm;
+        }
+
+        .md-card {
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 16px;
+            padding: 14px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .md-card-elevated {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 3px 1px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.12);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .md-card-filled {
+            background: var(--md-sys-color-surface-container-highest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 12px;
+            padding: 12px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            overflow: hidden;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .pill-badge {
+            border-radius: 100px;
+            padding: 2px 10px;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+        }
+
+        .pill-sponsor { background: #C8E6C9; color: #1B5E20; }
+        .pill-supporter { background: #C8E6C9; color: #1B5E20; }
+        .pill-neutral { background: #FFF9C4; color: #F57F17; }
+        .pill-non-supporter { background: #FFCDD2; color: #B71C1C; }
+        .pill-adversary { background: #FFCDD2; color: #B71C1C; }
+        .pill-champion { background: #C8E6C9; color: #1B5E20; }
+        .pill-status-quo { background: #FFF9C4; color: #F57F17; }
+        .pill-price-value { background: #FFD8E4; color: #930042; }
+        .pill-capability-fit { background: #E8DEF8; color: #21005D; }
+        .pill-risk-trust { background: #FFCDD2; color: #B71C1C; }
+        .pill-authority-process { background: #D1C4E9; color: #311B92; }
+        .pill-ideal { background: #C8E6C9; color: #1B5E20; }
+        .pill-acceptable { background: #FFF9C4; color: #F57F17; }
+        .pill-minimum { background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface-variant); }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--md-sys-color-on-surface);
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+        }
+
+        .label-large {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .title-medium {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .body-medium {
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.5;
+        }
+
+        .headline-small {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .display-small {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section-icon {
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        @media print {
+            .md-card-filled {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-6xl mx-auto space-y-4">
+
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-2">
+            <div>
+                <p class="label-large uppercase tracking-wider" style="color: var(--md-sys-color-primary);">Call Plan</p>
+                <h1 class="display-small mt-1" style="color: var(--md-sys-color-on-surface);">{{ meeting_title }}</h1>
+                <p class="body-medium mt-1">{{ customer_name }} · {{ opportunity_name }}</p>
+            </div>
+            <div class="flex items-center gap-2" style="background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); border-radius: 12px; padding: 10px 16px; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.10);">
+                <span class="section-icon">📅</span>
+                <span class="text-sm font-medium">{{ meeting_date }}</span>
+            </div>
+        </header>
+
+        <!-- Section 1: Meeting Details -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📋</span>
+                Meeting Details
+            </h2>
+            <div class="grid grid-cols-4 gap-4 mt-4">
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Date & Time</p>
+                    <p class="title-medium mt-1">{{ meeting_date }}<br>{{ meeting_time }}</p>
+                </div>
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Format</p>
+                    <p class="title-medium mt-1">{{ meeting_format }}</p>
+                </div>
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Location</p>
+                    <p class="title-medium mt-1">{{ meeting_location }}</p>
+                </div>
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Stage Progression</p>
+                    <p class="title-medium mt-1" style="color: var(--md-sys-color-primary);">{{ opp_stage }} → {{ target_stage }}</p>
+                </div>
+            </div>
+
+            <!-- Customer Attendees -->
+            <div class="mt-6">
+                <p class="label-large mb-3">Customer Attendees</p>
+                <div class="space-y-3">
+                    {% for person in customer_attendees %}
+                    <div class="md-card-filled p-3">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-1">
+                                <p class="title-medium">{{ person.name }}</p>
+                                <p class="body-medium" style="color: var(--md-sys-color-on-surface-variant);">{{ person.title }}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="pill-badge pill-{{ person.stance|lower|replace(' ', '-')|replace('_', '-') }}">{{ person.stance }}</span>
+                                {% if person.role_in_decision %}
+                                <span class="pill-badge" style="background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container);">{{ person.role_in_decision }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="p-2 rounded-lg" style="background: var(--md-sys-color-surface-container);">
+                                <p class="body-medium"><strong>Focus:</strong> {{ person.focus_priorities }}</p>
+                            </div>
+                            <div class="p-2 rounded-lg" style="background: var(--md-sys-color-surface-container);">
+                                <p class="body-medium"><strong>Communication:</strong> {{ person.communication_approach }}</p>
+                            </div>
+                            <div class="p-2 rounded-lg" style="background: var(--md-sys-color-primary-container); opacity: 0.8;">
+                                <p class="body-medium" style="color: var(--md-sys-color-on-primary-container);"><strong>Our Goal:</strong> {{ person.our_goal }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- AWS Attendees -->
+            <div class="mt-6">
+                <p class="label-large mb-3">AWS Team</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">Name</th>
+                                <th class="label-large py-3 px-2">Role</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in aws_attendees %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ person.name }}</td>
+                                <td class="body-medium py-3 px-2">{{ person.role }}</td>
+                                <td class="body-medium py-3 px-2">{{ person.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Target Meeting Outcomes -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🎯</span>
+                Target Meeting Outcomes
+            </h2>
+            <div class="overflow-x-auto mt-4">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                            <th class="label-large py-3 px-2">#</th>
+                            <th class="label-large py-3 px-2">Customer Perspective</th>
+                            <th class="label-large py-3 px-2">Our Perspective</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for outcome in target_outcomes %}
+                        <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                            <td class="body-medium py-3 px-2">{{ loop.index }}</td>
+                            <td class="body-medium py-3 px-2">{{ outcome.customer_perspective }}</td>
+                            <td class="body-medium py-3 px-2">{{ outcome.our_perspective }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-4 rounded-2xl" style="background: var(--md-sys-color-primary-container);">
+                <p class="body-medium" style="color: var(--md-sys-color-on-primary-container);"><strong>Stage Progression Target:</strong> {{ opp_stage }} → {{ target_stage }}</p>
+            </div>
+            {% if fallback_outcome %}
+            <div class="mt-3 p-4 rounded-2xl" style="background: var(--md-sys-color-warning-container);">
+                <p class="body-medium" style="color: #5D4037;"><strong>Fallback Outcome:</strong> {{ fallback_outcome }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Section 3: Success Criteria -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">✅</span>
+                Success Criteria
+            </h2>
+            <div class="space-y-4 mt-4">
+                {% if success_criteria %}
+                {% for tier, label in [('ideal', 'Ideal'), ('acceptable', 'Acceptable'), ('minimum', 'Minimum')] %}
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <span class="pill-badge pill-{{ tier }} mb-2">{{ label }}</span>
+                    <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div>
+                            <p class="label-large">Customer</p>
+                            <p class="body-medium mt-1">{{ success_criteria[tier].customer }}</p>
+                        </div>
+                        <div>
+                            <p class="label-large">Us</p>
+                            <p class="body-medium mt-1">{{ success_criteria[tier].us }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if disqualification_signals %}
+            <div class="mt-6 p-4 rounded-2xl" style="background: var(--md-sys-color-error-container);">
+                <p class="title-medium mb-2" style="color: var(--md-sys-color-error);">⚠️ Disqualification Signals</p>
+                <ul class="space-y-1">
+                    {% for signal in disqualification_signals %}
+                    <li class="body-medium flex items-start gap-2">
+                        <span style="color: var(--md-sys-color-error);">❌</span>
+                        {{ signal }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Section 4: Information Exchange -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🔄</span>
+                Information Exchange
+            </h2>
+
+            <!-- Questions to Ask -->
+            <div class="mt-4">
+                <p class="title-medium mb-3 flex items-center gap-2">
+                    <span class="section-icon">❓</span>
+                    Questions to Ask
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">Question</th>
+                                <th class="label-large py-3 px-2">Target Attendee</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for q in questions_to_ask %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2">{{ q.question }}</td>
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ q.target_attendee }}</td>
+                                <td class="body-medium py-3 px-2">{{ q.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Information to Deliver -->
+            <div class="mt-6">
+                <p class="title-medium mb-3 flex items-center gap-2">
+                    <span class="section-icon">📊</span>
+                    Information to Deliver
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">What</th>
+                                <th class="label-large py-3 px-2">Format</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in info_to_deliver %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ item.what }}</td>
+                                <td class="body-medium py-3 px-2">{{ item.format }}</td>
+                                <td class="body-medium py-3 px-2">{{ item.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Potential Objections & Responses -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🛡️</span>
+                Potential Objections & Responses
+            </h2>
+            <div class="space-y-4 mt-4">
+                {% for obj in objections %}
+                <div class="p-5 rounded-2xl" style="background: var(--md-sys-color-surface-container); {% if obj.is_disqualifier %}border-left: 4px solid var(--md-sys-color-error);{% endif %}">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="pill-badge pill-{{ obj.category|lower|replace('/', '-')|replace(' ', '-') }}">{{ obj.category }}</span>
+                        {% if obj.is_disqualifier %}
+                        <span class="pill-badge" style="background: var(--md-sys-color-error-container); color: var(--md-sys-color-error);">⚠️ Potential Disqualifier</span>
+                        {% endif %}
+                    </div>
+                    <p class="title-medium mb-2" style="color: var(--md-sys-color-on-surface);">{{ obj.objection }}</p>
+                    <div class="space-y-2 mt-3">
+                        <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container-lowest);">
+                            <p class="body-medium"><strong>Response:</strong> {{ obj.response }}</p>
+                        </div>
+                        <div class="p-3 rounded-xl" style="background: var(--md-sys-color-warning-container); opacity: 0.8;">
+                            <p class="body-medium" style="color: #5D4037;"><strong>Plan B:</strong> {{ obj.fallback }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Section 6: Meeting Agenda -->
+        <section class="md-card" style="border-left: 4px solid var(--md-sys-color-primary);">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📅</span>
+                Meeting Agenda
+            </h2>
+            <div class="overflow-x-auto mt-4">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                            <th class="label-large py-3 px-2">Time</th>
+                            <th class="label-large py-3 px-2">Topic</th>
+                            <th class="label-large py-3 px-2">Owner</th>
+                            <th class="label-large py-3 px-2">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in agenda %}
+                        <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                            <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ item.time }}</td>
+                            <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ item.topic }}</td>
+                            <td class="body-medium py-3 px-2">{{ item.owner }}</td>
+                            <td class="body-medium py-3 px-2">{{ item.purpose }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 7: Potential Next Steps -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">➡️</span>
+                Potential Next Steps
+            </h2>
+
+            <!-- Primary Path -->
+            <div class="mt-4">
+                <p class="title-medium mb-3 flex items-center gap-2">
+                    <span>✅</span>
+                    If meeting goes well (primary path)
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">#</th>
+                                <th class="label-large py-3 px-2">Proposed Next Step</th>
+                                <th class="label-large py-3 px-2">Timeline</th>
+                                <th class="label-large py-3 px-2">Owner</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if next_steps and next_steps.primary %}
+                            {% for step in next_steps.primary %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2">{{ loop.index }}</td>
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ step.step }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.timeline }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.owner }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Fallback Path -->
+            <div class="mt-6">
+                <p class="title-medium mb-3 flex items-center gap-2">
+                    <span>⏳</span>
+                    If customer needs more time (fallback path)
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">#</th>
+                                <th class="label-large py-3 px-2">Proposed Next Step</th>
+                                <th class="label-large py-3 px-2">Timeline</th>
+                                <th class="label-large py-3 px-2">Owner</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if next_steps and next_steps.fallback %}
+                            {% for step in next_steps.fallback %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2">{{ loop.index }}</td>
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ step.step }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.timeline }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.owner }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Graceful Exit -->
+            <div class="mt-6">
+                <p class="title-medium mb-3 flex items-center gap-2">
+                    <span>🚪</span>
+                    If not a fit / timing wrong (graceful exit)
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <th class="label-large py-3 px-2">#</th>
+                                <th class="label-large py-3 px-2">Proposed Next Step</th>
+                                <th class="label-large py-3 px-2">Timeline</th>
+                                <th class="label-large py-3 px-2">Owner</th>
+                                <th class="label-large py-3 px-2">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if next_steps and next_steps.exit %}
+                            {% for step in next_steps.exit %}
+                            <tr class="border-b" style="border-color: var(--md-sys-color-outline-variant);">
+                                <td class="body-medium py-3 px-2">{{ loop.index }}</td>
+                                <td class="body-medium py-3 px-2 font-medium" style="color: var(--md-sys-color-on-surface);">{{ step.step }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.timeline }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.owner }}</td>
+                                <td class="body-medium py-3 px-2">{{ step.purpose }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-4" style="border-top: 1px solid var(--md-sys-color-outline-variant); margin-top: 8px;">
+            <p class="body-medium" style="margin-bottom: 4px;">Last updated: {{ last_updated }}</p>
+            <p class="body-medium" style="color: var(--md-sys-color-outline);">Generated by Dali · Call Plan</p>
+        </footer>
+
+    </div>
+</body>
+</html>

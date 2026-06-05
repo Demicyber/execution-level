@@ -1,0 +1,154 @@
+{
+    "customer_name": "GlobalRetail Inc.",
+    "opportunity_name": "Cloud Migration - Data Center Exit",
+    "deal_value": "$3.2M TCV",
+    "industry": "Retail",
+    "current_stage": "Technical Validation",
+    "current_stage_index": 2,
+    "target_launch_date": "Q2 2026",
+    "customer_type": "Existing Customer",
+    "why_now": "现有ERP系统2027年6月停止维护，CIO已向董事会承诺18个月内完成迁移。按14个月实施周期倒推，必须在2026年Q1完成供应商选型。每延迟一个季度损失约$11M并购整合协同效应。",
+    "deal_objective": "与 GlobalRetail 签署 $3.2M TCV 三年期 AWS Enterprise Agreement，覆盖400+工作负载从自建数据中心迁移至 AWS，目标在2026年3月31日前完成签约。",
+    "win_strategy": "客户平台团队拥有三年 AWS 使用经验，在技术评估中具备天然优势。主要竞争对手 Azure 通过 Microsoft EA 建立高管关系，我方通过 Graviton 迁移方案降低30% TCO 差异化。",
+    "key_risks": "CIO 与微软有超过五年深厚个人关系，存在绕过技术评估直接高管决策的风险。客户正经历内部组织重组，新任 CTO 可能重评所有在途项目。",
+    "estimate_best_milestones": 5,
+    "estimate_best_timeline": "10 weeks",
+    "estimate_worst_milestones": 8,
+    "estimate_worst_timeline": "16 weeks",
+    "stakeholders": [
+        {
+            "name": "Sarah Chen",
+            "title": "CTO",
+            "stance": "Champion",
+            "engagement_priority": "Must Meet — 技术决策核心人物，6月架构委员会前必须获得她的技术背书",
+            "role_in_deal": "Technical Decision Maker — 负责架构评审最终签字，拥有技术方案一票否决权",
+            "what_they_care_about": "董事会要求Q4前将基础设施成本降低20%，同时需要支撑2400家门店的实时库存分析",
+            "what_we_need": "1) 确认目标架构方案 2) 签字授权POC 3) 在架构委员会呈现评估结论",
+            "how_to_win": "用 benchmark 数据说话，安排 Graviton 迁移 deep-dive，提供同行业 reference"
+        },
+        {
+            "name": "Michael Torres",
+            "title": "CFO",
+            "stance": "Neutral",
+            "engagement_priority": "Important — 预算审批最终决策人，Business Case 提交前必须建立基本认知",
+            "role_in_deal": "Economic Buyer — 控制 $3M+ CapEx/OpEx 审批权",
+            "what_they_care_about": "上季度财报被点名基础设施超支，需要可量化的 TCO 降低证据",
+            "what_we_need": "1) 同意听取 business case 2) 确认预算通道可行",
+            "how_to_win": "通过 AWS Economics team 提供定制 TCO 分析，用同行业 42% 成本节省 reference 建立信任"
+        },
+        {
+            "name": "David Park",
+            "title": "CISO",
+            "stance": "Non-Supporter",
+            "engagement_priority": "Must Meet — 安全评估是必经流程，他的反对会直接 block 项目推进",
+            "role_in_deal": "Blocker — 安全合规审批必须通过他签字",
+            "what_they_care_about": "数据主权合规是核心顾虑，与现有安全供应商关系紧密",
+            "what_we_need": "1) 说出具体安全顾虑清单 2) 确认满足条件后不再反对",
+            "how_to_win": "安排 AWS Security Specialist 专项答疑，准备 SOC2 + 等保三级报告 + 数据驻留方案"
+        }
+    ],
+    "roadmap": [
+        {
+            "number": 1,
+            "target_window": "Week 1-2",
+            "description": "CTO 在首次技术交流中确认核心业务痛点和决策流程，授权进入技术评估",
+            "key_stakeholders": "CTO, IT Director",
+            "aws_team": "AM, SA",
+            "status": "Done"
+        },
+        {
+            "number": 2,
+            "target_window": "Week 3-4",
+            "description": "架构评审后 CTO 确认目标架构方案，同意启动两周 POC 验证",
+            "key_stakeholders": "CTO, Lead Architect",
+            "aws_team": "SA, Data Specialist",
+            "status": "Next"
+        },
+        {
+            "number": 3,
+            "target_window": "Week 5-7",
+            "description": "POC scorecard 全部达标，VP Eng 确认技术满足生产需求",
+            "key_stakeholders": "VP Eng, CTO",
+            "aws_team": "SA, ProServ",
+            "status": "Planned"
+        },
+        {
+            "number": 4,
+            "target_window": "Week 8-9",
+            "description": "CFO 审批通过 business case 并确认预算到位",
+            "key_stakeholders": "CFO, Champion",
+            "aws_team": "AM, Deal Desk",
+            "status": "Planned"
+        },
+        {
+            "number": 5,
+            "target_window": "Week 10-12",
+            "description": "合同签署，implementation kickoff 确认",
+            "key_stakeholders": "Procurement, Legal, EB",
+            "aws_team": "AM, Legal",
+            "status": "Planned"
+        }
+    ],
+    "stakeholder_risks": [
+        {
+            "stakeholder": "David Park (CISO)",
+            "red_flag": "Non-Supporter — 前期沟通中明确表达对数据主权的担忧，与现有安全供应商关系紧密",
+            "leverage_source": "VP Engineering (Supporter) — 与 CISO 是前公司同事，私下关系好",
+            "plan_b": "1) 请 VP Eng 非正式沟通了解核心顾虑 2) 准备 SOC2 + 等保三级 + 数据驻留方案 3) AWS Security Specialist 专项答疑"
+        }
+    ],
+    "milestone_risks": [
+        {
+            "milestone": "#2 CTO架构评审",
+            "risk_item": "🧑 CTO 缺席/拒绝评审",
+            "trigger": "两周内三次正式邀约均未获回应",
+            "impact": "+2-3 weeks, 后续全部顺延",
+            "plan_b": "通过 IT Director 先做非正式技术 deep-dive，用成果倒逼 CTO 参与",
+            "severity": "high"
+        },
+        {
+            "milestone": "#4 CFO预算审批",
+            "risk_item": "🧑 CFO 质疑ROI/冻结预算",
+            "trigger": "CFO 明确表示当前财年无法新增大额支出",
+            "impact": "+4-6 weeks, deal 结构可能变化",
+            "plan_b": "将 $3.2M 调整为 Phase 1（$800K），90天验证 ROI 建立下一财年 business case",
+            "severity": "medium"
+        }
+    ],
+    "next_milestone": {
+        "title": "架构评审 — CTO 确认目标方案",
+        "target_date": "March 28, 2026",
+        "aws_team": "李四 (SA) 主导技术交流，张三 (AM) 关系推进",
+        "objective": "通过架构评审让 CTO 确认目标迁移方案可行，并授权启动 POC 验证。",
+        "attendees": [
+            {
+                "name": "Sarah Chen",
+                "title": "CTO",
+                "target_outcome": "当前 Supporter → 验证 Sponsor 潜力：让她在架构委员会上为我们的方案正式背书，并主动协调 CISO 的安全评估。"
+            },
+            {
+                "name": "Tom Li",
+                "title": "Lead Architect",
+                "target_outcome": "当前 Neutral → Supporter：确认 Graviton 方案在性能测试中达标，同意担任 POC 技术负责人。"
+            }
+        ],
+        "key_questions": [
+            "现有架构在哪些场景下已出现性能瓶颈？峰值时延具体到多少？",
+            "贵司批准 SAP 迁移项目时审批流程是怎样的？这次投资决策是否走类似通道？",
+            "如果我们能在本地 region 提供完整数据隔离方案，这是否能解决安全团队的主要担忧？"
+        ]
+    },
+    "execution_log": [
+        {
+            "number": 1,
+            "date": "2026-02-15",
+            "attendees": "CTO Sarah Chen, IT Director Tom Li",
+            "planned": "CTO 和 IT Director 在首次技术交流中确认核心业务痛点和内部决策流程",
+            "actual": "CTO 确认云成本优化是董事会级优先事项，但需先完成安全评估。IT Director 主动请缨担任评估协调人。",
+            "people_updates": "Sarah Chen: Neutral → Supporter（主动表达认可）。Tom Li: Supporter → Sponsor（请缨担任协调人）。",
+            "key_learnings": "安全评估是必经流程。内部有 Azure 续约讨论正在进行。",
+            "plan_adjustment": "新增 CISO engagement milestone，整体 timeline +2 weeks。"
+        }
+    ],
+    "last_updated": "2026-05-14"
+}

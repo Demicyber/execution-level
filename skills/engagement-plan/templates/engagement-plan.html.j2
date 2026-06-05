@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engagement Plan – {{ customer_name }} | {{ opportunity_name }}</title>
+    <!-- Fonts: locally-installed Inter + Noto Sans SC, with cross-platform fallbacks -->
+    <style>
+    /* === Tailwind Replacement — Utility Classes (zero CDN dependency) === */
+        /* Layout */
+        .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-wrap { flex-wrap: wrap; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+
+        /* Spacing */
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Sizing */
+        .w-full { width: 100%; }
+        .w-1\/2 { width: 50%; }
+        .w-1\/3 { width: 33.333333%; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+        .max-w-6xl { max-width: 72rem; }
+        .min-h-screen { min-height: 100vh; }
+
+        /* Typography */
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .font-normal { font-weight: 400; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .uppercase { text-transform: uppercase; }
+        .whitespace-nowrap { white-space: nowrap; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .leading-tight { line-height: 1.25; }
+        .leading-relaxed { line-height: 1.625; }
+
+        /* Borders & Shapes */
+        .rounded { border-radius: 0.25rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        .border { border: 1px solid var(--md-sys-color-outline-variant); }
+        .border-b { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        .border-t { border-top: 1px solid var(--md-sys-color-outline-variant); }
+        .border-l { border-left: 1px solid var(--md-sys-color-outline-variant); }
+
+        /* Visibility & Overflow */
+        .hidden { display: none; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .inline-flex { display: inline-flex; }
+        .overflow-x-auto { overflow-x: auto; }
+        .overflow-hidden { overflow: hidden; }
+        .break-inside-avoid { break-inside: avoid; }
+
+        /* Position */
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .right-0 { right: 0; }
+
+        /* Shadow */
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1); }
+
+        /* Extra utilities used by stepper & cards */
+        .flex-col { flex-direction: column; }
+        .w-10 { width: 2.5rem; }
+        .h-10 { height: 2.5rem; }
+        .w-3 { width: 0.75rem; }
+        .h-3 { height: 0.75rem; }
+        .text-white { color: #ffffff; }
+        .shrink-0 { flex-shrink: 0; }
+        .mb-0 { margin-bottom: 0; }
+        .mt-8 { margin-top: 2rem; }
+        .pr-4 { padding-right: 1rem; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+        /* Table */
+        table { border-collapse: collapse; }
+        th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        th { font-weight: 600; }
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-color-surface-container-lowest: #FFFFFF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F3EDF7;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            --md-sys-color-error: #B3261E;
+            --md-sys-color-error-container: #F9DEDC;
+            --md-sys-color-success: #386A20;
+            --md-sys-color-success-container: #C8E6C9;
+            --md-sys-color-warning: #F57F17;
+            --md-sys-color-warning-container: #FFF9C4;
+        }
+
+        * { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        html { font-size: 9px; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-size: 9px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm 8mm 10mm 8mm;
+        }
+
+        .md-card {
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 16px;
+            padding: 14px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .md-card-elevated {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 3px 1px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.12);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .md-card-filled {
+            background: var(--md-sys-color-surface-container-highest);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .md-fab {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-radius: 16px;
+            padding: 16px 24px;
+            font-weight: 500;
+            box-shadow: 0 4px 8px 3px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .pill-badge {
+            border-radius: 100px;
+            padding: 2px 10px;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+        }
+
+        .pill-sponsor { background: #C8E6C9; color: #1B5E20; }
+        .pill-supporter { background: #C8E6C9; color: #1B5E20; }
+        .pill-neutral { background: #FFF9C4; color: #F57F17; }
+        .pill-non-supporter { background: #FFCDD2; color: #B71C1C; }
+        .pill-adversary { background: #FFCDD2; color: #B71C1C; }
+        .pill-economic-buyer { background: #E8DEF8; color: #21005D; }
+        .pill-champion { background: #C8E6C9; color: #1B5E20; }
+
+        .stepper-line {
+            height: 2px;
+            flex: 1;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--md-sys-color-on-surface);
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+        }
+
+        .label-large {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .title-medium {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .body-medium {
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.5;
+        }
+
+        .headline-small {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .display-small {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .risk-high { background: var(--md-sys-color-error-container); }
+        .risk-medium { background: var(--md-sys-color-surface-container); }
+        .risk-low { background: var(--md-sys-color-surface-container-low); }
+
+        /* ═══════════════════════════════════════
+           METRO JOURNEY STYLES
+           ═══════════════════════════════════════ */
+        .metro-journey {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 18px;
+        }
+        .metro-journey::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            border-radius: 2.5px;
+            background: var(--md-sys-color-outline-variant);
+        }
+        .metro-journey .metro-progress {
+            position: absolute;
+            left: 19px;
+            top: 0;
+            width: 5px;
+            border-radius: 2.5px;
+            background: var(--md-sys-color-primary);
+            transition: height 0.3s;
+        }
+        .metro-station {
+            position: relative;
+            padding: 8px 0 14px 20px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .metro-station:last-child { padding-bottom: 0; }
+        .metro-station-dot {
+            position: absolute;
+            left: -29px;
+            top: 16px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 2;
+        }
+        .metro-station-dot.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.15);
+        }
+        .metro-station-dot.done {
+            background: var(--md-sys-color-success);
+            color: white;
+        }
+        .metro-station-dot.planned {
+            background: var(--md-sys-color-surface-container-lowest);
+            color: var(--md-sys-color-outline);
+            border: 2.5px solid var(--md-sys-color-outline-variant);
+        }
+        .metro-station-card {
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+        .metro-station.is-active .metro-station-card {
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 2px 6px 2px rgba(103, 80, 164, 0.08), 0 1px 2px rgba(0,0,0,0.06);
+        }
+        .metro-station-card .station-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .metro-station-card .station-title {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+        .metro-station-card .station-desc {
+            font-size: 10px;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+        .metro-station-card .station-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .metro-station-card .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            color: var(--md-sys-color-on-surface-variant);
+            background: var(--md-sys-color-surface-container);
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+        .metro-station-card .meta-item .icon-sm {
+            font-size: 10px;
+        }
+        .status-next {
+            background: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+        }
+        .status-planned {
+            background: var(--md-sys-color-surface-container-highest);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .status-done {
+            background: var(--md-sys-color-success-container);
+            color: var(--md-sys-color-success);
+        }
+        .metro-endpoint {
+            margin-top: 18px;
+            margin-left: 20px;
+            padding: 12px 16px;
+            background: var(--md-sys-color-success-container);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .metro-endpoint span {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--md-sys-color-success);
+        }
+
+        /* Section icon (emoji-based, PDF-safe) */
+        .section-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* Print: keep everything as-is, just prevent splitting */
+        @media print {
+            .md-card, .md-card-elevated, .md-card-filled,
+            .metro-station, .metro-endpoint {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-6xl mx-auto space-y-4">
+
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-2">
+            <div>
+                <p class="label-large uppercase tracking-wider" style="color: var(--md-sys-color-primary);">Engagement Plan</p>
+                <h1 class="display-small mt-1" style="color: var(--md-sys-color-on-surface);">{{ customer_name }}</h1>
+                <p class="body-medium mt-1">{{ opportunity_name }}</p>
+            </div>
+            <div class="md-fab flex items-center gap-2">
+                <span class="section-icon">💰</span>
+                <span class="text-sm font-medium">{{ deal_value }}</span>
+            </div>
+        </header>
+
+        <!-- Section 1: Opportunity Snapshot -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📊</span>
+                Opportunity Snapshot
+            </h2>
+            <table class="w-full mt-4" style="border-collapse: collapse;">
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                        <td class="label-large py-2 pr-4" style="width: 120px;">Account</td>
+                        <td class="title-medium py-2">{{ customer_name }} · {{ industry }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                        <td class="label-large py-2 pr-4">Deal Stage</td>
+                        <td class="title-medium py-2" style="color: var(--md-sys-color-primary);">{{ current_stage }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                        <td class="label-large py-2 pr-4">Target Launch</td>
+                        <td class="title-medium py-2">{{ target_launch_date }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large py-2 pr-4">Customer Type</td>
+                        <td class="title-medium py-2">{{ customer_type }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Why Now -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">⏰</span>
+                Why Now
+            </h2>
+            <p class="body-medium mt-2 leading-relaxed">{{ why_now }}</p>
+        </section>
+
+        <!-- Deal Objective + Win Strategy -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🎯</span>
+                Deal Objective & Win Strategy
+            </h2>
+            <div class="space-y-4 mt-4">
+                <div>
+                    <h3 class="title-medium mb-2" style="color: var(--md-sys-color-on-surface);">Deal Objective</h3>
+                    <p class="body-medium leading-relaxed">{{ deal_objective }}</p>
+                </div>
+                <div>
+                    <h3 class="title-medium mb-2" style="color: var(--md-sys-color-on-surface);">Win Strategy</h3>
+                    <p class="body-medium leading-relaxed">{{ win_strategy }}</p>
+                </div>
+            </div>
+            {% if key_risks %}
+            <div class="mt-6">
+                <h3 class="title-medium mb-2" style="color: var(--md-sys-color-error);">⚠️ Key Risks</h3>
+                <p class="body-medium leading-relaxed">{{ key_risks }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Engagement Progress Stepper -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📈</span>
+                Engagement Progress
+            </h2>
+            <div class="flex items-center justify-between mt-8 mb-2 px-4">
+                {% set stages = ["Prospect", "Qualified", "Tech Val", "Biz Val", "Committed", "Closed"] %}
+                {% for stage in stages %}
+                {% if not loop.first %}
+                <div class="stepper-line" style="background: {% if loop.index0 <= current_stage_index %}var(--md-sys-color-success){% elif loop.index0 == current_stage_index + 1 %}linear-gradient(to right, var(--md-sys-color-success), var(--md-sys-color-outline-variant)){% else %}var(--md-sys-color-outline-variant){% endif %};"></div>
+                {% endif %}
+                <div class="flex flex-col items-center" style="width: 120px;">
+                    {% if loop.index0 < current_stage_index %}
+                    <!-- Completed -->
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium" style="background: var(--md-sys-color-success);">
+                        <span class="text-base">✓</span>
+                    </div>
+                    <p class="text-xs mt-2 text-center font-medium" style="color: var(--md-sys-color-success);">{{ stage }}</p>
+                    {% elif loop.index0 == current_stage_index %}
+                    <!-- Active -->
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-medium" style="background: var(--md-sys-color-primary-container); border: 3px solid var(--md-sys-color-primary);">
+                        <div class="w-3 h-3 rounded-full" style="background: var(--md-sys-color-primary);"></div>
+                    </div>
+                    <p class="text-xs mt-2 text-center font-medium" style="color: var(--md-sys-color-primary);">{{ stage }}</p>
+                    <p class="text-xs text-center" style="color: var(--md-sys-color-on-surface-variant);">Current</p>
+                    {% else %}
+                    <!-- Upcoming -->
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-medium" style="border: 2px solid var(--md-sys-color-outline); background: transparent;">
+                        <span class="text-sm" style="color: var(--md-sys-color-outline);">{{ loop.index }}</span>
+                    </div>
+                    <p class="text-xs mt-2 text-center font-medium" style="color: var(--md-sys-color-outline);">{{ stage }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Section 2: Key Stakeholders -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">👥</span>
+                Key Stakeholders
+            </h2>
+            <div class="space-y-4 mt-4">
+                {% for person in stakeholders %}
+                <div class="md-card-filled p-5 flex flex-col gap-3" style="border-radius: 20px; break-inside: avoid; page-break-inside: avoid;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="title-medium">{{ person.name }}</p>
+                            <p class="body-medium">{{ person.title }}</p>
+                        </div>
+                        <span class="pill-badge pill-{{ person.stance|lower|replace(' ', '-')|replace('_', '-') }}">{{ person.stance }}</span>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="body-medium"><strong>Priority:</strong> {{ person.engagement_priority }}</p>
+                        <p class="body-medium"><strong>Role:</strong> {{ person.role_in_deal }}</p>
+                        <p class="body-medium"><strong>What They Care About:</strong> {{ person.what_they_care_about }}</p>
+                        <p class="body-medium"><strong>What We Need:</strong> {{ person.what_we_need }}</p>
+                    </div>
+                    {% if person.how_to_win %}
+                    <div class="mt-2 p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                        <p class="body-medium"><strong>How to Win:</strong> {{ person.how_to_win }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Engagement Roadmap (Metro Journey) -->
+        <section class="md-card-elevated">
+            <div class="flex items-center justify-between">
+                <h2 class="section-title flex items-center gap-2 mb-0">
+                    <span class="section-icon">🗺️</span>
+                    Engagement Roadmap
+                </h2>
+                {% set done_count = roadmap | selectattr('status', 'equalto', 'Done') | list | length %}
+                <span class="pill-badge" style="background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);">{{ done_count }}/{{ roadmap | length }} Stations Complete</span>
+            </div>
+
+            <div class="metro-journey">
+                <!-- Progress fill -->
+                {% set total = roadmap | length %}
+                {% if total > 0 %}
+                <div class="metro-progress" style="height: {{ (done_count / total * 100) | round }}%;"></div>
+                {% endif %}
+
+                {% for milestone in roadmap %}
+                <div class="metro-station {% if milestone.status == 'Next' %}is-active{% endif %}">
+                    <!-- Station dot -->
+                    {% if milestone.status == "Done" %}
+                    <div class="metro-station-dot done">✓</div>
+                    {% elif milestone.status == "Next" %}
+                    <div class="metro-station-dot active">{{ loop.index }}</div>
+                    {% else %}
+                    <div class="metro-station-dot planned">{{ loop.index }}</div>
+                    {% endif %}
+
+                    <!-- Station card -->
+                    <div class="metro-station-card">
+                        <div class="station-header">
+                            <span class="station-title">{{ milestone.description }}</span>
+                            {% if milestone.status == "Done" %}
+                            <span class="pill-badge status-done">✓ Done</span>
+                            {% elif milestone.status == "Next" %}
+                            <span class="pill-badge status-next">▶ Next</span>
+                            {% elif milestone.status == "Skipped" %}
+                            <span class="pill-badge status-planned">Skipped</span>
+                            {% else %}
+                            <span class="pill-badge status-planned">Planned</span>
+                            {% endif %}
+                        </div>
+                        {% if milestone.detail %}
+                        <p class="station-desc">{{ milestone.detail }}</p>
+                        {% endif %}
+                        <div class="station-meta">
+                            {% if milestone.key_stakeholders %}
+                            <span class="meta-item">
+                                <span class="icon-sm">👤</span>
+                                {{ milestone.key_stakeholders }}
+                            </span>
+                            {% endif %}
+                            {% if milestone.aws_team %}
+                            <span class="meta-item">
+                                <span class="icon-sm">☁️</span>
+                                {{ milestone.aws_team }}
+                            </span>
+                            {% endif %}
+                            {% if milestone.target_window %}
+                            <span class="meta-item">
+                                <span class="icon-sm">📅</span>
+                                {{ milestone.target_window }}
+                            </span>
+                            {% endif %}
+                            {% if milestone.target_date %}
+                            <span class="meta-item">
+                                <span class="icon-sm">📅</span>
+                                {{ milestone.target_date }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Deal Objective endpoint -->
+                {% if deal_objective %}
+                <div class="metro-endpoint">
+                    <span>🏁</span>
+                    <span>{{ deal_objective }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Estimate & Contingency -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📋</span>
+                Estimate & Contingency
+            </h2>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Best Case</p>
+                    <p class="title-medium mt-1">{{ estimate_best_milestones }} milestones · {{ estimate_best_timeline }}</p>
+                </div>
+                <div class="md-card-filled text-center p-5">
+                    <p class="label-large">Worst Case</p>
+                    <p class="title-medium mt-1">{{ estimate_worst_milestones }} milestones · {{ estimate_worst_timeline }}</p>
+                </div>
+            </div>
+
+            <!-- Stakeholder Risk & Leverage -->
+            {% if stakeholder_risks %}
+            <div class="mt-6">
+                <h3 class="title-medium mb-3 flex items-center gap-2">
+                    <span style="color: var(--md-sys-color-error);">🚨</span>
+                    <span style="color: var(--md-sys-color-error);">Stakeholder Risk & Leverage</span>
+                </h3>
+                <div class="space-y-3">
+                    {% for risk in stakeholder_risks %}
+                    <div class="p-4 rounded-2xl risk-medium" style="break-inside: avoid; page-break-inside: avoid;">
+                        <p class="title-medium mb-2">{{ risk.stakeholder }}</p>
+                        <p class="body-medium"><strong>Red Flag:</strong> {{ risk.red_flag }}</p>
+                        <p class="body-medium mt-1"><strong>Leverage:</strong> {{ risk.leverage_source }}</p>
+                        <p class="body-medium mt-1"><strong>Plan B:</strong> {{ risk.plan_b }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Milestone Risk & Contingency -->
+            {% if milestone_risks %}
+            <div class="mt-6">
+                <h3 class="title-medium mb-3 flex items-center gap-2">
+                    <span style="color: var(--md-sys-color-warning);">⚡</span>
+                    <span style="color: var(--md-sys-color-warning);">Milestone Risk & Contingency</span>
+                </h3>
+                <div class="space-y-3">
+                    {% for risk in milestone_risks %}
+                    <div class="p-4 rounded-2xl {% if risk.severity == 'high' %}risk-high{% elif risk.severity == 'medium' %}risk-medium{% else %}risk-low{% endif %}" style="break-inside: avoid; page-break-inside: avoid;">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="pill-badge shrink-0" style="background: {% if risk.severity == 'high' %}#B3261E{% elif risk.severity == 'medium' %}#F57F17{% else %}var(--md-sys-color-outline){% endif %}; color: white;">{{ risk.severity|capitalize }}</span>
+                            <p class="title-medium" style="color: var(--md-sys-color-on-surface);">{{ risk.milestone }} — {{ risk.risk_item }}</p>
+                        </div>
+                        <p class="body-medium"><strong>Trigger:</strong> {{ risk.trigger }}</p>
+                        <p class="body-medium mt-1"><strong>Impact:</strong> {{ risk.impact }}</p>
+                        <p class="body-medium mt-1"><strong>Plan B:</strong> {{ risk.plan_b }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        {% if next_milestone %}
+        <!-- Next Milestone Detail -->
+        <section class="md-card-elevated" style="border-left: 4px solid var(--md-sys-color-primary);">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🚩</span>
+                Next Milestone: {{ next_milestone.title }}
+            </h2>
+            <div class="grid grid-cols-3 gap-6 mt-4">
+                <div>
+                    <p class="label-large">Target Date</p>
+                    <p class="title-medium mt-1">{{ next_milestone.target_date }}</p>
+                </div>
+                <div>
+                    <p class="label-large">AWS Team</p>
+                    <p class="title-medium mt-1">{{ next_milestone.aws_team }}</p>
+                </div>
+                <div>
+                    <p class="label-large">Objective</p>
+                    <p class="body-medium mt-1">{{ next_milestone.objective }}</p>
+                </div>
+            </div>
+
+            <!-- Customer Attendees & Target Outcomes -->
+            <div class="mt-6">
+                <p class="label-large mb-3">Customer Attendees & Target Outcomes</p>
+                <div class="space-y-2">
+                    {% for attendee in next_milestone.attendees %}
+                    <div class="flex items-start gap-3 p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                        <span style="color: var(--md-sys-color-primary);">👤</span>
+                        <div>
+                            <p class="title-medium">{{ attendee.name }} ({{ attendee.title }})</p>
+                            <p class="body-medium mt-1">{{ attendee.target_outcome }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Key Questions -->
+            {% if next_milestone.key_questions %}
+            <div class="mt-6">
+                <p class="label-large mb-3">Key Questions & Discussion Points</p>
+                <div class="space-y-2">
+                    {% for question in next_milestone.key_questions %}
+                    <div class="flex items-start gap-3 p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                        <span class="text-base mt-0.5" style="color: var(--md-sys-color-primary);">❓</span>
+                        <p class="body-medium">{{ question }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <!-- Section 3: Execution Log -->
+        {% if execution_log %}
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📝</span>
+                Execution Log
+            </h2>
+            <div class="space-y-4 mt-4">
+                {% for entry in execution_log %}
+                <div class="p-4 rounded-2xl" style="break-inside: avoid; page-break-inside: avoid; border: 1px solid var(--md-sys-color-outline-variant);">
+                    <p class="title-medium mb-3">Engagement #{{ entry.number }} — {{ entry.date }}</p>
+                    <table class="w-full" style="border-collapse: collapse;">
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                                <td class="label-large py-2 pr-4" style="width: 110px;">Attendees</td>
+                                <td class="body-medium py-2">{{ entry.attendees }}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                                <td class="label-large py-2 pr-4">Planned</td>
+                                <td class="body-medium py-2">{{ entry.planned }}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                                <td class="label-large py-2 pr-4">Actual</td>
+                                <td class="body-medium py-2">{{ entry.actual }}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                                <td class="label-large py-2 pr-4">People Updates</td>
+                                <td class="body-medium py-2">{{ entry.people_updates }}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--md-sys-color-outline-variant);">
+                                <td class="label-large py-2 pr-4">Key Learnings</td>
+                                <td class="body-medium py-2">{{ entry.key_learnings }}</td>
+                            </tr>
+                            <tr>
+                                <td class="label-large py-2 pr-4">Plan Adjustment</td>
+                                <td class="body-medium py-2">{{ entry.plan_adjustment }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="text-center py-6">
+            <p class="body-medium" style="color: var(--md-sys-color-on-surface-variant);">
+                Generated by Dali · Last updated: {{ last_updated }}
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

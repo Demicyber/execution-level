@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Briefing – {{ customer_name }} | {{ meeting_title }}</title>
+    <!-- Fonts: locally-installed Inter + Noto Sans SC, with cross-platform fallbacks -->
+    <style>
+    /* === Tailwind Replacement — Utility Classes (zero CDN dependency) === */
+        /* Layout */
+        .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-wrap { flex-wrap: wrap; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+
+        /* Spacing */
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.25rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .mr-2 { margin-right: 0.5rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Sizing */
+        .w-full { width: 100%; }
+        .w-1\/2 { width: 50%; }
+        .w-1\/3 { width: 33.333333%; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+        .max-w-6xl { max-width: 72rem; }
+        .min-h-screen { min-height: 100vh; }
+
+        /* Typography */
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .font-normal { font-weight: 400; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .uppercase { text-transform: uppercase; }
+        .whitespace-nowrap { white-space: nowrap; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .leading-tight { line-height: 1.25; }
+        .leading-relaxed { line-height: 1.625; }
+
+        /* Borders & Shapes */
+        .rounded { border-radius: 0.25rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-full { border-radius: 9999px; }
+        .border { border: 1px solid var(--md-sys-color-outline-variant); }
+        .border-b { border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        .border-t { border-top: 1px solid var(--md-sys-color-outline-variant); }
+        .border-l { border-left: 1px solid var(--md-sys-color-outline-variant); }
+
+        /* Visibility & Overflow */
+        .hidden { display: none; }
+        .block { display: block; }
+        .inline-block { display: inline-block; }
+        .inline-flex { display: inline-flex; }
+        .overflow-x-auto { overflow-x: auto; }
+        .overflow-hidden { overflow: hidden; }
+        .break-inside-avoid { break-inside: avoid; }
+
+        /* Position */
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .top-0 { top: 0; }
+        .right-0 { right: 0; }
+
+        /* Shadow */
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1); }
+
+        /* Extra utilities */
+        .shrink-0 { flex-shrink: 0; }
+
+        /* Table styles */
+        table { border-collapse: collapse; }
+        th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
+        th { font-weight: 600; }
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-secondary: #625B71;
+            --md-sys-color-on-secondary: #FFFFFF;
+            --md-sys-color-secondary-container: #E8DEF8;
+            --md-sys-color-tertiary: #7D5260;
+            --md-sys-color-tertiary-container: #FFD8E4;
+            --md-sys-color-surface: #FFFBFE;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface: #1C1B1F;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-outline-variant: #CAC4D0;
+            --md-sys-color-surface-container-lowest: #FFFFFF;
+            --md-sys-color-surface-container-low: #F7F2FA;
+            --md-sys-color-surface-container: #F3EDF7;
+            --md-sys-color-surface-container-high: #ECE6F0;
+            --md-sys-color-surface-container-highest: #E6E0E9;
+            --md-sys-color-error: #B3261E;
+            --md-sys-color-error-container: #F9DEDC;
+            --md-sys-color-success: #386A20;
+            --md-sys-color-success-container: #C8E6C9;
+            --md-sys-color-warning: #F57F17;
+            --md-sys-color-warning-container: #FFF9C4;
+        }
+
+        * { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        html { font-size: 9px; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-size: 9px;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm 8mm 10mm 8mm;
+        }
+
+        .md-card {
+            background: var(--md-sys-color-surface-container-lowest);
+            border: 1px solid var(--md-sys-color-outline-variant);
+            border-radius: 16px;
+            padding: 14px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .md-card-elevated {
+            background: var(--md-sys-color-surface-container-lowest);
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 1px 3px 1px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.12);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .md-card-filled {
+            background: var(--md-sys-color-surface-container-highest);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .pill-badge {
+            border-radius: 100px;
+            padding: 2px 10px;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+        }
+
+        .pill-sponsor { background: #C8E6C9; color: #1B5E20; }
+        .pill-supporter { background: #C8E6C9; color: #1B5E20; }
+        .pill-neutral { background: #FFF9C4; color: #F57F17; }
+        .pill-non-supporter { background: #FFCDD2; color: #B71C1C; }
+        .pill-adversary { background: #FFCDD2; color: #B71C1C; }
+        .pill-champion { background: #C8E6C9; color: #1B5E20; }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--md-sys-color-on-surface);
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+        }
+
+        .label-large {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .title-medium {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .body-medium {
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            color: var(--md-sys-color-on-surface-variant);
+            line-height: 1.5;
+        }
+
+        .headline-small {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .display-small {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .section-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* Table styles */
+        .eb-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            table-layout: fixed;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .eb-table th {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+        .eb-table td {
+            padding: 6px 8px;
+            color: var(--md-sys-color-on-surface-variant);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            line-height: 1.4;
+            vertical-align: top;
+        }
+        .eb-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media print {
+            .md-card, .md-card-elevated, .md-card-filled {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #e0e0e0;
+            }
+            .confidential-banner { background: #ffcdd2 !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="max-w-6xl mx-auto space-y-4">
+
+        <!-- Confidential Banner -->
+        <div class="confidential-banner p-3 rounded-2xl text-center" style="background: var(--md-sys-color-error-container);">
+            <p class="title-medium" style="color: var(--md-sys-color-error);">
+                🔒 INTERNAL USE ONLY — AWS Confidential
+            </p>
+        </div>
+
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-2">
+            <div>
+                <p class="label-large uppercase tracking-wider" style="color: var(--md-sys-color-primary);">Executive Briefing</p>
+                <h1 class="display-small mt-1" style="color: var(--md-sys-color-on-surface);">{{ customer_name }}</h1>
+                <p class="body-medium mt-1">{{ meeting_title }}</p>
+            </div>
+            <div class="text-right">
+                <div class="flex items-center gap-2" style="background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container); border-radius: 16px; padding: 10px 16px; font-weight: 500; box-shadow: 0 4px 8px 3px rgba(0,0,0,0.10);">
+                    <span class="section-icon">📅</span>
+                    <span class="title-medium">{{ meeting_date }}</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Section 1: Meeting Logistics -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🏢</span>
+                Meeting Logistics
+            </h2>
+            <table class="eb-table mt-3">
+                <tbody>
+                    <tr>
+                        <td class="label-large" style="width: 100px;">Date & Time</td>
+                        <td class="title-medium">{{ meeting_date }} · {{ meeting_time }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Format</td>
+                        <td class="title-medium">{{ meeting_format }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Opportunity</td>
+                        <td class="title-medium">{{ opportunity_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Stage</td>
+                        <td class="title-medium" style="color: var(--md-sys-color-primary);">{{ opp_stage }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Why</td>
+                        <td class="body-medium">{{ who_requested_and_why }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- AWS Team -->
+            <div class="mt-4">
+                <p class="label-large mb-2">AWS Team</p>
+                <table class="eb-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for person in aws_team %}
+                        <tr>
+                            <td style="color: var(--md-sys-color-on-surface); font-weight: 500;">{{ person.name }}</td>
+                            <td>{{ person.role }}</td>
+                            <td>{{ person.purpose }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 2: Customer Attendee Background -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">👥</span>
+                Customer Attendee Background
+            </h2>
+            <div class="space-y-3 mt-3">
+                {% for person in customer_attendees %}
+                <div class="md-card-filled p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <p class="title-medium" style="color: var(--md-sys-color-on-surface);">{{ person.name }}</p>
+                            <p class="body-medium">{{ person.title }}</p>
+                        </div>
+                        <span class="pill-badge pill-{{ person.stance|lower|replace(' ', '-')|replace('_', '-') }}">{{ person.stance }}</span>
+                    </div>
+                    <p class="body-medium leading-relaxed">{{ person.background_paragraph }}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Company Profile -->
+            {% if company_profile %}
+            <div class="mt-4 p-4 rounded-xl" style="background: var(--md-sys-color-primary-container);">
+                <p class="title-medium mb-1" style="color: var(--md-sys-color-on-primary-container);">
+                    🏗️ Company Profile
+                </p>
+                <p class="body-medium leading-relaxed" style="color: var(--md-sys-color-on-primary-container);">{{ company_profile }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Section 3: Meeting Objectives -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">🎯</span>
+                Meeting Objectives
+            </h2>
+
+            <!-- Success Definition & Strategic Alignment -->
+            <div class="grid grid-cols-2 gap-3 mt-3">
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-success-container);">
+                    <p class="label-large" style="color: var(--md-sys-color-success);">✅ Success Definition</p>
+                    <p class="body-medium mt-1 leading-relaxed">{{ success_definition }}</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <p class="label-large">🧭 Strategic Alignment</p>
+                    <p class="body-medium mt-1 leading-relaxed">{{ strategic_alignment }}</p>
+                </div>
+            </div>
+
+            <!-- Per-Objective Cards -->
+            <div class="space-y-3 mt-4">
+                {% for obj in objectives %}
+                <div class="p-4 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <p class="title-medium mb-2" style="color: var(--md-sys-color-on-surface);">
+                        <span class="pill-badge" style="background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);">Objective {{ loop.index }}</span>
+                        {{ obj.objective }}
+                    </p>
+                    <div class="mt-2 space-y-2">
+                        <div>
+                            <p class="label-large">Context</p>
+                            <p class="body-medium mt-1 leading-relaxed">{{ obj.context }}</p>
+                        </div>
+                        <div>
+                            <p class="label-large">Talking Points</p>
+                            <p class="body-medium mt-1 leading-relaxed">{{ obj.talking_points }}</p>
+                        </div>
+                        <div>
+                            <p class="label-large">Asks</p>
+                            <ul class="mt-1 space-y-1">
+                                {% for ask in obj.asks %}
+                                <li class="body-medium flex items-start gap-2">
+                                    <span style="color: var(--md-sys-color-primary);">→</span>
+                                    {{ ask }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Anticipated Concerns -->
+            {% if anticipated_concerns %}
+            <div class="mt-4">
+                <p class="title-medium mb-2 flex items-center gap-2">
+                    <span class="section-icon">🧠</span>
+                    Anticipated Concerns (Acknowledge → Pivot → Elevate)
+                </p>
+                <div class="space-y-3">
+                    {% for concern in anticipated_concerns %}
+                    <div class="p-4 rounded-xl" style="background: var(--md-sys-color-warning-container);">
+                        <p class="title-medium mb-2" style="color: #5D4037;">{{ concern.concern }}</p>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.6);">
+                                <p class="label-large" style="color: #5D4037;">Acknowledge</p>
+                                <p class="body-medium mt-1">{{ concern.acknowledge }}</p>
+                            </div>
+                            <div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.6);">
+                                <p class="label-large" style="color: #5D4037;">Pivot</p>
+                                <p class="body-medium mt-1">{{ concern.pivot }}</p>
+                            </div>
+                            <div class="p-3 rounded-lg" style="background: rgba(255,255,255,0.6);">
+                                <p class="label-large" style="color: #5D4037;">Elevate</p>
+                                <p class="body-medium mt-1">{{ concern.elevate }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Landmines -->
+            {% if landmines %}
+            <div class="mt-4 p-4 rounded-xl" style="background: var(--md-sys-color-error-container);">
+                <p class="title-medium mb-2" style="color: var(--md-sys-color-error);">
+                    🚫 Landmines — Do Not Touch
+                </p>
+                <ul class="space-y-1">
+                    {% for mine in landmines %}
+                    <li class="body-medium flex items-start gap-2">
+                        <span style="color: var(--md-sys-color-error);">⛔</span>
+                        {{ mine }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Proposed Next Steps (tiered) -->
+            {% if proposed_next_steps %}
+            <div class="mt-4">
+                <p class="title-medium mb-2">📋 Proposed Next Steps</p>
+                <div class="space-y-2">
+                    <div class="p-3 rounded-xl flex items-start gap-3" style="background: var(--md-sys-color-surface-container);">
+                        <span class="pill-badge shrink-0" style="background: #C8E6C9; color: #1B5E20; min-width: 70px; justify-content: center; margin-top: 2px;">Ideal</span>
+                        <p class="body-medium flex-1">{{ proposed_next_steps.ideal }}</p>
+                    </div>
+                    <div class="p-3 rounded-xl flex items-start gap-3" style="background: var(--md-sys-color-surface-container);">
+                        <span class="pill-badge shrink-0" style="background: #FFF9C4; color: #F57F17; min-width: 70px; justify-content: center; margin-top: 2px;">Acceptable</span>
+                        <p class="body-medium flex-1">{{ proposed_next_steps.acceptable }}</p>
+                    </div>
+                    <div class="p-3 rounded-xl flex items-start gap-3" style="background: var(--md-sys-color-surface-container);">
+                        <span class="pill-badge shrink-0" style="background: var(--md-sys-color-surface-container-highest); color: var(--md-sys-color-on-surface-variant); min-width: 70px; justify-content: center; margin-top: 2px;">Minimum</span>
+                        <p class="body-medium flex-1">{{ proposed_next_steps.minimum }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        {% if account_background %}
+        <!-- Section 4: AWS Account Background -->
+        <section class="md-card">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📊</span>
+                AWS Account Background
+            </h2>
+            <table class="eb-table mt-3">
+                <tbody>
+                    <tr>
+                        <td class="label-large" style="width: 110px;">Geo</td>
+                        <td class="title-medium">{{ account_background.geo }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Segment</td>
+                        <td class="title-medium">{{ account_background.segment }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Current Spend</td>
+                        <td class="title-medium" style="color: var(--md-sys-color-primary);">{{ account_background.current_spend }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Expected</td>
+                        <td class="title-medium" style="color: var(--md-sys-color-success);">{{ account_background.expected_spend }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">PPA Status</td>
+                        <td class="title-medium">{{ account_background.ppa_status }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-large">Summary</td>
+                        <td class="body-medium">{{ account_background.account_summary }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {% endif %}
+
+        {% if appendix %}
+        <!-- Section 5: Appendix -->
+        <section class="md-card-elevated">
+            <h2 class="section-title flex items-center gap-2">
+                <span class="section-icon">📁</span>
+                Appendix
+            </h2>
+            <div class="space-y-3 mt-3">
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <p class="title-medium mb-1">Previous Meeting Notes</p>
+                    <p class="body-medium leading-relaxed">{{ appendix.previous_meeting_notes }}</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <p class="title-medium mb-1">Customer Success Stories</p>
+                    <p class="body-medium leading-relaxed">{{ appendix.customer_success_stories }}</p>
+                </div>
+                <div class="p-3 rounded-xl" style="background: var(--md-sys-color-surface-container);">
+                    <p class="title-medium mb-1">Competitive Intelligence</p>
+                    <p class="body-medium leading-relaxed">{{ appendix.competitive_intelligence }}</p>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="text-center py-4">
+            <p class="body-medium" style="color: var(--md-sys-color-on-surface-variant);">
+                Generated by Dali · Last updated: {{ last_updated }}
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>
