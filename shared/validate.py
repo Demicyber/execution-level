@@ -1,0 +1,291 @@
+"""
+validate.py — Schema validation + auto-fix for structured markdown documents.
+
+Key behaviors:
+- Checks required sections per document type
+- Validates badge values against enums
+- Auto-inserts missing sections with [待补充] placeholder
+- Flags invalid badge values (renders as gray fallback)
+- Returns validation report with warnings
+"""
+
+import re
+from typing import Any
+
+from parse import get_doc_type, get_section_by_title
+
+
+# ===== Enum Definitions =====
+
+STANCE_VALUES = {"champion", "supporter", "neutral", "non-supporter", "unknown"}
+ROLE_VALUES = {
+    "decision-maker", "technical-evaluator", "influencer", "end-user",
+    "champion", "blocker", "sponsor", "economic-buyer"
+}
+PRIORITY_VALUES = {"high", "medium", "low", "must-meet", "important", "nice-to-have"}
+MILESTONE_STATUS_VALUES = {"done", "next", "planned"}
+CONFIDENCE_VALUES = {"high", "medium", "low"}
+OBJECTION_CATEGORY_VALUES = {"risk-trust", "capability", "authority", "price-value", "status-quo"}
+RESULT_VALUES = {"achieved", "partial", "not-achieved"}
+GAP_STATUS_VALUES = {"answered", "unanswered"}
+CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change"}
+ACTION_STATUS_VALUES = {"pending", "in-progress", "done"}
+
+ALL_BADGE_VALUES = (
+    STANCE_VALUES | ROLE_VALUES | PRIORITY_VALUES | MILESTONE_STATUS_VALUES |
+    CONFIDENCE_VALUES | OBJECTION_CATEGORY_VALUES | RESULT_VALUES |
+    GAP_STATUS_VALUES | CHANGE_TYPE_VALUES | ACTION_STATUS_VALUES
+)
+
+# ===== Required Sections Per Document Type =====
+
+REQUIRED_SECTIONS = {
+    "engagement-plan": [
+        "Opportunity Snapshot",
+        "Key Stakeholders",
+        "Engagement Roadmap",
+        "Next Milestone Detail",
+        "Estimate & Contingency",
+        "Execution Log",
+        "Change Log",
+    ],
+    "call-plan": [
+        "Target Meeting Outcomes",
+        "Success Criteria",
+        "Customer Attendees",
+        "AWS Team",
+        "Information Exchange",
+        "Potential Objections & Responses",
+        "Meeting Agenda",
+        "Potential Next Steps",
+    ],
+    "executive-briefing": [
+        "Meeting Logistics",
+        "Customer Attendee Background",
+        "Company Profile",
+        "Meeting Objectives",
+        "AWS Account Background",
+    ],
+    "post-meeting-report": [
+        "Outcome Assessment",
+        "Meeting Insights",
+        "What Changed",
+        "Next Steps",
+    ],
+}
+
+# Required frontmatter fields per type
+REQUIRED_FRONTMATTER = {
+    "engagement-plan": ["type", "customer", "opportunity", "stage", "source", "created", "version"],
+    "call-plan": ["type", "customer", "opportunity", "meeting_title", "date", "time", "format", "stage", "version"],
+    "executive-briefing": ["type", "customer", "opportunity", "meeting_title", "date", "time", "format", "classification", "requested_by", "version"],
+    "post-meeting-report": ["type", "customer", "opportunity", "meeting_title", "date", "recorded_by", "related_document", "version"],
+}
+
+
+def validate(doc: dict) -> dict:
+    """Validate a parsed document and auto-fix minor issues.
+    
+    Args:
+        doc: Parsed document dict from parse.py
+        
+    Returns:
+        {
+            "valid": bool,
+            "warnings": [str],
+            "errors": [str],
+            "auto_fixes": [str],   # descriptions of auto-fixes applied
+            "doc": dict,           # the (possibly modified) document
+        }
+    """
+    warnings = []
+    errors = []
+    auto_fixes = []
+    
+    frontmatter = doc.get("frontmatter", {})
+    sections = doc.get("sections", [])
+    doc_type = get_doc_type(frontmatter)
+    
+    # 1. Validate frontmatter
+    _validate_frontmatter(frontmatter, doc_type, warnings, errors)
+    
+    # 2. Check required sections and auto-fix missing ones
+    sections = _check_required_sections(sections, doc_type, warnings, auto_fixes)
+    doc["sections"] = sections
+    
+    # 3. Validate badge values
+    _validate_badges(sections, warnings)
+    
+    # 4. Type-specific validations
+    if doc_type == "engagement-plan":
+        _validate_ep(sections, warnings, errors)
+    elif doc_type == "call-plan":
+        _validate_cp(sections, warnings, errors)
+    elif doc_type == "executive-briefing":
+        _validate_eb(sections, frontmatter, warnings, errors)
+    elif doc_type == "post-meeting-report":
+        _validate_pmr(sections, warnings, errors)
+    
+    valid = len(errors) == 0
+    
+    return {
+        "valid": valid,
+        "warnings": warnings,
+        "errors": errors,
+        "auto_fixes": auto_fixes,
+        "doc": doc,
+    }
+
+
+def _validate_frontmatter(frontmatter: dict, doc_type: str, warnings: list, errors: list):
+    """Check required frontmatter fields."""
+    required = REQUIRED_FRONTMATTER.get(doc_type, [])
+    for field in required:
+        if field not in frontmatter or not frontmatter[field]:
+            if field == "type":
+                errors.append(f"Missing required frontmatter field: {field}")
+            else:
+                warnings.append(f"Missing frontmatter field: {field}")
+
+
+def _check_required_sections(sections: list, doc_type: str, warnings: list, auto_fixes: list) -> list:
+    """Check for required sections, auto-insert missing ones with placeholder."""
+    required = REQUIRED_SECTIONS.get(doc_type, [])
+    
+    existing_titles = set()
+    for s in sections:
+        existing_titles.add(s["title"].lower())
+        existing_titles.add(s["raw_title"].lower())
+    
+    for req_title in required:
+        found = False
+        for existing in existing_titles:
+            if req_title.lower() in existing:
+                found = True
+                break
+        
+        if not found:
+            # Auto-insert placeholder section
+            placeholder = {
+                "emoji": "📌",
+                "title": req_title,
+                "raw_title": f"📌 {req_title}",
+                "content": [{"type": "paragraph", "text": "[待补充]"}],
+            }
+            sections.append(placeholder)
+            auto_fixes.append(f"Auto-inserted missing section: {req_title}")
+            warnings.append(f"Section '{req_title}' was missing — placeholder added")
+    
+    return sections
+
+
+def _validate_badges(sections: list, warnings: list):
+    """Walk through all content blocks and validate badge-like values."""
+    for section in sections:
+        for block in section.get("content", []):
+            _validate_block_badges(block, warnings)
+
+
+def _validate_block_badges(block: dict, warnings: list):
+    """Validate badge values in a single content block."""
+    block_type = block.get("type", "")
+    
+    if block_type == "stakeholder_card":
+        stance = block.get("stance", "").lower().strip()
+        if stance and stance not in STANCE_VALUES:
+            warnings.append(f"Invalid stance value '{stance}' for {block.get('name', '?')}")
+            block["stance"] = stance  # Keep original, renderer shows as fallback
+        
+        role = block.get("role", "").lower().strip()
+        if role and role not in ROLE_VALUES:
+            warnings.append(f"Invalid role value '{role}' for {block.get('name', '?')}")
+        
+        priority = block.get("priority", "").lower().strip()
+        if priority and priority not in PRIORITY_VALUES:
+            warnings.append(f"Invalid priority value '{priority}' for {block.get('name', '?')}")
+    
+    elif block_type == "milestone":
+        status = block.get("status", "").lower().strip()
+        if status and status not in MILESTONE_STATUS_VALUES:
+            warnings.append(f"Invalid milestone status '{status}' for milestone {block.get('number', '?')}")
+    
+    elif block_type == "objection":
+        category = block.get("category", "").lower().strip()
+        if category and category not in OBJECTION_CATEGORY_VALUES:
+            warnings.append(f"Invalid objection category '{category}' for '{block.get('title', '?')}'")
+    
+    elif block_type == "subsection":
+        for sub_block in block.get("content", []):
+            _validate_block_badges(sub_block, warnings)
+
+
+def _validate_ep(sections: list, warnings: list, errors: list):
+    """Engagement Plan specific validations."""
+    # Check for at least 2 stakeholders
+    stakeholders_section = get_section_by_title(sections, "Key Stakeholders")
+    if stakeholders_section:
+        cards = [b for b in stakeholders_section["content"] if b.get("type") == "stakeholder_card"]
+        if len(cards) < 2:
+            warnings.append(f"EP should have at least 2 stakeholders (found {len(cards)})")
+    
+    # Check for exactly 1 "next" milestone
+    roadmap_section = get_section_by_title(sections, "Engagement Roadmap")
+    if roadmap_section:
+        milestones = [b for b in roadmap_section["content"] if b.get("type") == "milestone"]
+        next_count = sum(1 for m in milestones if m.get("status", "").lower() == "next")
+        if next_count != 1 and milestones:
+            warnings.append(f"EP Roadmap should have exactly 1 'next' milestone (found {next_count})")
+
+
+def _validate_cp(sections: list, warnings: list, errors: list):
+    """Call Plan specific validations."""
+    # Check for at least 1 attendee
+    attendees_section = get_section_by_title(sections, "Customer Attendees")
+    if attendees_section:
+        cards = [b for b in attendees_section["content"] if b.get("type") == "stakeholder_card"]
+        if len(cards) < 1:
+            warnings.append("CP should have at least 1 customer attendee")
+    
+    # Check success criteria has 3 tiers
+    criteria_section = get_section_by_title(sections, "Success Criteria")
+    if criteria_section:
+        tiers = [b for b in criteria_section["content"] if b.get("type") == "subsection"]
+        if len(tiers) < 3:
+            warnings.append(f"CP Success Criteria should have 3 tiers (found {len(tiers)})")
+
+
+def _validate_eb(sections: list, frontmatter: dict, warnings: list, errors: list):
+    """Executive Briefing specific validations."""
+    # Check classification field
+    if frontmatter.get("classification") != "INTERNAL USE ONLY — AWS Confidential":
+        warnings.append("EB classification should be 'INTERNAL USE ONLY — AWS Confidential'")
+    
+    # Check for at least 1 customer attendee
+    attendees_section = get_section_by_title(sections, "Customer Attendee Background")
+    if attendees_section:
+        persons = [b for b in attendees_section["content"] if b.get("type") == "eb_person"]
+        if len(persons) < 1:
+            warnings.append("EB should have at least 1 customer attendee background")
+
+
+def _validate_pmr(sections: list, warnings: list, errors: list):
+    """Post-Meeting Report specific validations."""
+    # Check outcome assessment has at least 1 row
+    outcome_section = get_section_by_title(sections, "Outcome Assessment")
+    if outcome_section:
+        tables = [b for b in outcome_section["content"] if b.get("type") == "table"]
+        if not tables:
+            warnings.append("PMR Outcome Assessment should have at least 1 outcome row")
+        elif tables and len(tables[0].get("rows", [])) < 1:
+            warnings.append("PMR Outcome Assessment table has no data rows")
+
+
+def normalize_badge_value(value: str) -> str:
+    """Normalize a badge value for CSS class generation.
+    
+    Returns the CSS-safe class suffix or 'fallback' if unrecognized.
+    """
+    v = value.lower().strip()
+    if v in ALL_BADGE_VALUES:
+        return v
+    return "fallback"

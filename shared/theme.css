@@ -1,0 +1,583 @@
+/* ===== Execution-Level Document Renderer — Design System CSS ===== */
+
+:root {
+  /* Primary */
+  --color-primary: #6D28D9;
+  --color-primary-light: #EDE9FE;
+  --color-primary-dark: #4C1D95;
+
+  /* Semantic — Stance */
+  --color-champion: #059669;
+  --color-supporter: #059669;
+  --color-neutral: #D97706;
+  --color-non-supporter: #DC2626;
+  --color-unknown: #6B7280;
+
+  /* Semantic — Status */
+  --color-done: #059669;
+  --color-next: #6D28D9;
+  --color-planned: #9CA3AF;
+  --color-achieved: #059669;
+  --color-partial: #D97706;
+  --color-not-achieved: #DC2626;
+
+  /* Semantic — Priority */
+  --color-high: #DC2626;
+  --color-medium: #D97706;
+  --color-low: #059669;
+
+  /* Semantic — Objection Category */
+  --color-risk-trust: #DC2626;
+  --color-capability: #EA580C;
+  --color-authority: #D97706;
+  --color-price-value: #6D28D9;
+  --color-status-quo: #6B7280;
+
+  /* Neutral */
+  --color-bg: #FFFFFF;
+  --color-bg-page: #F9FAFB;
+  --color-border: #E5E7EB;
+  --color-text: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-muted: #9CA3AF;
+
+  /* Special */
+  --color-confidential: #DC2626;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+               "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text);
+  background: var(--color-bg-page);
+}
+
+.page {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 40px 48px;
+  background: var(--color-bg);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* ===== Document Header ===== */
+.doc-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.doc-type-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.doc-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.doc-subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.doc-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.meta-badge.date {
+  background: #F3F4F6;
+  color: var(--color-text-secondary);
+}
+
+/* ===== Section Card ===== */
+.section-card {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-primary-light);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.section-header .emoji {
+  font-size: 20px;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1.5px solid;
+  white-space: nowrap;
+}
+
+/* Stance */
+.badge-champion { color: var(--color-champion); border-color: var(--color-champion); background: #ECFDF5; }
+.badge-supporter { color: var(--color-supporter); border-color: var(--color-supporter); background: #ECFDF5; }
+.badge-neutral { color: var(--color-neutral); border-color: var(--color-neutral); background: #FFFBEB; }
+.badge-non-supporter { color: var(--color-non-supporter); border-color: var(--color-non-supporter); background: #FEF2F2; }
+.badge-unknown { color: var(--color-unknown); border-color: var(--color-unknown); background: #F9FAFB; }
+
+/* Role */
+.badge-decision-maker { color: #1F2937; background: #F3F4F6; border-color: #D1D5DB; }
+.badge-technical-evaluator { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: #C4B5FD; }
+.badge-influencer { color: #92400E; background: #FEF3C7; border-color: #FCD34D; }
+.badge-end-user { color: #6B7280; background: #F9FAFB; border-color: #E5E7EB; }
+.badge-sponsor { color: var(--color-primary); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-blocker { color: var(--color-non-supporter); background: #FEF2F2; border-color: var(--color-non-supporter); }
+.badge-champion-role { color: var(--color-champion); background: #ECFDF5; border-color: var(--color-champion); }
+.badge-economic-buyer { color: #92400E; background: #FEF3C7; border-color: #FCD34D; }
+
+/* Priority */
+.badge-high { color: #FFF; background: var(--color-high); border-color: var(--color-high); }
+.badge-medium { color: #FFF; background: var(--color-medium); border-color: var(--color-medium); }
+.badge-low { color: #FFF; background: var(--color-low); border-color: var(--color-low); }
+.badge-must-meet { color: #FFF; background: var(--color-high); border-color: var(--color-high); }
+.badge-important { color: #FFF; background: var(--color-medium); border-color: var(--color-medium); }
+.badge-nice-to-have { color: #FFF; background: var(--color-low); border-color: var(--color-low); }
+
+/* Result / Status */
+.badge-achieved { color: var(--color-achieved); border-color: var(--color-achieved); background: #ECFDF5; }
+.badge-partial { color: var(--color-partial); border-color: var(--color-partial); background: #FFFBEB; }
+.badge-not-achieved { color: var(--color-not-achieved); border-color: var(--color-not-achieved); background: #FEF2F2; }
+
+/* Milestone Status */
+.badge-done { color: #FFF; background: var(--color-done); border-color: var(--color-done); }
+.badge-next { color: #FFF; background: var(--color-next); border-color: var(--color-next); }
+.badge-planned { color: var(--color-text-secondary); background: #F9FAFB; border-color: var(--color-border); }
+
+/* Action Status */
+.badge-pending { color: var(--color-neutral); border-color: var(--color-neutral); background: #FFFBEB; }
+.badge-in-progress { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-light); }
+
+/* Gap Status */
+.badge-answered { color: var(--color-achieved); border-color: var(--color-achieved); background: #ECFDF5; }
+.badge-unanswered { color: var(--color-neutral); border-color: var(--color-neutral); background: #FFFBEB; }
+
+/* Change Type */
+.badge-update { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-light); }
+.badge-add { color: var(--color-achieved); border-color: var(--color-achieved); background: #ECFDF5; }
+.badge-remove { color: var(--color-not-achieved); border-color: var(--color-not-achieved); background: #FEF2F2; }
+.badge-no-change { color: var(--color-unknown); border-color: var(--color-unknown); background: #F9FAFB; }
+
+/* Fallback — unrecognized badge values */
+.badge-fallback { color: var(--color-unknown); border-color: var(--color-unknown); background: #F9FAFB; }
+
+/* ===== Provenance Labels ===== */
+.provenance {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.provenance-sales { color: #059669; background: #ECFDF5; }
+.provenance-web { color: #2563EB; background: #EFF6FF; }
+.provenance-ai { color: #6B7280; background: #F3F4F6; }
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+
+/* ===== Stakeholder Card ===== */
+.stakeholder-card {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.stakeholder-card .name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stakeholder-card .title {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.stakeholder-card .badges {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+}
+
+.stakeholder-card .field {
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.stakeholder-card .field-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.stakeholder-card .how-to-win {
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-primary);
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+/* ===== Roadmap Timeline ===== */
+.roadmap {
+  position: relative;
+  padding-left: 44px;
+  margin-top: 16px;
+}
+
+.roadmap::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--color-done), var(--color-primary), var(--color-border));
+  border-radius: 1px;
+}
+
+.milestone {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+}
+
+.milestone.active {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 1px var(--color-primary-light);
+}
+
+.milestone-marker {
+  position: absolute;
+  left: -37px;
+  top: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+}
+
+.milestone-marker.done { background: var(--color-done); }
+.milestone-marker.next { background: var(--color-next); box-shadow: 0 0 0 4px var(--color-primary-light); }
+.milestone-marker.planned { background: #F3F4F6; color: var(--color-text-secondary); border: 2px solid var(--color-border); }
+
+.milestone-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.milestone-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.milestone-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== Objection Card ===== */
+.objection-card {
+  border: 1px solid var(--color-border);
+  border-left: 4px solid;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.objection-card.risk-trust { border-left-color: var(--color-risk-trust); }
+.objection-card.capability { border-left-color: var(--color-capability); }
+.objection-card.authority { border-left-color: var(--color-authority); }
+.objection-card.price-value { border-left-color: var(--color-price-value); }
+.objection-card.status-quo { border-left-color: var(--color-status-quo); }
+
+.objection-card .objection-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.objection-card .objection-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.objection-card .category-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.category-badge.risk-trust { color: var(--color-risk-trust); background: #FEF2F2; }
+.category-badge.capability { color: var(--color-capability); background: #FFF7ED; }
+.category-badge.authority { color: var(--color-authority); background: #FFFBEB; }
+.category-badge.price-value { color: var(--color-price-value); background: var(--color-primary-light); }
+.category-badge.status-quo { color: var(--color-status-quo); background: #F3F4F6; }
+
+.objection-card .field {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.objection-card .response {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.objection-card .plan-b {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ===== Next Steps Multi-Path ===== */
+.path-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.path-header .path-icon {
+  font-size: 18px;
+}
+
+/* ===== Success Criteria Tiers ===== */
+.tier {
+  margin-bottom: 12px;
+}
+.tier-header {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tier ul {
+  padding-left: 20px;
+  font-size: 13px;
+}
+.tier ul li {
+  margin-bottom: 4px;
+}
+
+/* ===== Confidential Banner (EB) ===== */
+.confidential-banner {
+  background: var(--color-confidential);
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+/* ===== Section Divider ===== */
+.section-divider {
+  margin: 40px 0 24px;
+  padding: 12px 20px;
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+}
+
+/* ===== Highlight Box (Stage Progression, Fallback Outcome) ===== */
+.highlight-box {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #F5F3FF;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.highlight-box.success {
+  background: #ECFDF5;
+}
+
+/* ===== Bullet Lists ===== */
+.content-list {
+  padding-left: 20px;
+  font-size: 13px;
+}
+.content-list li {
+  margin-bottom: 6px;
+}
+
+/* ===== Sub-section Heading ===== */
+.sub-heading {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+/* ===== Paragraph ===== */
+.content-paragraph {
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+/* ===== Footer ===== */
+.doc-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.8;
+}
+
+/* ===== Print / PDF ===== */
+@page {
+  size: A4;
+  margin: 20mm 18mm 20mm 18mm;
+}
+
+@media print {
+  body { background: white; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    max-width: none;
+  }
+
+  .badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .badge-high, .badge-medium, .badge-low {
+    background: transparent !important;
+    color: inherit !important;
+    border: 1.5px solid currentColor !important;
+  }
+
+  /* Smart pagination */
+  h2, h3 {
+    break-after: avoid;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .stakeholder-card,
+  .objection-card,
+  .milestone {
+    break-inside: avoid;
+  }
+
+  table {
+    break-inside: avoid;
+  }
+
+  table.allow-break {
+    break-inside: auto;
+  }
+  table.allow-break thead {
+    display: table-header-group;
+  }
+
+  .section-header {
+    break-after: avoid;
+  }
+
+  .section-card {
+    break-inside: avoid;
+  }
+}

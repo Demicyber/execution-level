@@ -1,0 +1,13 @@
+<!-- roadmap.html — Timeline milestone component (EP) -->
+<!-- Variables: {status_class}, {marker_content}, {active_class}, {title}, {stakeholders}, {aws}, {timeline}, {badge} -->
+
+<div class="milestone{active_class}">
+  <div class="milestone-marker {status_class}">{marker_content}</div>
+  <div class="milestone-title">{title}</div>
+  <div class="milestone-meta">
+    <span>👤 {stakeholders}</span>
+    <span>🏢 {aws_resources}</span>
+    <span>📅 {timeline}</span>
+    <span class="badge badge-{status_class}" style="font-size:11px;">{badge_label}</span>
+  </div>
+</div>
