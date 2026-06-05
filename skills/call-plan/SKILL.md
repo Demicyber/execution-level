@@ -259,6 +259,83 @@ Before delivering, validate:
 
 ---
 
+## 10. Delivery & Quick Summary
+
+### 交付流程
+
+每次 Call Plan 生成后，按以下顺序交付：
+
+```
+Call Plan 生成完毕
+    ↓
+① Quick Summary（对话中直接发送，3-5 行）
+    ↓
+② 完整文档 PDF（必须每次输出）
+    ↓
+③ HTML 同时保存（中间产物，也存档）
+    ↓
+④ Word 按需（销售明确要求时生成）
+```
+
+### Quick Summary 格式
+
+```
+📋 Call Plan Ready: {Customer} × {Date}
+
+👤 对象：{Attendee1 (Role)} + {Attendee2 (Role)}
+🎯 目标：{核心会议目标，一句话}
+⚠️ 关键风险：{最需要注意的 1 个 objection 或 risk}
+💡 建议开场：{开场策略，一句话}
+
+📄 完整文档已生成 → [附件]
+```
+
 ---
 
-*Call Plan Skill | Version: 3.4*
+## 11. Document Output & Storage
+
+### File Naming Convention
+
+| Format | Naming |
+|--------|--------|
+| PDF | `CP_{Customer}_{Date}_{MilestoneBrief}.pdf` |
+| HTML | `CP_{Customer}_{Date}_{MilestoneBrief}.html` |
+| Word | `CP_{Customer}_{Date}_{MilestoneBrief}.docx` |
+
+Example: `CP_MinghuaHeavy_2026-05-15_Discovery-CTO.pdf`
+
+MilestoneBrief = condensed version of the EP Roadmap milestone description (2-4 English words, kebab-case). CP and its corresponding PMR use the same `{Date}_{MilestoneBrief}` suffix for easy pairing.
+
+### Storage Architecture
+
+**First-time setup:** On first interaction with a sales rep, ask for local storage path:
+> "Please tell me your preferred local file path (e.g., ~/Documents/AWS-Sales/)"
+
+**Constraint: Files are stored on the sales rep's local device, NOT on Feishu Doc or other cloud document platforms.**
+
+**Directory structure (organized by Customer → Opportunity):**
+
+```
+{sales_local_path}/
+├── {Customer}/
+│   ├── {Opportunity}/
+│   │   ├── EP_{Customer}_{Opportunity}.pdf
+│   │   ├── CP_{Customer}_{Date}_{MilestoneBrief}.pdf   ← Call Plan
+│   │   ├── PMR_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   └── ...
+│   └── _account/              ← Account-level shared materials (cross-Opp)
+│       ├── org-chart.md
+│       └── contacts/
+```
+
+**Key rules:**
+- Call Plan is stored in the corresponding Opportunity folder (same level as EP)
+- Each meeting produces a new CP file (not a living document)
+- Agent locates current Opp via EP → Roadmap → Next Milestone
+- Multi-Opp routing: 1 active opp → auto-associate; multiple → ask sales to confirm
+
+See engagement-plan SKILL.md for the canonical directory structure specification.
+
+---
+
+*Call Plan Skill | Version: 3.5*

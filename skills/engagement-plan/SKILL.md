@@ -280,8 +280,115 @@ EP does NOT determine whether an opportunity should advance to the next sales st
 
 ---
 
+## 5. Delivery & Quick Summary
 
+### 交付流程
 
+每次 EP 生成或更新后，按以下顺序交付：
 
+```
+EP 生成/更新完毕
+    ↓
+① Quick Summary（对话中直接发送，3-5 行）
+    ↓
+② 完整文档 PDF（必须每次输出）
+    ↓
+③ HTML 同时保存（中间产物，也存档）
+    ↓
+④ Word 按需（销售明确要求时生成）
+```
 
+### Quick Summary 格式
 
+**首次生成时：**
+
+```
+📋 Engagement Plan Ready: {Customer} × {Opportunity}
+
+📊 阶段：{Stage}
+👥 关键人：{Stakeholder1 (Role)} + {Stakeholder2 (Role)} + ...共{N}人
+🎯 Win Strategy：{一句话}
+⏭️ Next Milestone：{Milestone描述} — 目标 {Date}
+📅 预估时间线：{Close Date / 总周期}
+
+📄 完整文档已生成 → [附件]
+```
+
+**更新时（PMR 回流 / CP-EB sync / 销售手动修改后）：**
+
+```
+🔄 EP Updated: {Customer} × {Opportunity}
+
+变更摘要：
+• {变更1，如：张三态度 neutral → supportive}
+• {变更2，如：Roadmap Milestone 2 标记 Done}
+• {变更3，如：新增 stakeholder 李四 (CFO)}
+⏭️ Next：{下一步行动}
+
+📄 更新后文档 → [附件]
+```
+
+---
+
+## 6. Document Output & Storage
+
+### File Naming Convention
+
+| Format | Naming |
+|--------|--------|
+| PDF | `EP_{Customer}_{Opportunity}.pdf` |
+| HTML | `EP_{Customer}_{Opportunity}.html` |
+| Word | `EP_{Customer}_{Opportunity}.docx` |
+
+Example: `EP_MinghuaHeavy_AI-Quality-Inspection.pdf`
+
+### Storage Architecture
+
+**首次配置：** Agent 首次与销售互动时，询问本地存储路径：
+> "请告诉我你希望文件存放的本地路径（如 ~/Documents/AWS-Sales/）"
+
+**约束：文件存储在销售本地设备，不存放在 Feishu Doc 或其他云文档平台。**
+
+**目录结构（以 Customer → Opportunity 为核心）：**
+
+```
+{sales_local_path}/
+├── {Customer}/
+│   ├── {Opportunity}/
+│   │   ├── EP_{Customer}_{Opportunity}.pdf
+│   │   ├── EP_{Customer}_{Opportunity}.html
+│   │   ├── CP_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   ├── PMR_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   ├── EB_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   └── ...
+│   ├── {Opportunity-2}/
+│   │   └── ...
+│   └── _account/                  ← 客户级共享资料（跨 Opp）
+│       ├── org-chart.md
+│       ├── account-info.md
+│       └── contacts/
+│           ├── {name}-{title}.md  ← Contact Profile
+│           └── ...
+├── {Customer-2}/
+│   └── ...
+```
+
+**层级逻辑：**
+
+| 层级 | 组织依据 | 理由 |
+|------|---------|------|
+| L1: Customer | 客户名 | 比 Sales Rep 更稳定，换 AM 不需要搬文件 |
+| L2: Opportunity | 商机名 | EP 为核心，所有衍生文档归属同一 Opp |
+| L3: Documents | 类型+日期+描述 | 时间线清晰，CP/PMR 一眼配对 |
+
+**关键规则：**
+- `_account/` 存放跨商机共享资料（Contact Profile、Org Chart）— Agent 新建 EP 时先扫这里复用已有信息
+- CP 和 PMR 使用相同的 `{Date}_{MilestoneBrief}` 后缀，方便配对（会前计划 ↔ 会后报告）
+- MilestoneBrief 取自 EP Roadmap milestone 描述精简版（2-4个英文单词，kebab-case）
+- EP 是 living document，原地更新；CP/EB/PMR 每次会议一个新文件
+- 商机关闭后文件夹保留（历史参考），EP 标记状态为 Closed
+
+**多 Opp 定位逻辑（Agent 内部）：**
+- 该客户只有 1 个 active opp → 自动关联
+- 多个 active opp → 问销售确认是哪个商机
+- EP Roadmap 中有 milestone 的 target_date 匹配 → 自动匹配该 opp

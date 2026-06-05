@@ -175,3 +175,80 @@ Cover in one focused paragraph:
 ---
 
 
+
+## 6. Delivery & Quick Summary
+
+### 交付流程
+
+每次 Executive Briefing 生成后，按以下顺序交付：
+
+```
+EB 生成完毕
+    ↓
+① Quick Summary（对话中直接发送，3-5 行）
+    ↓
+② 完整文档 PDF（必须每次输出）
+    ↓
+③ HTML 同时保存（中间产物，也存档）
+    ↓
+④ Word 按需（销售明确要求时生成）
+```
+
+### Quick Summary 格式
+
+```
+📋 Executive Briefing Ready: {Customer} × {Date}
+
+📅 会议：{Date} {Format} {Location}
+👤 客户方：{CustomerExec1 (Role)} + {CustomerExec2 (Role)}
+🏢 AWS 方：{AWSExec (Role)} + {SA/AM}
+🎯 核心 Ask：{最重要的一个 ask，一句话}
+⚠️ Landmine：{最需要注意的 sensitivity}
+
+📄 完整文档已生成 → [附件]
+```
+
+---
+
+## 7. Document Output & Storage
+
+### File Naming Convention
+
+| Format | Naming |
+|--------|--------|
+| PDF | `EB_{Customer}_{Date}_{MilestoneBrief}.pdf` |
+| HTML | `EB_{Customer}_{Date}_{MilestoneBrief}.html` |
+| Word | `EB_{Customer}_{Date}_{MilestoneBrief}.docx` |
+
+Example: `EB_MinghuaHeavy_2026-06-10_EBC-VP-Visit.pdf`
+
+MilestoneBrief = EP Roadmap milestone 描述精简版（2-4个英文单词，kebab-case）。EB 和对应 PMR 使用相同的 `{Date}_{MilestoneBrief}` 后缀，方便配对。
+
+### Storage Architecture
+
+**首次配置：** Agent 首次与销售互动时，询问本地存储路径。
+
+**约束：文件存储在销售本地设备，不存放在 Feishu Doc 或其他云文档平台。**
+
+**目录结构（以 Customer → Opportunity 为核心）：**
+
+```
+{sales_local_path}/
+├── {Customer}/
+│   ├── {Opportunity}/
+│   │   ├── EP_{Customer}_{Opportunity}.pdf
+│   │   ├── EB_{Customer}_{Date}_{MilestoneBrief}.pdf   ← Executive Briefing
+│   │   ├── PMR_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   └── ...
+│   └── _account/              ← 客户级共享资料（跨 Opp）
+│       ├── org-chart.md
+│       └── contacts/
+```
+
+**关键规则：**
+- EB 存放在对应 Opportunity 文件夹下（跟 EP 同级）
+- 每次 EBC/高管拜访产生一个新 EB 文件（不是 living document）
+- Agent 通过 EP → Roadmap → Next Milestone 定位当前 Opp
+- 多 Opp 定位：1个 active opp → 自动关联；多个 → 问销售确认
+
+详细目录结构规范见 engagement-plan SKILL.md（主定义文档）。

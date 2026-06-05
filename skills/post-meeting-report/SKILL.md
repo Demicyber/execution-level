@@ -185,3 +185,80 @@ Sales reviews and edits before sending same day. Customer-facing content only.
 ---
 
 
+
+## 7. Delivery & Document Output
+
+### 交付流程
+
+每次 PMR 生成后，按以下顺序交付：
+
+```
+PMR 生成完毕
+    ↓
+① Quick Summary（对话中直接发送 — 见 §1 Output Sequence）
+    ↓
+② 完整文档 PDF（必须每次输出）
+    ↓
+③ HTML 同时保存（中间产物，也存档）
+    ↓
+④ Word 按需（销售明确要求时生成）
+```
+
+### Quick Summary 格式
+
+```
+📋 PMR Ready: {Customer} × {Date}
+
+✅ Action Items:
+• {Action1} — {Owner} by {Deadline}
+• {Action2} — {Owner} by {Deadline}
+
+💡 Key Findings:
+• {Finding1}
+• {Finding2}
+• {Finding3}
+
+📄 完整文档已生成 → [附件]
+```
+
+### File Naming Convention
+
+| Format | Naming |
+|--------|--------|
+| PDF | `PMR_{Customer}_{Date}_{MilestoneBrief}.pdf` |
+| HTML | `PMR_{Customer}_{Date}_{MilestoneBrief}.html` |
+| Word | `PMR_{Customer}_{Date}_{MilestoneBrief}.docx` |
+
+Example: `PMR_MinghuaHeavy_2026-05-15_Discovery-CTO.pdf`
+
+MilestoneBrief = Condensed EP Roadmap milestone description (2-4 English words, kebab-case). PMR and its corresponding CP/EB share the same `{Date}_{MilestoneBrief}` suffix for easy pairing (pre-meeting plan ↔ post-meeting report).
+
+### Storage Architecture
+
+**First-time setup:** On first interaction with sales, ask for the local storage path.
+
+**Constraint: Files are stored on the sales rep's local device, NOT in Feishu Docs or other cloud document platforms.**
+
+**Directory structure (Customer → Opportunity as the core):**
+
+```
+{sales_local_path}/
+├── {Customer}/
+│   ├── {Opportunity}/
+│   │   ├── EP_{Customer}_{Opportunity}.pdf
+│   │   ├── CP_{Customer}_{Date}_{MilestoneBrief}.pdf
+│   │   ├── PMR_{Customer}_{Date}_{MilestoneBrief}.pdf  ← PMR
+│   │   └── ...
+│   └── _account/              ← 客户级共享资料（跨 Opp）
+│       ├── org-chart.md
+│       └── contacts/
+```
+
+**Key rules:**
+- PMR is stored in the corresponding Opportunity folder (same level as EP and CP)
+- Each meeting produces a new PMR file (not a living document)
+- Agent locates the Opp directory via the associated CP/EB file
+- After generating, PMR auto-updates the EP in the same directory (Execution Log + Roadmap + Stakeholder stance)
+- Multi-Opp resolution: 1 active opp → auto-associate; multiple → ask sales to confirm
+
+See engagement-plan SKILL.md for the full directory structure specification (authoritative source).
