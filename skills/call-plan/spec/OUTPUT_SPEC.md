@@ -3,6 +3,19 @@
 > This defines the exact Markdown format the LLM must output for Call Plan documents.
 > The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
+## ⚠️ MANDATORY COMPLIANCE
+
+**This spec is the ONLY accepted output format. The agent MUST follow it exactly:**
+- All 7 sections MUST appear in exact order: 1. Meeting Details → 2. Target Meeting Outcomes → 3. Success Criteria → 4. Information Exchange → 5. Potential Objections & Responses → 6. Meeting Agenda → 7. Potential Next Steps
+- Section headers MUST use `## N. {Title}` format (numbered)
+- Attendee Insights MUST be a subsection under Meeting Details with `**Name** — Title` format per person
+- Success Criteria MUST use dual-perspective table (Customer + Seller columns) with Disqualification Signals inline
+- Information Exchange MUST have both "Information to Gather" and "Information to Deliver" subsections
+- Objections table MUST include Fallback and Disqualifier? columns
+- Next Steps MUST have all three paths (primary, fallback, graceful exit)
+- Do NOT skip sections, reorder them, or use alternative formats
+- Violation of this spec will result in rendering failures. No exceptions.
+
 ---
 
 ## Frontmatter (YAML, required)

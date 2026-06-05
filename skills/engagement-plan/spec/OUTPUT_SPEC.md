@@ -3,6 +3,19 @@
 > This defines the exact Markdown format the LLM must output for Engagement Plan documents.
 > The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
+## ⚠️ MANDATORY COMPLIANCE
+
+**This spec is the ONLY accepted output format. The agent MUST follow it exactly:**
+- Every section listed below MUST appear in the output, in the exact order specified
+- Section headers MUST match character-for-character (including emoji and numbering)
+- Field names within stakeholder cards, milestone tables, etc. MUST use the exact names shown
+- Do NOT invent new sections, skip sections, reorder sections, or rename fields
+- Do NOT use alternative field names or legacy formats — only what is documented here
+- The Engagement Progress bar MUST appear inside the Opportunity Snapshot section (after Win Strategy)
+- The Engagement Roadmap MUST use TABLE format (not bullet-field milestones)
+- Stakeholder fields MUST use the 7 exact field names specified (Engagement Priority, Role in This Deal, Current Stance, What They Care About, Profiling, What We Need From Them, How to Win Them)
+- Violation of this spec will result in rendering failures. No exceptions.
+
 ---
 
 ## Frontmatter (YAML, required)

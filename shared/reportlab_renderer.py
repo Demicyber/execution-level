@@ -45,9 +45,9 @@ class C:
     BG_SUBTLE = colors.HexColor("#F9FAFB")
     BORDER = colors.HexColor("#E5E7EB")
     BORDER_LIGHT = colors.HexColor("#F3F4F6")
-    TEXT = colors.HexColor("#1F2937")
-    TEXT_SEC = colors.HexColor("#6B7280")
-    TEXT_MUTED = colors.HexColor("#9CA3AF")
+    TEXT = colors.HexColor("#111827")
+    TEXT_SEC = colors.HexColor("#374151")
+    TEXT_MUTED = colors.HexColor("#6B7280")
 
     CHAMPION = colors.HexColor("#059669")
     SUPPORTER = colors.HexColor("#059669")
@@ -72,10 +72,12 @@ class C:
 
 # Badge color mapping
 BADGE_COLORS = {
+    "sponsor": (C.CHAMPION, colors.HexColor("#ECFDF5")),
     "champion": (C.CHAMPION, colors.HexColor("#ECFDF5")),
     "supporter": (C.SUPPORTER, colors.HexColor("#ECFDF5")),
     "neutral": (C.NEUTRAL, colors.HexColor("#FFFBEB")),
     "non-supporter": (C.NON_SUPPORTER, colors.HexColor("#FEF2F2")),
+    "adversary": (C.NON_SUPPORTER, colors.HexColor("#FEF2F2")),
     "unknown": (C.UNKNOWN, C.BG_SUBTLE),
     "decision-maker": (C.PRIMARY_DARK, C.PRIMARY_LIGHT),
     "technical-evaluator": (C.PRIMARY, C.PRIMARY_LIGHT),
@@ -101,10 +103,13 @@ BADGE_COLORS = {
 
 CATEGORY_COLORS = {
     "risk-trust": C.RISK_TRUST,
+    "risk/trust": C.RISK_TRUST,
     "capability": C.CAPABILITY,
     "authority": C.AUTHORITY,
     "price-value": C.PRICE_VALUE,
+    "price/competition": C.PRICE_VALUE,
     "status-quo": C.STATUS_QUO,
+    "status quo": C.STATUS_QUO,
 }
 
 DOC_TYPE_LABELS = {
@@ -208,21 +213,19 @@ def render_pdf(doc: dict, output_path: str) -> str:
     story.extend(_build_header(frontmatter, doc_type))
 
 
-    # Engagement Progress bar for EP (placed after header, before sections)
+    # Collect milestones for EP progress bar (rendered inside Opportunity Snapshot)
+    ep_milestones = []
     if doc_type == "engagement-plan":
-        all_milestones = []
         for section in sections:
             for block in section.get("content", []):
                 if block.get("type") == "milestone":
-                    all_milestones.append(block)
-        if all_milestones:
-            story.append(Spacer(1, 2 * mm))
-            story.append(_ProgressBar(all_milestones))
-            story.append(Spacer(1, 3 * mm))
+                    ep_milestones.append(block)
+            if not ep_milestones and _is_roadmap_section(section.get("title", "")):
+                ep_milestones = _extract_milestones_from_table(section.get("content", []))
 
     # Sections
     for i, section in enumerate(sections, 1):
-        section_flowables = _build_section(section, doc_type, i)
+        section_flowables = _build_section(section, doc_type, i, ep_milestones=ep_milestones)
         story.extend(section_flowables)
 
     # Footer spacer
@@ -357,7 +360,7 @@ def _build_header(frontmatter: dict, doc_type: str) -> list:
 
 
 # ===== Section Builder =====
-def _build_section(section: dict, doc_type: str, num: int) -> list:
+def _build_section(section: dict, doc_type: str, num: int, ep_milestones: list = None) -> list:
     """Build flowables for one section."""
     title = section.get("title", "")
     content_blocks = section.get("content", [])
@@ -396,6 +399,11 @@ def _build_section(section: dict, doc_type: str, num: int) -> list:
             block_elements = _build_block(block, doc_type)
             elements.extend(block_elements)
 
+    # Engagement Progress bar goes at end of Opportunity Snapshot section
+    if ep_milestones and _is_snapshot_section(title):
+        elements.append(Spacer(1, 2 * mm))
+        elements.append(_ProgressBar(ep_milestones))
+
     elements.append(Spacer(1, 2 * mm))
     return elements
 
@@ -404,6 +412,12 @@ def _is_roadmap_section(title: str) -> bool:
     """Detect if a section title is the engagement roadmap."""
     t = title.lower()
     return "roadmap" in t or "engagement roadmap" in t
+
+
+def _is_snapshot_section(title: str) -> bool:
+    """Detect if a section title is the Opportunity Snapshot."""
+    t = title.lower()
+    return "opportunity snapshot" in t or "snapshot" in t
 
 
 def _extract_milestones_from_table(content_blocks: list) -> list:

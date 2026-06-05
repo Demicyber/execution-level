@@ -3,6 +3,19 @@
 > This defines the exact Markdown format the LLM must output for Executive Briefing documents.
 > The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
+## ⚠️ MANDATORY COMPLIANCE
+
+**This spec is the ONLY accepted output format. The agent MUST follow it exactly:**
+- All 5 sections MUST appear in exact order: 1. Meeting Logistics → 2. Customer Attendee Background → 3. Meeting Objectives → 4. AWS Account Background → 5. Appendix (optional)
+- Section headers MUST use `## N. {Title}` format (numbered)
+- Customer Attendee Background MUST use `**bold label:** value` paragraph format (NOT bullet fields) with `{stance:value}` badge at end of "Attitude Toward AWS" paragraph
+- Company Profile MUST be a `### Company Profile` subsection inside Section 2
+- Meeting Objectives MUST contain ALL of: Success Definition, Strategic Alignment, Objective(s) with table format, Anticipated Concerns, and Proposed Next Steps — all within ONE section
+- Each Objective MUST use the 4-row table format: Objective/Outcome, Context, Talking Points, Asks
+- Do NOT split Meeting Objectives into multiple top-level sections
+- Do NOT use bullet-field format for person backgrounds — use `**Label:** paragraph` format
+- Violation of this spec will result in rendering failures. No exceptions.
+
 ---
 
 ## Frontmatter (YAML, required)

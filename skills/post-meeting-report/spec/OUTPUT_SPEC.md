@@ -3,6 +3,19 @@
 > This defines the exact Markdown format the LLM must output for PMR documents.
 > The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
+## ⚠️ MANDATORY COMPLIANCE
+
+**This spec is the ONLY accepted output format. The agent MUST follow it exactly:**
+- All 5 sections MUST appear in exact order: 1. Outcome Assessment → 2. Meeting Insights → 3. What Changed — EP Update → 4. Next Steps — Planned vs Actual → 5. Customer Recap Email
+- Section headers MUST use `## N. {Title}` format (numbered)
+- Section 5 (Customer Recap Email) is REQUIRED — agent must prompt user "Would you like me to draft a customer recap email?" and include the section either with the draft or with the prompt text
+- Meeting Insights MUST contain all three subsections: Customer Sentiment, Key Findings, Information Gap Check
+- What Changed MUST contain: EP Update table + Execution Log Update + Agent Recommendation
+- Next Steps MUST contain: Comparison table + Action Items table
+- Customer Recap Email MUST contain: Subject line, email body, and "Excluded from email" list
+- Do NOT skip the email section — it is the final handoff deliverable of every PMR
+- Violation of this spec will result in rendering failures. No exceptions.
+
 ---
 
 ## Frontmatter (YAML, required)
