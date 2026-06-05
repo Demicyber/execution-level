@@ -384,11 +384,12 @@ def _build_section(section: dict, doc_type: str, num: int) -> list:
 
     # Check if this is the Engagement Roadmap section (contains milestones)
     milestones = [b for b in content_blocks if b.get("type") == "milestone"]
+    if not milestones and _is_roadmap_section(title):
+        milestones = _extract_milestones_from_table(content_blocks)
     if milestones and _is_roadmap_section(title):
         elements.extend(_build_roadmap_visual(milestones))
-        # Render non-milestone content normally
         for block in content_blocks:
-            if block.get("type") != "milestone":
+            if block.get("type") not in ("milestone", "table"):
                 elements.extend(_build_block(block, doc_type))
     else:
         for block in content_blocks:
@@ -403,6 +404,41 @@ def _is_roadmap_section(title: str) -> bool:
     """Detect if a section title is the engagement roadmap."""
     t = title.lower()
     return "roadmap" in t or "engagement roadmap" in t
+
+
+def _extract_milestones_from_table(content_blocks: list) -> list:
+    """Convert roadmap table rows into milestone dicts for the visual renderer.
+
+    Table columns: #, Milestone, Key Stakeholders, AWS Team, Status
+    """
+    milestones = []
+    for block in content_blocks:
+        if block.get("type") != "table":
+            continue
+        headers = [h.lower().strip() for h in block.get("headers", [])]
+        if not any("milestone" in h for h in headers):
+            continue
+        for row in block.get("rows", []):
+            row_dict = dict(zip(headers, row))
+            number_str = row_dict.get("#", "0")
+            try:
+                number = int(re.sub(r'\D', '', str(number_str)) or "0")
+            except ValueError:
+                number = 0
+            status_raw = row_dict.get("status", "planned").lower().strip()
+            status_raw = re.sub(r'[*↓]', '', status_raw).strip()
+            milestones.append({
+                "type": "milestone",
+                "number": number,
+                "title": row_dict.get("milestone", ""),
+                "status": status_raw,
+                "stakeholders": row_dict.get("key stakeholders", ""),
+                "aws_resources": row_dict.get("aws team", ""),
+                "timeline": "",
+                "exit_criteria": "",
+                "fields": {},
+            })
+    return milestones
 
 
 class _NumberCircle(Flowable):

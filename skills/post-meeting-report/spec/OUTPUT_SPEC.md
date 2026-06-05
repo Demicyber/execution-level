@@ -27,150 +27,154 @@ version: "2026-03-20"
 
 ## Section Structure (fixed order, fixed headers)
 
-PMR has 4 core sections + 1 handoff (Email):
+PMR has 5 sections:
+1. Outcome Assessment
+2. Meeting Insights (Customer Sentiment + Key Findings + Information Gap Check)
+3. What Changed — EP Update (EP Update table + Execution Log Entry + Agent Recommendation)
+4. Next Steps — Planned vs Actual (Comparison + Action Items)
+5. Customer Recap Email (Handoff)
+
+### Rules:
+1. Section headers MUST use `## N. {Title}` format matching template
+2. Sub-sections use `###`
+3. Result/Stance/Status values written directly as field values (renderer maps to badge colors)
+4. Tables use standard Markdown table syntax
+5. All 5 sections REQUIRED (Section 5 may be a prompt to user)
 
 ---
 
-## 📊 Outcome Assessment
+## 1. Outcome Assessment
 
 ```markdown
-## 📊 Outcome Assessment
+## 1. Outcome Assessment
 
 | # | Target Meeting Outcome | Result | Evidence & Notes |
 |---|----------------------|--------|-----------------|
-| 1 | {outcome from CP/EB} | {achieved|partial|not-achieved} | {what happened, specifics} |
-| 2 | {outcome 2} | {achieved|partial|not-achieved} | {evidence} |
+| 1 | {auto-pulled from CP/EB} | ✅ / ⚠️ / ❌ | {specific customer words/actions as evidence} |
+| 2 | {outcome 2} | ✅ / ⚠️ / ❌ | {evidence} |
 
-**Fallback Outcome:** {was fallback needed? what happened}
+**Fallback Outcome Assessment:** {was fallback needed? what happened?}
 
-**📈 Stage Progression:** {Previous Stage} → {New Stage} {achieved|partial|not-achieved}
+**Stage Progression:** ( {current} ) → ( {target} ) — ✅ Achieved / ❌ Not achieved — {reason}
 ```
 
 **Constraints:**
 - Outcomes auto-pulled from related CP (Section 2) or EB (Section 3)
-- Result is an enum: `achieved`, `partial`, `not-achieved`
-- Evidence must be specific (not "went well")
+- Result symbols: ✅ Achieved, ⚠️ Partial, ❌ Not achieved
+- Evidence must be specific customer actions/words (not "went well")
 - Stage Progression: always present, even if "no change"
+- Fallback Outcome Assessment: always present
 
 ---
 
-## 🔍 Meeting Insights
+## 2. Meeting Insights
 
 ```markdown
-## 🔍 Meeting Insights
+## 2. Meeting Insights
 
-### 👥 Customer Sentiment Changes
+### Customer Sentiment
 
-| Attendee | Before | → | After | Evidence |
-|----------|--------|---|-------|----------|
-| {name} ({title}) | {stance before} | → | {stance after} | {what caused the change} |
-| {name2} | {before} | → | {after} | {evidence} |
+| Attendee | Stance Before | Stance After | Evidence |
+|----------|--------------|--------------|----------|
+| {name} | {stance before} | {stance after} | {specific words/actions showing shift} |
+| {name2} | {before} | {after} | {evidence} |
 
-### 💡 Key Findings
+### Key Findings
 
-| # | Finding | Source | Implication |
-|---|---------|--------|-------------|
-| 1 | {what we learned} | {who said it / observed behavior} | {what it means for the deal} |
-| 2 | {finding 2} | {source} | {implication} |
-| 3 | {finding 3} | {source} | {implication} |
+| # | Finding | Source | Implication for Strategy |
+|---|---------|--------|------------------------|
+| 1 | {new information discovered} | {who said it / observed behavior} | {what it means + which EP section to update} |
+| 2 | {finding} | {source} | {implication} |
+| 3 | {finding} | {source} | {implication} |
 
-### ❓ Information Gap Check
+### Information Gap Check
 
-| Question (from Call Plan) | Status | Answer / Notes |
-|--------------------------|--------|----------------|
-| {question we planned to ask} | {answered|unanswered} | {what we got, or why unanswered} |
-| {question 2} | {answered|unanswered} | {notes} |
+| # | Question (from Call Plan) | Status | Answer / Notes |
+|---|--------------------------|--------|----------------|
+| 1 | {auto-pulled from CP Section 4} | ✅ Answered / ❌ Still a gap | {answer or plan to get it} |
+| 2 | {question} | ✅ / ❌ | {notes} |
 ```
 
 **Constraints:**
-- Sentiment Changes: one row per attendee present in meeting
-- Before/After use stance enum values
-- Key Findings: 2-5 items, each with source and implication
-- Gap Check: pulled from CP's Questions to Ask section
-- Status is enum: `answered`, `unanswered`
+- Customer Sentiment: one row per attendee present in meeting
+- Before/After use Holden stance values (sponsor/supporter/neutral/non-supporter/adversary)
+- Key Findings: 2-5 items, only information that changes strategy (not meeting minutes)
+- Gap Check: auto-pulled from CP's Information to Gather section
+- Status: ✅ Answered or ❌ Still a gap
 
 ---
 
-## 📝 What Changed — EP Update
+## 3. What Changed — EP Update
 
 ```markdown
-## 📝 What Changed — EP Update
+## 3. What Changed — EP Update
 
-| EP Section | Change Type | What to Write |
-|-----------|-------------|---------------|
-| Key Stakeholders | {update|add|remove} | {specific change description} |
-| Engagement Roadmap | {update|add} | {milestone status change, new milestone} |
-| Win Strategy | {update|no-change} | {what changed and why} |
-| Estimate & Contingency | {update|add|no-change} | {timeline/risk changes} |
-| Competitive | {update|no-change} | {new competitive intel} |
+| # | EP Section to Update | Change Type | What to Write |
+|---|---------------------|-------------|---------------|
+| 1 | {Key Stakeholders / Win Strategy / Roadmap / etc.} | {Update / Add / Remove / Confirm} | {specific change description} |
+| 2 | {section} | {type} | {description} |
+| 3 | {section} | {type} | {description} |
 
-### 📋 Execution Log Entry
+**Execution Log Update:** {milestone status → Done/Partial/Repeat, reason}
 
-**Engagement #{N} — {date}**
-- **Attendees:** {list}
-- **Planned:** {from CP}
-- **Actual:** {what happened}
-- **👥 People Updates:** {stance changes}
-- **💡 Key Learnings:** {insights}
-- **🔄 Plan Adjustment:** {what changes}
+### Agent Recommendation
 
-### 🤖 Agent Recommendation
-
-{2-4 sentences: agent's assessment + recommended next actions + referrals to other skills}
-
-**Referrals:**
-- {signal} → `{skill-name}`: "{recommendation sentence}"
-- {signal 2} → `{skill-name}`: "{sentence}"
+> {2-4 sentences: assessment + recommended next actions + stage-relevant evidence + referrals to other skills}
+>
+> ⚠️ If stage-relevant evidence emerged, recommend invoking `opportunity-progression` for evaluation.
 ```
 
 **Constraints:**
-- EP Update table: all 5 rows present (use `no-change` if nothing changed)
-- Change Type enum: `update`, `add`, `remove`, `no-change`
-- Execution Log Entry: follows EP Execution Log format exactly
+- EP Update table: covers all changed dimensions (Key Stakeholders, Roadmap, Win Strategy, Estimate & Contingency, Competitive)
+- Change Type: `Update`, `Add`, `Remove`, `Confirm` (confirm = previously assumed, now verified)
+- Execution Log Update: marks current milestone completion status
 - Agent Recommendation: must include referrals to other skills when signals detected
-- PMR does NOT make stage advancement judgments (only flags evidence for OP)
+- PMR does NOT make stage advancement judgments (flags evidence for Opportunity Progression)
 
 ---
 
-## 🔄 Next Steps — Planned vs Actual
+## 4. Next Steps — Planned vs Actual
 
 ```markdown
-## 🔄 Next Steps — Planned vs Actual
+## 4. Next Steps — Planned vs Actual
 
-| # | Planned (from CP) | Actual Agreed | Delta |
-|---|-------------------|---------------|-------|
-| 1 | {what CP said} | {what actually was agreed} | {difference, if any} |
+### Comparison
+
+| # | Planned (from Call Plan) | Actual (agreed in meeting) | Delta |
+|---|-------------------------|---------------------------|-------|
+| 1 | {auto-pulled from CP Section 7} | {what was actually agreed} | {on track / exceeded / fell short — why} |
 | 2 | {planned} | {actual} | {delta} |
-| NEW | — | {new item not in original CP} | {why added} |
+| NEW | — | {unexpected item not in CP} | {why added} |
 
-### ✅ Action Items
+### Action Items
 
-| Priority | Action | Owner | ETA | Status |
-|----------|--------|-------|-----|--------|
-| {high|medium|low} | {specific action} | {person name} | {date} | {pending|in-progress|done} |
-| {priority} | {action 2} | {owner} | {date} | {status} |
+| # | Priority | Action Item | Owner | ETA | Status |
+|---|----------|------------|-------|-----|--------|
+| 1 | High | {specific action} | {name (AWS/Customer)} | {date} | Open |
+| 2 | High | {action} | {owner} | {date} | Open |
+| 3 | Medium | {action} | {owner} | {date} | Open |
 ```
 
 **Constraints:**
-- Planned vs Actual: maps 1:1 to CP Next Steps; add "NEW" rows for unexpected items
+- Comparison: maps 1:1 to CP Next Steps; add "NEW" rows for unexpected items
 - Action Items: sorted by Priority (high first)
-- Priority enum: `high`, `medium`, `low`
-- Status enum: `pending`, `in-progress`, `done`
+- Priority: `High`, `Medium`, `Low`
+- Status: `Open`, `In Progress`, `Done`
 - Every action needs Owner + ETA (no vague "TBD")
 - Recommend 3-7 action items
 
 ---
 
-## ✉️ Customer Recap Email (optional)
+## 5. Customer Recap Email
 
 ```markdown
-## ✉️ Customer Recap Email
+## 5. Customer Recap Email
 
 **Subject:** Follow-up: {meeting topic} — {Customer} × AWS {date}
 
 ---
 
-{email body — professional, customer-facing, no internal content}
+{email body — professional, customer-facing, includes: thanks, key discussion points, agreed action items, proposed next steps}
 
 ---
 
@@ -180,10 +184,11 @@ PMR has 4 core sections + 1 handoff (Email):
 ```
 
 **Constraints:**
-- Only generated if sales confirms
+- Agent prompts user: "Would you like me to draft a customer recap email?" before generating
 - Must NOT contain: internal strategy, pricing analysis, MEDDPICC terms, sentiment assessments
 - Must include: thanks, key discussion points, agreed action items, proposed next steps
-- "Excluded" section reminds agent what NOT to put in
+- "Excluded" section reminds agent what NOT to put in customer-facing email
+- If user declines, section contains only the prompt text
 
 ---
 
@@ -191,22 +196,22 @@ PMR has 4 core sections + 1 handoff (Email):
 
 | Field | Allowed Values |
 |-------|---------------|
-| Result | `achieved`, `partial`, `not-achieved` |
-| Stance | `champion`, `supporter`, `neutral`, `non-supporter`, `unknown` |
-| Gap Status | `answered`, `unanswered` |
-| Change Type | `update`, `add`, `remove`, `no-change` |
-| Priority | `high`, `medium`, `low` |
-| Action Status | `pending`, `in-progress`, `done` |
+| Result | ✅ (achieved), ⚠️ (partial), ❌ (not-achieved) |
+| Stance | `sponsor`, `supporter`, `neutral`, `non-supporter`, `adversary` |
+| Gap Status | ✅ Answered, ❌ Still a gap |
+| Change Type | `Update`, `Add`, `Remove`, `Confirm` |
+| Priority | `High`, `Medium`, `Low` |
+| Action Status | `Open`, `In Progress`, `Done` |
 
 ---
 
 ## Validation Rules
 
 1. Frontmatter: all required fields present
-2. All 4 core sections present (Email is optional)
+2. All 5 sections present
 3. Outcome Assessment has at least 1 outcome row
-4. Sentiment Changes has at least 1 attendee
+4. Customer Sentiment has at least 1 attendee
 5. Key Findings has at least 2 items
 6. Action Items has at least 2 items
 7. All badge values match enum lists
-8. EP Update table has all 5 EP section rows
+8. EP Update table has at least 1 change row

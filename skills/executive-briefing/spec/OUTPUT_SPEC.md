@@ -28,182 +28,191 @@ version: "2026-06-08"
 
 ## Section Structure (fixed order, fixed headers)
 
+5 sections matching the template:
+1. Meeting Logistics (AWS Attendees table + Key Contacts)
+2. Customer Attendee Background (person paragraphs + Company Profile)
+3. Meeting Objectives (Success Definition, Strategic Alignment, Objectives, Anticipated Concerns, Proposed Next Steps)
+4. AWS Account Background
+5. Appendix (optional)
+
+### Rules:
+1. Section headers MUST use `## N. {Title}` format matching template
+2. Sub-sections use `###`
+3. Stance badge uses `{stance:value}` inline syntax at end of "Attitude Toward AWS" paragraph
+4. Tables use standard Markdown table syntax
+5. Each section is REQUIRED except Appendix
+
 ---
 
-## 📋 Meeting Logistics
-
-> Auto-generated from frontmatter by renderer. LLM writes the attendees below.
+## 1. Meeting Logistics
 
 ```markdown
-## 📋 Meeting Logistics
+## 1. Meeting Logistics
 
-### 🏢 AWS Attendees
+| Field | Details |
+|-------|---------|
+| Date / Time / Format | {YYYY-MM-DD / HH:MM-HH:MM timezone / In-person or VTC / Location} |
+| Opportunity Name | {auto from EP} |
+| Current Sales Stage | {auto from EP} |
+| AWS Attendees | {Executive name (role), Account Manager, others} |
 
-| Name | Title | Role in Meeting |
-|------|-------|-----------------|
-| {name} | {title, e.g., VP of APJ} | {why they're here} |
-| {name2} | {title} | {role} |
+**Who requested this meeting and why?**
 
-### 📞 Key Contacts
+> {2-3 sentences: who initiated, why executive needed, position in roadmap, risk of not going}
 
-| Name | Role | Phone/Email | Notes |
-|------|------|-------------|-------|
-| {name} | AM | {contact} | {note} |
-| {name2} | SA | {contact} | {note} |
+| Role | Name / Contact | Purpose in This Meeting |
+|------|---------------|------------------------|
+| Account Manager | {name, alias, phone} | {purpose} |
+| Sales Leader / VP | {name, alias, phone} | {purpose} |
+| Executive Sponsor | {name, title} | {specific executive-level ask} |
 ```
 
+**Constraints:**
+- "Who requested and why" must cover: initiator, executive justification, roadmap position, consequence of inaction
+- Every AWS attendee has a specific Purpose (not "support")
+
 ---
 
-## 👤 Customer Attendee Background
+## 2. Customer Attendee Background
 
 ```markdown
-## 👤 Customer Attendee Background
+## 2. Customer Attendee Background
 
 ### {Person Name} — {Title}
 
-**Position & Tenure:** {role, reporting line, years at company, career moves}
+**Position & Tenure:** {role, reporting line, years at company, career trajectory}
 
-**Communication Style:** {direct/indirect, preferences, based on Contact Profiling + CXO Persona}
+**Communication Style:** {specific behavioral guidance from Contact Profiling}
 
 **Decision Role & Business Focus:** {authority level, current priorities, KPIs}
 
-**Attitude Toward AWS:** {stance, concerns, sensitivities, topics to avoid} {stance:supporter}
+**Attitude Toward AWS:** {stance description, concerns, sensitivities} {stance:supporter}
 
-**Collaboration History:** {past projects, wins, friction points}
+**Collaboration History:** {past projects, wins, friction points with AWS}
 
 ### {Person Name 2} — {Title}
 ...
+
+### Company Profile
+
+{One paragraph, 150-200 characters: positioning, scale, tech profile, strategic priorities, recent leadership changes}
 ```
 
 **Constraints:**
 - One block per customer attendee
-- All 5 dimensions required for each person
-- Stance badge at end of "Attitude" line
-- Provenance labels where applicable
-- Deeper research expected for EB (vs CP) — include LinkedIn, news, annual report findings
+- All 5 dimensions required for each person (Position & Tenure, Communication Style, Decision Role & Business Focus, Attitude Toward AWS, Collaboration History)
+- Stance badge at end of "Attitude Toward AWS" paragraph using `{stance:value}` syntax
+- Company Profile: subsection under this section, one dense paragraph
+- Deeper research expected for EB (vs CP)
 
 ---
 
-## 🏢 Company Profile
+## 3. Meeting Objectives
 
 ```markdown
-## 🏢 Company Profile
-
-**Positioning & Industry Standing:** {what they do, market position}
-
-**Scale & Impact:** {revenue, users, market share}
-
-**Technology Profile:** {cloud adoption, AI maturity, in-house vs vendor}
-
-**Strategic Priorities & Key Events:** {current focus, major events past/next 12 months}
-
-**Recent Leadership Changes:** {C-suite/board changes in past 6 months}
-```
-
-**Constraints:**
-- All 5 dimensions required
-- Each is 1-2 sentences
-- Provenance labels expected (mostly `[网络搜索]`)
-
----
-
-## 🎯 Meeting Objectives
-
-```markdown
-## 🎯 Meeting Objectives
+## 3. Meeting Objectives
 
 ### Success Definition
-{1-2 sentences: what does a successful meeting look like from AWS's perspective}
+
+{1-2 sentences: what does a successful meeting look like — must be verifiable customer action}
 
 ### Strategic Alignment
-{1-2 sentences: how this meeting fits into the broader deal strategy / EP}
 
-### Objectives Detail
+{1-2 sentences: how this meeting fits into the broader deal strategy / EP roadmap position}
 
-#### Objective 1: {title}
-- **Context:** {why this matters}
-- **Talking Points:** 
-  - {point 1}
-  - {point 2}
-  - {point 3}
-- **Ask:** {specific request to make}
+### Objective 1: {verb-led title}
 
-#### Objective 2: {title}
-- **Context:** ...
-- **Talking Points:** ...
-- **Ask:** ...
+| Element | Content |
+|---------|---------|
+| **Objective / Outcome** | {action-oriented outcome} |
+| **Context** | {background + risk + competition} |
+| **Talking Points** | {natural executive dialogue paragraph} |
+| **Asks** | {1-2 executive-level asks that require peer-level authority} |
 
-### ⚠️ Anticipated Concerns
+### Objective 2: {verb-led title}
 
-#### {Concern 1 title}
-- **Acknowledge:** {validate their concern}
-- **Pivot:** {redirect to our strength}
-- **Elevate:** {raise to strategic level}
-- **💣 Landmine:** {topic to absolutely avoid, if any}
+| Element | Content |
+|---------|---------|
+| **Objective / Outcome** | {outcome} |
+| **Context** | {context} |
+| **Talking Points** | {talking points paragraph} |
+| **Asks** | {asks} |
 
-#### {Concern 2}
-...
+### Anticipated Concerns
 
-### ➡️ Proposed Next Steps
+**1. {concern topic}**
+> {Acknowledge → Pivot → Elevate response strategy, one paragraph}
 
-| Tier | Proposed Step | Condition |
-|------|--------------|-----------|
-| 🟢 Ideal | {best outcome next step} | {if everything goes perfectly} |
-| 🟡 Acceptable | {good enough next step} | {if partially successful} |
-| ⚪ Minimum | {minimum viable next step} | {if limited progress} |
+**2. {concern topic}**
+> {response strategy}
+
+### ⚠️ Landmines — Do Not Raise
+> - {Topic 1}: {why dangerous}
+> - {Topic 2}: {why dangerous}
+
+### Proposed Next Steps
+
+| Tier | Next Step | Trigger Condition |
+|------|-----------|-------------------|
+| **Ideal** | {specific action + owner + timeline} | All objectives achieved |
+| **Acceptable** | {action + owner + timeline} | Partial success, positive attitude |
+| **Minimum** | {action + owner + timeline} | Limited progress, keep dialogue |
 ```
 
 **Constraints:**
-- 2-4 objectives, each with Context + Talking Points + Ask
-- Anticipated Concerns: 1-3 items, each with Acknowledge-Pivot-Elevate
-- Landmine is optional but recommended for EB
-- Next Steps: always 3 tiers
+- 2-3 objectives, each with Objective/Outcome + Context + Talking Points + Asks
+- Asks must be executive-level (require peer-level authority)
+- Anticipated Concerns: 1-3 items with Acknowledge-Pivot-Elevate framework
+- Landmines: optional but recommended
+- Proposed Next Steps: always 3 tiers (Ideal/Acceptable/Minimum)
 
 ---
 
-## 📊 AWS Account Background
+## 4. AWS Account Background
 
 ```markdown
-## 📊 AWS Account Background
+## 4. AWS Account Background
 
-| Field | Value |
-|-------|-------|
+| Field | Details |
+|-------|---------|
 | Geo / Segment | {region / enterprise tier} |
-| Current AWS Spend | {annual spend or range} [销售确认] |
-| PPA Status | {yes/no, details} |
-| Contract Expiry | {date if applicable} |
+| Current AWS Spend | {annual spend} |
+| Expected Spend | {next year projection} |
+| Commit / PPA Status | {PPA details, renewal timeline} |
 
 ### Account Summary
-- **Relationship Tenure:** {how long as customer}
-- **Key Workloads on AWS:** {what they run today}
-- **Growth Trajectory:** {spending trend}
-- **Open Opportunities:** {other active deals}
-- **Previous Executive Interactions:** {past EBC/exec meetings, outcomes}
+
+> {One paragraph, ~250 chars: AWS usage + commercial status + recent wins + active issues/risks + competitive landscape}
 ```
 
 **Constraints:**
 - Table fields: mark unknown as `[待确认]`
-- Account Summary: all 5 items required
-- Sensitive financial data must be marked `[销售确认]`
+- Account Summary: must include issues/escalations (executive cannot be surprised)
+- Competitive landscape must be honest with threat level (🔴 Active / 🟡 Exploring / 🟢 Awareness)
 
 ---
 
-## 📎 Appendix (optional)
+## 5. Appendix (optional)
 
 ```markdown
-## 📎 Appendix
+## 5. Appendix
 
-### Previous Meeting Notes
-{Summary of last interaction, key takeaways, open items}
+### A. Previous Meeting Notes & Action Items
 
-### Relevant Customer Success Stories
-- **{Customer A}:** {1-2 sentences, relevance to this deal}
-- **{Customer B}:** {1-2 sentences}
+> {Previous executive meeting summary + action items with status (✅ Done / 🔄 In Progress / ❌ Overdue)}
 
-### Competitive Intelligence
-- **Current Vendor:** {who they use today}
-- **Competitor Positioning:** {who else is bidding}
-- **Our Differentiation:** {why we win}
+### B. Relevant Customer Success Stories
+
+> {1-2 cases mirroring customer situation: industry, challenge, solution, quantified outcome, timeline}
+
+### C. Competitive Intelligence
+
+> Per competitor:
+> - Products in use
+> - Contract status
+> - Customer satisfaction
+> - Our differentiators
+> - Displacement / coexistence strategy
 ```
 
 ---
@@ -212,7 +221,7 @@ version: "2026-06-08"
 
 | Field | Allowed Values |
 |-------|---------------|
-| Stance | `champion`, `supporter`, `neutral`, `non-supporter`, `unknown` |
+| Stance (via {stance:value}) | `sponsor`, `supporter`, `neutral`, `non-supporter`, `adversary` |
 | Next Step Tier | `ideal`, `acceptable`, `minimum` |
 
 ---
@@ -220,9 +229,9 @@ version: "2026-06-08"
 ## Validation Rules
 
 1. Frontmatter: all required fields present
-2. All required sections present (5 sections; Appendix optional)
+2. All required sections present (4 sections; Appendix optional)
 3. At least 1 customer attendee with all 5 dimensions
-4. At least 1 AWS attendee
-5. At least 2 meeting objectives with full structure
-6. Company Profile has all 5 dimensions
+4. At least 1 AWS attendee with Purpose
+5. At least 2 meeting objectives with full structure (Objective + Context + Talking Points + Asks)
+6. Company Profile present as subsection of Customer Attendee Background
 7. Account Background table has at least Geo/Segment and Spend fields

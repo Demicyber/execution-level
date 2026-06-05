@@ -158,7 +158,10 @@ def _parse_section_content(text: str) -> list[dict]:
             
             # Detect if it's a stakeholder/milestone/objection card
             block = _classify_subsection(subsection_title, sub_text)
-            blocks.append(block)
+            if isinstance(block, list):
+                blocks.extend(block)
+            else:
+                blocks.append(block)
             continue
         
         # #### Sub-sub-section (EB objectives)
@@ -224,16 +227,26 @@ def _parse_section_content(text: str) -> list[dict]:
     return blocks
 
 
-def _classify_subsection(title: str, content: str) -> dict:
-    """Classify a ### subsection as stakeholder card, milestone, objection, or generic subsection."""
-    
+def _classify_subsection(title: str, content: str) -> dict | list:
+    """Classify a ### subsection as stakeholder card, milestone, objection, or generic subsection.
+
+    May return a list of blocks when a subsection contains multiple person entries
+    (e.g., "### Attendee Insights" with multiple **Name** — Title blocks).
+    """
+
+    # Attendee Insights / multi-person container: split into individual cards
+    if title.lower().strip() in ("attendee insights",) and content:
+        cards = _split_multi_person_bullets(content)
+        if cards:
+            return cards
+
     # Milestone pattern: "Milestone N: description"
     milestone_match = re.match(r'Milestone\s+(\d+):\s*(.+)', title)
     if milestone_match:
         return _parse_milestone(int(milestone_match.group(1)), milestone_match.group(2), content)
-    
-    # Stakeholder/attendee pattern: has bullet fields like "- **Title:**", "- **Stance:**"
-    if content and re.search(r'^-\s+\*\*(?:Title|Stance|Role|Focus|Priority|Position)', content, re.MULTILINE):
+
+    # Stakeholder/attendee pattern: has bullet fields like "- **Title:**", "- **Stance:**", "- **Engagement Priority:**"
+    if content and re.search(r'^-\s+\*\*(?:Title|Stance|Role|Focus|Priority|Position|Engagement Priority|Role in This Deal|Current Stance|What They Care About|Profiling|What We Need|How to Win|Communication Approach|Our Goal|Focus & Priorities)', content, re.MULTILINE):
         return _parse_stakeholder_card(title, content)
     
     # Objection pattern: has "- **Category:**" field
@@ -261,22 +274,56 @@ def _classify_subsection(title: str, content: str) -> dict:
     }
 
 
+def _split_multi_person_bullets(content: str) -> list | None:
+    """Split a multi-person block (e.g., Attendee Insights) into individual stakeholder cards.
+
+    Format: **Name** — Title followed by bullet fields, repeated for each person.
+    Returns None if pattern not detected.
+    """
+    # Detect **Name** — Title pattern
+    person_pattern = re.compile(r'^\*\*(.+?)\*\*\s*[—–-]\s*(.+)$', re.MULTILINE)
+    matches = list(person_pattern.finditer(content))
+    if len(matches) < 1:
+        return None
+
+    cards = []
+    for idx, match in enumerate(matches):
+        name = match.group(1).strip()
+        start = match.end()
+        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
+        person_content = content[start:end].strip()
+        if re.search(r'^-\s+\*\*', person_content, re.MULTILINE):
+            card = _parse_stakeholder_card(name, person_content)
+            cards.append(card)
+    return cards if cards else None
+
+
 def _parse_stakeholder_card(name: str, content: str) -> dict:
-    """Parse a stakeholder / attendee card."""
+    """Parse a stakeholder / attendee card.
+
+    Handles multiple field naming conventions:
+    - EP template: Engagement Priority, Role in This Deal, Current Stance, What They Care About,
+                   Profiling, What We Need From Them, How to Win Them
+    - CP template: Focus & Priorities, Communication Approach, Current Stance, Our Goal
+    - Legacy: Title, Stance, Role, Focus, Priority, What We Need, How to Win, Communication
+    """
     fields = _parse_bullet_fields(content)
     return {
         "type": "stakeholder_card",
         "name": name,
         "title": fields.get("Title", ""),
-        "stance": fields.get("Stance", "unknown"),
-        "role": fields.get("Role", ""),
-        "priority": fields.get("Priority", ""),
-        "focus": fields.get("Focus", ""),
+        "stance": (fields.get("Current Stance", "") or fields.get("Stance", "unknown")),
+        "role": (fields.get("Role in This Deal", "") or fields.get("Role", "")),
+        "priority": (fields.get("Engagement Priority", "") or fields.get("Priority", "")),
+        "focus": (fields.get("Focus & Priorities", "") or fields.get("Focus", "")),
         "what_they_care_about": fields.get("What They Care About", ""),
-        "what_we_need": fields.get("What We Need", ""),
-        "how_to_win": fields.get("🎯 How to Win", fields.get("🎯 Our Goal", "")),
-        "our_goal": fields.get("🎯 Our Goal", fields.get("🎯 How to Win", "")),
-        "communication": fields.get("Communication", ""),
+        "profiling": fields.get("Profiling", ""),
+        "what_we_need": (fields.get("What We Need From Them", "") or fields.get("What We Need", "")),
+        "how_to_win": (fields.get("How to Win Them", "") or
+                       fields.get("🎯 How to Win", "") or fields.get("🎯 Our Goal", "")),
+        "our_goal": (fields.get("Our Goal", "") or
+                     fields.get("🎯 Our Goal", "") or fields.get("🎯 How to Win", "")),
+        "communication": (fields.get("Communication Approach", "") or fields.get("Communication", "")),
         "fields": fields,
     }
 

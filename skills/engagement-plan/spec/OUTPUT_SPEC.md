@@ -27,9 +27,17 @@ version: "2026-03-20"
 ## Section Structure (fixed order, fixed headers)
 
 EP has 3 major sections matching the template:
-1. Opportunity Snapshot + Win Strategy
-2. Engagement Plan (People + Roadmap + Estimate)
+1. Opportunity Snapshot (including Engagement Progress)
+2. Engagement Plan (Key Stakeholders + Engagement Roadmap + Estimate & Contingency + Next Milestone Detail)
 3. Execution Log
+
+### Rules:
+1. Section headers MUST match exactly (emoji + text)
+2. Sub-sections use `###`
+3. Stance/Role/Priority values written directly as field values (renderer maps to badge colors)
+4. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
+5. Tables use standard Markdown table syntax
+6. Each section is REQUIRED unless marked (optional)
 
 ---
 
@@ -40,40 +48,38 @@ EP has 3 major sections matching the template:
 
 | Field | Value |
 |-------|-------|
-| Customer | {customer name} |
-| Opportunity | {opportunity name} |
-| Stage | {current stage} |
-| TCV | {total contract value} |
-| Source | {new-logo / existing-customer} |
-| Timeline | {target close date or timeframe} |
-| Decision Maker | {primary decision maker name + title} |
-| Champion | {champion name + title} |
-| Competitive | {main competitor(s)} |
+| Customer | {company name} · {industry} · {New Logo / Existing Customer} |
+| Opportunity Name | {opportunity name} |
+| Deal Value | {ARR or TCV} |
+| Current Stage | {Prospect / Qualified / Technical Validation / Business Validation / Committed / Closed} |
+| Target Launch Date | {YYYY-MM-DD, quarter, or relative time} |
 
-### 🎆 Why Now
+### Why Now
 
-{1-2 paragraphs explaining urgency drivers — customer-side and time-based}
+{1-2 paragraphs: [specific trigger event] + [hard deadline] + [cost of inaction]}
 
-### 🎯 Deal Objective
+### Deal Objective
 
-{1-2 sentences: what does "winning" look like for this deal}
+{1-2 sentences: [action] + [scope] + [value] + [timeline] + [aligned to Why Now]}
 
-### ⚔️ Win Strategy
+### Win Strategy
 
-{2-3 sentences: how we win this deal — differentiation, approach, key levers}
+{2-3 sentences: [core differentiation] + [customer's #1 priority] + [key execution actions]}
 
-### ⚠️ Key Risks
+**Key Risks:** {1-2 risk factors that could lose the deal, with full sentences}
 
-- {Risk 1 + mitigation}
-- {Risk 2 + mitigation}
-- {Risk 3 + mitigation}
+### 📈 Engagement Progress
+
+[Prospect] ━━━ [Qualified] ━━━ [Tech Val] ━━━ [Biz Val] ━━━ [Committed] ━━━ [Closed]
+                                ▲ We are here
 ```
 
 **Constraints:**
 - Snapshot table: all fields required (mark unknown as `[待确认]`)
-- Why Now: must articulate urgency, not just background
+- Why Now: must articulate urgency with trigger event + hard deadline
 - Win Strategy: must be specific to THIS deal, not generic
-- Key Risks: 2-4 items, each with mitigation approach
+- Key Risks: 1-2 items as complete sentences (inline under Win Strategy, not separate section)
+- Engagement Progress: auto-generated from Current Stage, marks current position on track
 
 ---
 
@@ -83,13 +89,13 @@ EP has 3 major sections matching the template:
 ## 👥 Key Stakeholders
 
 ### {Person Name}
-- **Title:** {title}
-- **Stance:** {champion|supporter|neutral|non-supporter|unknown}
-- **Priority:** {must-meet|important|nice-to-have}
-- **Role:** {decision-maker|technical-evaluator|influencer|end-user|champion|blocker|sponsor|economic-buyer}
-- **What They Care About:** {key concerns and motivations, 1-2 sentences} [销售确认]
-- **What We Need:** {specific outcomes needed from this person}
-- **🎯 How to Win:** {tactical approach for this person}
+- **Engagement Priority:** {must-meet|important|nice-to-have} — {reason + time constraint}
+- **Role in This Deal:** {decision-maker|champion|influencer|blocker|evaluator|procurement} — {function + what they can block/enable}
+- **Current Stance:** {sponsor|supporter|neutral|non-supporter|adversary} — {evidence + attitude toward competition}
+- **What They Care About:** {specific business pressure/KPI + pressure source + time constraint}
+- **Profiling:** {communication style + decision mode + personal motivation + how to communicate}
+- **What We Need From Them:** {numbered, specific, verifiable asks + time}
+- **How to Win Them:** {ordered specific actions + political constraints + who from AWS engages}
 
 ### {Person Name 2}
 ...
@@ -97,8 +103,8 @@ EP has 3 major sections matching the template:
 
 **Constraints:**
 - Minimum 2 stakeholders, recommend 3-6
-- `Stance`, `Priority`, `Role` are enums
-- `How to Win` is always present and specific
+- `Engagement Priority`, `Role in This Deal`, `Current Stance` use enum values followed by detailed explanation
+- Each field must be actionable — not single-word labels
 - Provenance labels on assertions where applicable
 - Order by Priority (must-meet first)
 
@@ -109,57 +115,21 @@ EP has 3 major sections matching the template:
 ```markdown
 ## 📍 Engagement Roadmap
 
-**Progress:** {N}/{Total} Milestones Complete
-
-### Milestone 1: {brief description}
-- **Status:** {done|next|planned}
-- **👤 Stakeholders:** {who is involved}
-- **🏢 AWS Resources:** {AM, SA, specialist, etc.}
-- **📅 Timeline:** {Week X-Y or date range}
-- **Exit Criteria:** {what "done" looks like for this milestone}
-
-### Milestone 2: {brief description}
-- **Status:** {done|next|planned}
-- **👤 Stakeholders:** {who}
-- **🏢 AWS Resources:** {who}
-- **📅 Timeline:** {when}
-- **Exit Criteria:** {what done looks like}
-
-### Milestone 3: ...
-...
+| # | Milestone | Key Stakeholders | AWS Team | Status |
+|---|-----------|-----------------|----------|--------|
+| 1 | {outcome-oriented milestone description with customer action} | {names or roles} | {AM, SA, etc.} | Done |
+| 2 | {milestone description} | {names} | {team} | **Next ↓** |
+| 3 | {milestone description} | {names} | {team} | Planned |
+| 4 | {milestone description} | {names} | {team} | Planned |
+| 5 | {milestone description} | {names} | {team} | Planned |
 ```
 
 **Constraints:**
 - 3-7 milestones (covers full deal cycle)
-- Exactly ONE milestone has `Status: next` (the current focus)
-- Milestones before it: `done`; after: `planned`
-- Each milestone has all 5 fields
-- Timeline uses relative weeks OR absolute dates
-
----
-
-## 📋 Next Milestone Detail
-
-```markdown
-## 📋 Next Milestone Detail
-
-| Field | Value |
-|-------|-------|
-| Milestone | {milestone description} |
-| Objective | {what this milestone achieves} |
-| Customer Attendees | {names + titles} |
-| AWS Team | {names + roles} |
-| Target Date | {date} |
-| Format | {online/on-site/hybrid} |
-| Success Looks Like | {observable outcome} |
-
-**Triggers Call Plan generation when confirmed by sales.**
-```
-
-**Constraints:**
-- This section triggers downstream CP/EB generation
-- All fields required
-- Must align with the `next` milestone in Roadmap
+- Exactly ONE milestone has Status: `**Next ↓**` (the current focus, expanded in Next Milestone Detail)
+- Milestones before it: `Done`; after: `Planned`
+- Each milestone must be outcome-oriented with customer action (not activity-based)
+- Milestone description: 15-50 characters, [who] + [what action/decision] + [what output/authorization]
 
 ---
 
@@ -168,23 +138,61 @@ EP has 3 major sections matching the template:
 ```markdown
 ## 📐 Estimate & Contingency
 
-### Best Case
-- **Close Date:** {date}
-- **Remaining Meetings:** {N}
-- **Confidence:** {high|medium|low}
-- **Assumption:** {what must go right}
+| | Best Case | Worst Case |
+|---|-----------|-----------|
+| **Milestones to Close** | {N} | {N} |
+| **Timeline** | {N weeks} | {N weeks} |
 
-### Worst Case
-- **Close Date:** {date}
-- **Remaining Meetings:** {N}
-- **Risk Factor:** {what could go wrong}
-- **Plan B:** {contingency approach}
+#### Stakeholder Risk & Leverage
+
+| At-Risk Stakeholder | Red Flag | Leverage Source | Plan B |
+|---------------------|----------|-----------------|--------|
+| {name} | {red flag type + detail} | {leverage person + relationship} | {ordered actions} |
+| {name2} | {red flag} | {leverage} | {plan b} |
+
+#### Milestone Risk & Contingency
+
+| Milestone Node | Risk Item | Trigger Condition | Impact | Plan B |
+|---------------|-----------|-------------------|--------|--------|
+| {#N milestone} | 🧑 {person risk} or 🚩 {process risk} | {specific trigger} | {time/scope impact} | {alternative path} |
+| {same or other} | 🚩 {risk} | {trigger} | {impact} | {plan b} |
 ```
 
 **Constraints:**
-- Both cases always present
-- Confidence is an enum
-- Plan B must be actionable
+- Best/Worst Case always present
+- Stakeholder Risk: only for Neutral/Non-Supporter/Adversary or Must-Meet-but-not-contacted
+- Milestone Risk: 2-3 highest risk nodes from Roadmap
+- All Plan B must pass "Tuesday Morning Test" (actionable immediately if Plan A fails)
+- Risk items tagged 🧑 (person) or 🚩 (process)
+
+---
+
+## 📋 Next Milestone Detail
+
+```markdown
+## 📋 Next Milestone Detail
+
+**Milestone #{n}** — {Target Date}
+
+**Objective:** {strategic purpose + why this step is most important now + relation to overall roadmap}
+
+**Customer Attendees & Target Outcome:**
+- {Name (Title)} — {current stance}, target {next stance}: {specific verifiable action needed from them}
+- {Name2 (Title)} — {current stance}, target {next stance}: {specific action}
+
+**AWS Team:** {names + roles + responsibilities}
+
+**Key Questions & Discussion Points:**
+- {research-gap based question targeting specific attendee}
+- {hypothesis-led question}
+- {question tied to stage exit criteria}
+```
+
+**Constraints:**
+- Must align with the `Next ↓` milestone in Roadmap
+- Each Customer Attendee has per-person target outcome (stance movement + specific action)
+- Key Questions: 3-5, purpose-driven, tailored to attendees' known concerns
+- Triggers Call Plan generation when confirmed by sales
 
 ---
 
@@ -193,15 +201,17 @@ EP has 3 major sections matching the template:
 ```markdown
 ## 📝 Execution Log
 
-### Engagement #{N} — {date}
-- **Attendees:** {list}
-- **Planned:** {what was planned per CP/EB}
-- **Actual:** {what actually happened}
-- **👥 People Updates:** {stance changes, new info about stakeholders}
-- **💡 Key Learnings:** {what we learned}
-- **🔄 Plan Adjustment:** {how the plan changes as a result}
+### Engagement #{n} — {Date} — {Attendees}
 
-### Engagement #{N-1} — {date}
+| Field | Details |
+|-------|---------|
+| **Planned** | {what was planned per milestone description} |
+| **Actual** | {what actually happened — specific customer actions and responses} |
+| **People Updates** | {stance changes using Holden 5-level: Name: Old → New (evidence)} |
+| **Key Learnings** | {new information that changes strategy + which EP section to update} |
+| **Plan Adjustment** | {what changes to Roadmap/Timeline/Strategy as a result} |
+
+### Engagement #{n-1} — {Date} — {Attendees}
 ...
 ```
 
@@ -209,25 +219,8 @@ EP has 3 major sections matching the template:
 - Most recent engagement first (reverse chronological)
 - Each entry maps to a CP+PMR pair
 - Empty on initial EP creation (populated after first PMR)
-- People Updates references specific stakeholder stance changes
-
----
-
-## 📜 Change Log
-
-```markdown
-## 📜 Change Log
-
-| Date | Source | Change Summary |
-|------|--------|---------------|
-| {YYYY-MM-DD HH:MM} | {PMR/CP/EB/OP/User} | {one-line description} |
-| ... | ... | ... |
-```
-
-**Constraints:**
-- Newest first
-- Every EP modification must add a row
-- Source = which skill/action triggered the change
+- People Updates must use Holden stance terminology
+- Plan Adjustment must be actionable (add milestone? change timeline? adjust strategy?)
 
 ---
 
@@ -235,10 +228,10 @@ EP has 3 major sections matching the template:
 
 | Field | Allowed Values |
 |-------|---------------|
-| Stance | `champion`, `supporter`, `neutral`, `non-supporter`, `unknown` |
-| Priority | `must-meet`, `important`, `nice-to-have` |
-| Role | `decision-maker`, `technical-evaluator`, `influencer`, `end-user`, `champion`, `blocker`, `sponsor`, `economic-buyer` |
-| Milestone Status | `done`, `next`, `planned` |
+| Current Stance | `sponsor`, `supporter`, `neutral`, `non-supporter`, `adversary` |
+| Engagement Priority | `must-meet`, `important`, `nice-to-have` |
+| Role in This Deal | `decision-maker`, `champion`, `influencer`, `blocker`, `evaluator`, `procurement` |
+| Milestone Status | `Done`, `**Next ↓**`, `Planned`, `Skipped` |
 | Confidence | `high`, `medium`, `low` |
 
 ---
@@ -246,10 +239,10 @@ EP has 3 major sections matching the template:
 ## Validation Rules
 
 1. Frontmatter: all required fields present
-2. All required sections present (8 sections)
+2. All required sections present (6 sections)
 3. Badge values match enum lists
-4. Exactly 1 milestone with `Status: next`
+4. Exactly 1 milestone with Status: `**Next ↓**`
 5. At least 2 stakeholders defined
-6. Next Milestone Detail aligns with `next` milestone in Roadmap
-7. Change Log present (can be empty on first creation)
-8. Execution Log present (can be empty on first creation)
+6. Next Milestone Detail aligns with `Next ↓` milestone in Roadmap
+7. Execution Log present (can be empty on first creation)
+8. Engagement Progress stage matches frontmatter `stage` field
