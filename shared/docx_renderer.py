@@ -542,8 +542,8 @@ def _add_footer(document, frontmatter, doc_type):
     document.add_paragraph("─" * 60)
     
     doc_label = DOC_TYPE_LABELS.get(doc_type, "DOCUMENT")
-    customer = frontmatter.get("customer", "")
-    date = frontmatter.get("date", frontmatter.get("version", ""))
+    customer = str(frontmatter.get("customer", ""))
+    date = str(frontmatter.get("date", frontmatter.get("version", "")))
     
     footer_parts = [doc_label, customer]
     if date:

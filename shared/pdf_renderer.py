@@ -68,8 +68,8 @@ def _build_margin_css(frontmatter: dict | None) -> str:
     from parse import get_doc_type
     
     doc_type = get_doc_type(frontmatter)
-    customer = frontmatter.get("customer", "")
-    date = frontmatter.get("date", frontmatter.get("version", ""))
+    customer = str(frontmatter.get("customer", ""))
+    date = str(frontmatter.get("date", frontmatter.get("version", "")))
     
     # Document type labels
     type_labels = {

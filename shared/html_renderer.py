@@ -766,8 +766,8 @@ def _provenance_html(prov_type: str | None) -> str:
 def _render_footer(frontmatter: dict, doc_type: str) -> str:
     """Render document footer."""
     doc_label = DOC_TYPE_LABELS.get(doc_type, "DOCUMENT")
-    customer = frontmatter.get("customer", "")
-    date = frontmatter.get("date", frontmatter.get("version", ""))
+    customer = str(frontmatter.get("customer", ""))
+    date = str(frontmatter.get("date", frontmatter.get("version", "")))
     
     # Build footer line
     footer_parts = [doc_label]
@@ -775,7 +775,7 @@ def _render_footer(frontmatter: dict, doc_type: str) -> str:
         footer_parts.append(customer)
     
     # Add meeting title for CP/EB/PMR
-    meeting_title = frontmatter.get("meeting_title", "")
+    meeting_title = str(frontmatter.get("meeting_title", ""))
     if meeting_title:
         footer_parts.append(meeting_title)
     

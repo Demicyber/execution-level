@@ -154,13 +154,14 @@ def _check_required_sections(sections: list, doc_type: str, warnings: list, auto
     
     existing_titles = set()
     for s in sections:
-        existing_titles.add(s["title"].lower())
-        existing_titles.add(s["raw_title"].lower())
+        existing_titles.add(_normalize_title(s["title"]))
+        existing_titles.add(_normalize_title(s["raw_title"]))
     
     for req_title in required:
         found = False
+        req_normalized = _normalize_title(req_title)
         for existing in existing_titles:
-            if req_title.lower() in existing:
+            if req_normalized in existing:
                 found = True
                 break
         
@@ -278,6 +279,19 @@ def _validate_pmr(sections: list, warnings: list, errors: list):
             warnings.append("PMR Outcome Assessment should have at least 1 outcome row")
         elif tables and len(tables[0].get("rows", [])) < 1:
             warnings.append("PMR Outcome Assessment table has no data rows")
+
+
+def _normalize_title(title: str) -> str:
+    """Normalize a section title for fuzzy matching.
+    
+    Handles: case, '&' vs 'and', extra whitespace, em-dash variants.
+    """
+    t = title.lower().strip()
+    t = t.replace("&", "and").replace("＆", "and")
+    t = t.replace("—", "-").replace("–", "-")
+    # Collapse multiple spaces
+    t = re.sub(r'\s+', ' ', t)
+    return t
 
 
 def normalize_badge_value(value: str) -> str:
