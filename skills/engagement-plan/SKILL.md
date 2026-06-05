@@ -203,7 +203,7 @@ EP does NOT determine whether an opportunity should advance to the next sales st
 
   **标注规则：**
 
-  *   ✅ 显式标注 `[销售确认]` 和 `[网络搜索]`；无标签 = `[AI推断]`（默认值）
+  *   ✅ 三种标签全部显式标注：`[销售确认]`、`[网络搜索]`、`[AI推断]`
   *   ✅ 从上游 skill 传入的信息继承原始标签（如 account-context 标注为 `[网络搜索]`，写入 EP 时保留）
   *   ✅ 对话中销售口头确认的信息，升级为 `[销售确认]`
   *   ✅ PMR 回流的客户原话标 `[销售确认]`，agent 对客户原话的解读标 `[AI推断]`

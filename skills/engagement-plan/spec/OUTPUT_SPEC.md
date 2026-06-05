@@ -104,10 +104,10 @@ EP has 3 major sections matching the template:
 
 ---
 
-## 🗺️ Engagement Roadmap
+## 📍 Engagement Roadmap
 
 ```markdown
-## 🗺️ Engagement Roadmap
+## 📍 Engagement Roadmap
 
 **Progress:** {N}/{Total} Milestones Complete
 
