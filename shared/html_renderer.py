@@ -13,6 +13,16 @@ from pathlib import Path
 from parse import extract_provenance, get_doc_type, get_section_by_title
 
 
+# PDF-safe emoji replacements (WeasyPrint + Noto Sans CJK lack color emoji glyphs)
+# These unicode symbols render reliably in all environments.
+PDF_SAFE_EMOJI = {
+    "🟢": "●",   # Green circle → filled circle (colored via CSS)
+    "🟡": "◐",   # Yellow circle → half circle
+    "⚪": "○",   # White circle → open circle
+    "🔴": "●",   # Red circle → filled circle
+}
+
+
 # Document type display names
 DOC_TYPE_LABELS = {
     "engagement-plan": "ENGAGEMENT PLAN",
@@ -97,8 +107,13 @@ def _load_css() -> str:
 
 
 def _esc(text: str) -> str:
-    """HTML-escape text."""
-    return html.escape(str(text)) if text else ""
+    """HTML-escape text and replace problematic emoji with PDF-safe symbols."""
+    if not text:
+        return ""
+    result = str(text)
+    for emoji, symbol in PDF_SAFE_EMOJI.items():
+        result = result.replace(emoji, symbol)
+    return html.escape(result)
 
 
 def _html_head(frontmatter: dict, doc_type: str, css: str) -> str:
@@ -627,14 +642,29 @@ def _render_concern(block: dict) -> str:
 
 def _is_success_tier(title: str) -> bool:
     """Check if subsection is a success criteria tier."""
-    return bool(re.match(r'^[🟢🟡⚪]\s', title))
+    return bool(re.match(r'^[🟢🟡⚪●◐○]\s', title))
 
 
 def _render_success_tier(title: str, content: list) -> str:
     """Render a success criteria tier (Ideal/Acceptable/Minimum)."""
-    # Extract tier icon and label
-    parts = [f'  <div class="tier">']
-    parts.append(f'    <div class="tier-header">{_esc(title)}</div>')
+    # Determine tier level for icon coloring
+    tier_class = "tier-icon-minimum"
+    if "●" in title or "🟢" in title or "Ideal" in title:
+        tier_class = "tier-icon-ideal"
+    elif "◐" in title or "🟡" in title or "Acceptable" in title:
+        tier_class = "tier-icon-acceptable"
+    
+    # Split icon from label text
+    escaped_title = _esc(title)
+    # Wrap the leading symbol in a colored span
+    icon_match = re.match(r'^([●◐○])\s*(.*)$', escaped_title)
+    if icon_match:
+        icon_html = f'<span class="{tier_class}">{icon_match.group(1)}</span> {icon_match.group(2)}'
+    else:
+        icon_html = escaped_title
+    
+    parts = ['  <div class="tier">']
+    parts.append(f'    <div class="tier-header">{icon_html}</div>')
     
     for block in content:
         if block.get("type") == "bullet_list":

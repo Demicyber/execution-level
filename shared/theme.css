@@ -62,6 +62,7 @@ body {
   padding: 40px 48px;
   background: var(--color-bg);
   border-radius: 16px;
+  border: 1px solid var(--color-border);  /* fallback for PDF (WeasyPrint ignores box-shadow) */
   box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
 }
 
@@ -443,6 +444,9 @@ tr:last-child td { border-bottom: none; }
   align-items: center;
   gap: 6px;
 }
+.tier-header .tier-icon-ideal { color: var(--color-low); }   /* green */
+.tier-header .tier-icon-acceptable { color: var(--color-medium); }  /* amber */
+.tier-header .tier-icon-minimum { color: var(--color-text-muted); }  /* gray */
 .tier ul {
   padding-left: 20px;
   font-size: 13px;
