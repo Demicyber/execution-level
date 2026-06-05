@@ -372,8 +372,10 @@ def _render_stakeholder_card(block: dict, doc_type: str) -> str:
         badges.append(f'<span class="badge badge-unknown">Unknown</span>')
     
     if role:
+        # Avoid duplicate badge when role == stance (e.g. both "champion")
         css_role = f"badge-{role}"
-        badges.append(f'<span class="badge {css_role}">{_esc(role.replace("-", " ").title())}</span>')
+        if role != stance:
+            badges.append(f'<span class="badge {css_role}">{_esc(role.replace("-", " ").title())}</span>')
     
     badges_html = '\n      '.join(badges)
     
