@@ -1,7 +1,7 @@
 # Post-Meeting Report — Structured Markdown Output Spec
 
 > This defines the exact Markdown format the LLM must output for PMR documents.
-> The renderer parses this format deterministically into HTML/PDF/Word.
+> The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
 ---
 

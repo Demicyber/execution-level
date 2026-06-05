@@ -1,7 +1,7 @@
 # Executive Briefing — Structured Markdown Output Spec
 
 > This defines the exact Markdown format the LLM must output for Executive Briefing documents.
-> The renderer parses this format deterministically into HTML/PDF/Word.
+> The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
 ---
 
@@ -17,13 +17,12 @@ date: "2026-06-10"
 time: "14:00-16:00"
 format: "On-site"
 location: "明华重工总部 A栋 VIP 会议室"
-classification: "INTERNAL USE ONLY — AWS Confidential"
 requested_by: "{who initiated this meeting and why}"
 version: "2026-06-08"
 ---
 ```
 
-**All fields required.** `classification` is always "INTERNAL USE ONLY — AWS Confidential".
+**All fields required.**
 
 ---
 
@@ -220,7 +219,7 @@ version: "2026-06-08"
 
 ## Validation Rules
 
-1. Frontmatter: all required fields present, `classification` field exists
+1. Frontmatter: all required fields present
 2. All required sections present (5 sections; Appendix optional)
 3. At least 1 customer attendee with all 5 dimensions
 4. At least 1 AWS attendee

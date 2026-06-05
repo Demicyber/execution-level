@@ -1,7 +1,7 @@
 # Call Plan — Structured Markdown Output Spec
 
 > This defines the exact Markdown format the LLM must output for Call Plan documents.
-> The renderer parses this format deterministically into HTML/PDF/Word.
+> The renderer parses this format deterministically into PDF (ReportLab direct rendering).
 
 ---
 
@@ -32,7 +32,7 @@ version: "2026-03-19"
 ### Rules:
 1. Section headers MUST match exactly (emoji + text)
 2. Sub-sections use `###`
-3. Badge values use `{badge:value}` inline syntax — only predefined values allowed
+3. Stance/Role/Category values written directly as bullet field values (renderer maps to badge colors)
 4. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
 5. Tables use standard Markdown table syntax
 6. Each section is REQUIRED unless marked (optional)

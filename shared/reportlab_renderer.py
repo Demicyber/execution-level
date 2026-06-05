@@ -117,10 +117,10 @@ DOC_TYPE_LABELS = {
 
 # ===== Font Registration =====
 def _register_fonts():
-    """Register CJK fonts. Try Noto Sans SC first, fallback to system CJK, then STHeiti."""
+    """Register CJK fonts. Try Noto Sans SC first, fallback to STHeiti."""
     font_dir = Path(__file__).parent / "fonts"
 
-    # Try Noto Sans SC (bundled TTF)
+    # Try Noto Sans SC (bundled)
     noto_regular = font_dir / "NotoSansSC-Regular.ttf"
     noto_bold = font_dir / "NotoSansSC-Bold.ttf"
 
@@ -132,17 +132,6 @@ def _register_fonts():
             pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_regular)))
         return
 
-    # Fallback: System Noto Sans CJK (Linux - .ttc collection)
-    system_noto_regular = Path("/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc")
-    system_noto_bold = Path("/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc")
-    if system_noto_regular.exists():
-        pdfmetrics.registerFont(TTFont("CJK", str(system_noto_regular), subfontIndex=2))  # SC is index 2
-        if system_noto_bold.exists():
-            pdfmetrics.registerFont(TTFont("CJK-Bold", str(system_noto_bold), subfontIndex=2))
-        else:
-            pdfmetrics.registerFont(TTFont("CJK-Bold", str(system_noto_regular), subfontIndex=2))
-        return
-
     # Fallback: STHeiti (macOS)
     st_heiti = "/System/Library/Fonts/STHeiti Medium.ttc"
     st_heiti_light = "/System/Library/Fonts/STHeiti Light.ttc"
@@ -151,9 +140,13 @@ def _register_fonts():
         pdfmetrics.registerFont(TTFont("CJK-Bold", st_heiti, subfontIndex=0))
         return
 
-    # Last resort: use Helvetica (no CJK support but won't crash)
-    pdfmetrics.registerFont(TTFont("CJK", "Helvetica"))
-    pdfmetrics.registerFont(TTFont("CJK-Bold", "Helvetica-Bold"))
+    # Last resort: alias Helvetica (no CJK support but won't crash)
+    from reportlab.pdfbase.pdfmetrics import registerFontFamily
+    from reportlab.lib.fonts import addMapping
+    addMapping("CJK", 0, 0, "Helvetica")
+    addMapping("CJK", 1, 0, "Helvetica-Bold")
+    addMapping("CJK-Bold", 0, 0, "Helvetica-Bold")
+    addMapping("CJK-Bold", 1, 0, "Helvetica-Bold")
 
 
 _register_fonts()
@@ -606,9 +599,13 @@ def _build_roadmap_card(milestone: dict) -> list:
 
     # Meta tags row (stakeholders, aws team, timeline)
     meta_tags = []
-    stakeholders = fields.get("Stakeholders", "")
-    aws_team = fields.get("AWS Team", "")
-    timeline = fields.get("Timeline", "")
+    stakeholders = (milestone.get("stakeholders", "") or
+                    fields.get("Stakeholders", "") or fields.get("👤 Stakeholders", ""))
+    aws_team = (milestone.get("aws_resources", "") or
+                fields.get("AWS Team", "") or fields.get("🏢 AWS Resources", "") or
+                fields.get("AWS Resources", ""))
+    timeline = (milestone.get("timeline", "") or
+                fields.get("Timeline", "") or fields.get("📅 Timeline", ""))
 
     if stakeholders:
         meta_tags.append(f"👤 {stakeholders}")
