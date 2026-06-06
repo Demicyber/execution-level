@@ -256,21 +256,42 @@ def _validate_badges(sections: list, warnings: list):
             _validate_block_badges(block, warnings)
 
 
+def _extract_badge_value(raw: str) -> str:
+    """Extract just the badge/enum value from 'Value — explanation' pattern.
+    
+    Reference templates use format like:
+    - "Supporter — evidence explaining why"
+    - "Must Meet — reason for priority"
+    - "Technical Evaluator — specific function"
+    
+    Returns the lowercase first segment before ' — ', ' - ', or ' – '.
+    """
+    if not raw:
+        return ""
+    v = raw.strip()
+    # Split on em-dash, en-dash, or hyphen-with-spaces
+    for sep in [' — ', ' – ', ' - ']:
+        if sep in v:
+            v = v.split(sep)[0]
+            break
+    return v.lower().strip()
+
+
 def _validate_block_badges(block: dict, warnings: list):
     """Validate badge values in a single content block."""
     block_type = block.get("type", "")
     
     if block_type == "stakeholder_card":
-        stance = block.get("stance", "").lower().strip()
+        # Extract badge value from "Value — explanation" pattern
+        stance = _extract_badge_value(block.get("stance", ""))
         if stance and stance not in STANCE_VALUES:
             warnings.append(f"Invalid stance value '{stance}' for {block.get('name', '?')}")
-            block["stance"] = stance  # Keep original, renderer shows as fallback
         
-        role = block.get("role", "").lower().strip()
+        role = _extract_badge_value(block.get("role", ""))
         if role and role not in ROLE_VALUES:
             warnings.append(f"Invalid role value '{role}' for {block.get('name', '?')}")
         
-        priority = block.get("priority", "").lower().strip()
+        priority = _extract_badge_value(block.get("priority", ""))
         if priority and priority not in PRIORITY_VALUES:
             warnings.append(f"Invalid priority value '{priority}' for {block.get('name', '?')}")
     
@@ -291,20 +312,56 @@ def _validate_block_badges(block: dict, warnings: list):
 
 def _validate_ep(sections: list, warnings: list, errors: list):
     """Engagement Plan specific validations."""
+    # EP structure: Key Stakeholders and Roadmap are subsections under "Engagement Plan"
+    # Need to search within the Engagement Plan section's content blocks
+    engagement_plan = get_section_by_title(sections, "Engagement Plan")
+    
     # Check for at least 2 stakeholders
-    stakeholders_section = get_section_by_title(sections, "Key Stakeholders")
-    if stakeholders_section:
-        cards = [b for b in stakeholders_section["content"] if b.get("type") == "stakeholder_card"]
-        if len(cards) < 2:
-            warnings.append(f"EP should have at least 2 stakeholders (found {len(cards)})")
+    stakeholders_sub = _get_subsection(engagement_plan, "Key Stakeholders") if engagement_plan else None
+    # Also try top-level for backward compatibility
+    if not stakeholders_sub:
+        stakeholders_sub = get_section_by_title(sections, "Key Stakeholders")
+    if stakeholders_sub:
+        cards = [b for b in stakeholders_sub.get("content", []) if b.get("type") == "stakeholder_card"]
+        # Also count table-format stakeholders (reference format: **Name** paragraph + table pairs)
+        tables = [b for b in stakeholders_sub.get("content", []) if b.get("type") == "table"]
+        stakeholder_count = len(cards) if cards else len(tables)
+        if stakeholder_count < 2:
+            warnings.append(f"EP should have at least 2 stakeholders (found {stakeholder_count})")
     
     # Check for exactly 1 "next" milestone
-    roadmap_section = get_section_by_title(sections, "Engagement Roadmap")
-    if roadmap_section:
-        milestones = [b for b in roadmap_section["content"] if b.get("type") == "milestone"]
-        next_count = sum(1 for m in milestones if m.get("status", "").lower() == "next")
-        if next_count != 1 and milestones:
-            warnings.append(f"EP Roadmap should have exactly 1 'next' milestone (found {next_count})")
+    roadmap_sub = _get_subsection(engagement_plan, "Engagement Roadmap") if engagement_plan else None
+    if not roadmap_sub:
+        roadmap_sub = get_section_by_title(sections, "Engagement Roadmap")
+    if roadmap_sub:
+        milestones = [b for b in roadmap_sub.get("content", []) if b.get("type") == "milestone"]
+        if milestones:
+            next_count = sum(1 for m in milestones if m.get("status", "").lower() == "next")
+            if next_count != 1:
+                warnings.append(f"EP Roadmap should have exactly 1 'next' milestone (found {next_count})")
+        else:
+            # Table-format roadmap: check Status column for "Next" 
+            tables = [b for b in roadmap_sub.get("content", []) if b.get("type") == "table"]
+            for table in tables:
+                headers = [h.lower() for h in table.get("headers", [])]
+                if "status" in headers:
+                    status_idx = headers.index("status")
+                    next_count = sum(1 for row in table.get("rows", []) if "next" in row[status_idx].lower())
+                    if next_count != 1:
+                        warnings.append(f"EP Roadmap should have exactly 1 'next' milestone (found {next_count})")
+
+
+def _get_subsection(section: dict | None, title_fragment: str) -> dict | None:
+    """Find a subsection block within a section by partial title match."""
+    if not section:
+        return None
+    title_lower = title_fragment.lower()
+    for block in section.get("content", []):
+        if block.get("type") == "subsection":
+            block_title = block.get("title", "").lower()
+            if title_lower in block_title or block_title in title_lower:
+                return block
+    return None
 
 
 def _validate_cp(sections: list, warnings: list, errors: list):
@@ -316,12 +373,14 @@ def _validate_cp(sections: list, warnings: list, errors: list):
         if len(cards) < 1:
             warnings.append("CP should have at least 1 customer attendee")
     
-    # Check success criteria has 3 tiers
+    # Check success criteria has 3 tiers (either as subsections or as table rows)
     criteria_section = get_section_by_title(sections, "Success Criteria")
     if criteria_section:
         tiers = [b for b in criteria_section["content"] if b.get("type") == "subsection"]
-        if len(tiers) < 3:
-            warnings.append(f"CP Success Criteria should have 3 tiers (found {len(tiers)})")
+        tables = [b for b in criteria_section["content"] if b.get("type") == "table"]
+        # Accept either 3 subsections OR a table with 3+ rows
+        if len(tiers) < 3 and not any(len(t.get("rows", [])) >= 3 for t in tables):
+            warnings.append(f"CP Success Criteria should have 3 tiers (found {len(tiers)} subsections, {sum(len(t.get('rows',[])) for t in tables)} table rows)")
 
 
 def _validate_eb(sections: list, frontmatter: dict, warnings: list, errors: list):
