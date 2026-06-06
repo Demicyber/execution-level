@@ -17,7 +17,7 @@ import os
 import re
 from pathlib import Path
 
-from parse import extract_provenance, get_doc_type, get_section_by_title
+from .parse import extract_provenance, get_doc_type, get_section_by_title
 
 
 DOC_TYPE_LABELS = {
@@ -514,7 +514,7 @@ def _render_objective(block: dict) -> str:
     talking_points = block.get("talking_points", [])
     ask = block.get("ask", "")
 
-    parts = ['  <div style="border:1px solid var(--color-border-light); border-top:3px solid var(--color-accent); padding:10px 14px; margin-bottom:10px;">']
+    parts = ['  <div style="border:1px solid var(--color-border-light); border-top:3px solid var(--color-primary); padding:10px 14px; margin-bottom:10px;">']
     parts.append(f'    <div style="font-weight:700; font-size:13px; color:var(--color-primary); margin-bottom:6px;">{_render_inline(title)}</div>')
 
     if context:

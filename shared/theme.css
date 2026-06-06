@@ -1,50 +1,49 @@
-/* ===== Execution-Level Document Renderer — AWS + McKinsey Design System ===== */
+/* ===== Execution-Level Document Renderer — MD3 Purple Design System ===== */
 
 :root {
-  /* AWS Brand */
-  --color-primary: #232F3E;
-  --color-accent: #FF9900;
-  --color-accent-light: #FFF4E0;
-  --color-link: #146EB4;
+  /* Primary — MD3 Purple */
+  --color-primary: #6D28D9;
+  --color-primary-light: #EDE9FE;
+  --color-primary-dark: #4C1D95;
 
   /* Semantic — Stance */
-  --color-champion: #1A7F37;
-  --color-supporter: #1A7F37;
-  --color-neutral: #9A6700;
-  --color-non-supporter: #CF222E;
-  --color-unknown: #57606A;
+  --color-champion: #059669;
+  --color-supporter: #059669;
+  --color-neutral: #D97706;
+  --color-non-supporter: #DC2626;
+  --color-unknown: #6B7280;
 
   /* Semantic — Status */
-  --color-done: #1A7F37;
-  --color-next: #0969DA;
-  --color-planned: #8C959F;
-  --color-achieved: #1A7F37;
-  --color-partial: #9A6700;
-  --color-not-achieved: #CF222E;
+  --color-done: #059669;
+  --color-next: #6D28D9;
+  --color-planned: #9CA3AF;
+  --color-achieved: #059669;
+  --color-partial: #D97706;
+  --color-not-achieved: #DC2626;
 
   /* Semantic — Priority */
-  --color-high: #CF222E;
-  --color-medium: #9A6700;
-  --color-low: #1A7F37;
+  --color-high: #DC2626;
+  --color-medium: #D97706;
+  --color-low: #059669;
 
   /* Semantic — Objection Category */
-  --color-risk-trust: #CF222E;
-  --color-capability: #BC4C00;
-  --color-authority: #9A6700;
-  --color-price-value: #0969DA;
-  --color-status-quo: #57606A;
+  --color-risk-trust: #DC2626;
+  --color-capability: #EA580C;
+  --color-authority: #D97706;
+  --color-price-value: #6D28D9;
+  --color-status-quo: #6B7280;
 
   /* Neutral */
   --color-bg: #FFFFFF;
-  --color-bg-subtle: #F6F8FA;
-  --color-border: #D0D7DE;
-  --color-border-light: #E8ECEF;
-  --color-text: #1F2328;
-  --color-text-secondary: #57606A;
-  --color-text-muted: #8C959F;
+  --color-bg-subtle: #F9FAFB;
+  --color-border: #E5E7EB;
+  --color-border-light: #F3F4F6;
+  --color-text: #111827;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6B7280;
 
   /* Special */
-  --color-confidential: #CF222E;
+  --color-confidential: #DC2626;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -77,7 +76,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-primary);
   margin-bottom: 4px;
 }
 
@@ -142,14 +141,14 @@ body {
 }
 
 .section-header .section-number {
-  color: var(--color-accent);
+  color: var(--color-primary-dark);
   font-weight: 700;
 }
 
 /* ===== Key Insight Box ===== */
 .key-insight {
-  border-left: 3px solid var(--color-accent);
-  background: var(--color-accent-light);
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-light);
   padding: 8px 14px;
   margin: 10px 0;
   font-size: 12px;
@@ -170,19 +169,19 @@ body {
 /* Stance */
 .badge-champion { color: #FFFFFF; background: var(--color-champion); border-color: var(--color-champion); }
 .badge-supporter { color: #FFFFFF; background: var(--color-supporter); border-color: var(--color-supporter); }
-.badge-neutral { color: var(--color-neutral); background: #FFF8C5; border-color: #D4A72C; }
+.badge-neutral { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 .badge-non-supporter { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
 .badge-unknown { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
 
 /* Role */
-.badge-decision-maker { color: var(--color-primary); background: #E2E8F0; border-color: #94A3B8; }
-.badge-technical-evaluator { color: #0969DA; background: #DDF4FF; border-color: #54AEFF; }
-.badge-influencer { color: #9A6700; background: #FFF8C5; border-color: #D4A72C; }
+.badge-decision-maker { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-technical-evaluator { color: var(--color-primary); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-influencer { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 .badge-end-user { color: var(--color-text-secondary); background: var(--color-bg-subtle); border-color: var(--color-border); }
-.badge-sponsor { color: var(--color-primary); background: #E2E8F0; border-color: var(--color-primary); }
+.badge-sponsor { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: var(--color-primary); }
 .badge-blocker { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
 .badge-champion-role { color: #FFFFFF; background: var(--color-champion); border-color: var(--color-champion); }
-.badge-economic-buyer { color: #6E3B00; background: #FFDDB0; border-color: #BC6D00; }
+.badge-economic-buyer { color: #92400E; background: #FEF3C7; border-color: #D97706; }
 
 /* Priority */
 .badge-high { color: #FFFFFF; background: var(--color-high); border-color: var(--color-high); }
@@ -194,7 +193,7 @@ body {
 
 /* Result / Status */
 .badge-achieved { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
-.badge-partial { color: var(--color-partial); background: #FFF8C5; border-color: var(--color-partial); }
+.badge-partial { color: var(--color-partial); background: #FFFBEB; border-color: var(--color-partial); }
 .badge-not-achieved { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
 
 /* Milestone Status */
@@ -203,15 +202,15 @@ body {
 .badge-planned { color: var(--color-text-secondary); background: var(--color-bg-subtle); border-color: var(--color-border); }
 
 /* Action Status */
-.badge-pending { color: var(--color-neutral); background: #FFF8C5; border-color: var(--color-neutral); }
-.badge-in-progress { color: var(--color-next); background: #DDF4FF; border-color: var(--color-next); }
+.badge-pending { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
+.badge-in-progress { color: var(--color-next); background: var(--color-primary-light); border-color: var(--color-next); }
 
 /* Gap Status */
 .badge-answered { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
-.badge-unanswered { color: var(--color-neutral); background: #FFF8C5; border-color: var(--color-neutral); }
+.badge-unanswered { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 
 /* Change Type */
-.badge-update { color: var(--color-next); background: #DDF4FF; border-color: var(--color-next); }
+.badge-update { color: var(--color-next); background: var(--color-primary-light); border-color: var(--color-next); }
 .badge-add { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
 .badge-remove { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
 .badge-no-change { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
@@ -227,7 +226,7 @@ body {
   letter-spacing: 0.02em;
 }
 .provenance-sales { color: var(--color-champion); }
-.provenance-web { color: var(--color-link); }
+.provenance-web { color: var(--color-primary); }
 .provenance-ai { color: var(--color-text-muted); }
 
 /* ===== Tables (McKinsey Exhibit Style) ===== */
@@ -308,8 +307,8 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 }
 
 .stakeholder-card .how-to-win {
-  background: var(--color-accent-light);
-  border-left: 3px solid var(--color-accent);
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary);
   padding: 8px 12px;
   margin-top: 8px;
   font-size: 12px;
@@ -342,8 +341,8 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 }
 
 .milestone.active {
-  border-left-color: var(--color-accent);
-  background: var(--color-accent-light);
+  border-left-color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 .milestone-marker {
@@ -361,7 +360,7 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 }
 
 .milestone-marker.done { background: var(--color-done); }
-.milestone-marker.next { background: var(--color-accent); }
+.milestone-marker.next { background: var(--color-primary); }
 .milestone-marker.planned { background: var(--color-bg-subtle); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
 
 .milestone-title {
@@ -416,8 +415,8 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 
 .category-badge.risk-trust { color: var(--color-risk-trust); background: #FFEBE9; }
 .category-badge.capability { color: var(--color-capability); background: #FFF1E5; }
-.category-badge.authority { color: var(--color-authority); background: #FFF8C5; }
-.category-badge.price-value { color: var(--color-price-value); background: #DDF4FF; }
+.category-badge.authority { color: var(--color-authority); background: #FFFBEB; }
+.category-badge.price-value { color: var(--color-price-value); background: var(--color-primary-light); }
 .category-badge.status-quo { color: var(--color-status-quo); background: var(--color-bg-subtle); }
 
 .objection-card .field {
@@ -486,8 +485,8 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 .highlight-box {
   margin: 8px 0;
   padding: 6px 12px;
-  border-left: 3px solid var(--color-next);
-  background: #F0F7FF;
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-light);
   font-size: 12px;
   font-weight: 500;
 }

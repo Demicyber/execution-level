@@ -22,16 +22,11 @@ import logging
 import sys
 from pathlib import Path
 
-# Add shared directory to path for imports
-_shared_dir = Path(__file__).parent
-if str(_shared_dir) not in sys.path:
-    sys.path.insert(0, str(_shared_dir))
-
-from parse import parse_markdown, get_doc_type
-from validate import validate
-from html_renderer import render_html
-from reportlab_renderer import render_pdf as render_pdf_reportlab
-from docx_renderer import render_docx
+from .parse import parse_markdown, get_doc_type
+from .validate import validate
+from .html_renderer import render_html
+from .reportlab_renderer import render_pdf as render_pdf_reportlab
+from .docx_renderer import render_docx
 
 logger = logging.getLogger(__name__)
 

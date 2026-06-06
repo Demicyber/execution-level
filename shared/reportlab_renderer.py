@@ -32,7 +32,7 @@ from reportlab.platypus import (
 )
 from reportlab.platypus.flowables import Flowable
 
-from parse import extract_provenance, get_doc_type
+from .parse import extract_provenance, get_doc_type
 
 
 # ===== Color Palette (MD3 Purple) =====
@@ -121,37 +121,88 @@ DOC_TYPE_LABELS = {
 
 
 # ===== Font Registration =====
+import platform
+
+
+def _find_system_cjk_fonts() -> list[tuple[str, str]]:
+    """Return candidate (regular, bold) font paths for the current OS.
+
+    Each entry is (regular_path, bold_path). bold_path may equal regular_path
+    if no separate bold variant is available.
+    """
+    system = platform.system()
+
+    candidates = []
+
+    if system == "Darwin":
+        # macOS: PingFang SC (10.11+), Hiragino Sans GB, STHeiti
+        candidates = [
+            ("/System/Library/Fonts/PingFang.ttc", "/System/Library/Fonts/PingFang.ttc", 0, 1),
+            ("/System/Library/Fonts/Supplemental/Songti.ttc", "/System/Library/Fonts/Supplemental/Songti.ttc", 0, 0),
+            ("/System/Library/Fonts/STHeiti Medium.ttc", "/System/Library/Fonts/STHeiti Medium.ttc", 0, 0),
+            ("/System/Library/Fonts/Hiragino Sans GB.ttc", "/System/Library/Fonts/Hiragino Sans GB.ttc", 0, 0),
+        ]
+    elif system == "Windows":
+        # Windows: Microsoft YaHei (Vista+), SimSun, SimHei
+        win_fonts = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
+        candidates = [
+            (os.path.join(win_fonts, "msyh.ttc"), os.path.join(win_fonts, "msyhbd.ttc"), 0, 0),
+            (os.path.join(win_fonts, "msyh.ttf"), os.path.join(win_fonts, "msyhbd.ttf"), None, None),
+            (os.path.join(win_fonts, "simhei.ttf"), os.path.join(win_fonts, "simhei.ttf"), None, None),
+            (os.path.join(win_fonts, "simsun.ttc"), os.path.join(win_fonts, "simsun.ttc"), 0, 0),
+        ]
+    else:
+        # Linux: Noto Sans CJK, WenQuanYi, Droid Sans Fallback
+        candidates = [
+            ("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc", 0, 0),
+            ("/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc", "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc", 0, 0),
+            ("/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc", "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc", 0, 0),
+            ("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc", "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc", 0, 0),
+            ("/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc", "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc", 0, 0),
+            ("/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf", "/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf", None, None),
+        ]
+
+    return candidates
+
+
 def _register_fonts():
-    """Register CJK fonts. Try Noto Sans SC first, fallback to STHeiti."""
+    """Register CJK fonts. Priority: bundled Noto Sans SC > system CJK font > Helvetica."""
     font_dir = Path(__file__).parent / "fonts"
 
-    # Try Noto Sans SC (bundled)
+    # 1. Try bundled Noto Sans SC
     noto_regular = font_dir / "NotoSansSC-Regular.ttf"
     noto_bold = font_dir / "NotoSansSC-Bold.ttf"
 
     if noto_regular.exists():
         pdfmetrics.registerFont(TTFont("CJK", str(noto_regular)))
-        if noto_bold.exists():
-            pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_bold)))
-        else:
-            pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_regular)))
+        pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_bold if noto_bold.exists() else noto_regular)))
         return
 
-    # Fallback: STHeiti (macOS)
-    st_heiti = "/System/Library/Fonts/STHeiti Medium.ttc"
-    st_heiti_light = "/System/Library/Fonts/STHeiti Light.ttc"
-    if os.path.exists(st_heiti):
-        pdfmetrics.registerFont(TTFont("CJK", st_heiti, subfontIndex=0))
-        pdfmetrics.registerFont(TTFont("CJK-Bold", st_heiti, subfontIndex=0))
-        return
+    # 2. Try system CJK fonts (OS-specific)
+    for entry in _find_system_cjk_fonts():
+        regular_path, bold_path, regular_idx, bold_idx = entry
+        if not os.path.exists(regular_path):
+            continue
+        try:
+            if regular_idx is not None:
+                pdfmetrics.registerFont(TTFont("CJK", regular_path, subfontIndex=regular_idx))
+            else:
+                pdfmetrics.registerFont(TTFont("CJK", regular_path))
 
-    # Last resort: alias Helvetica (no CJK support but won't crash)
-    from reportlab.pdfbase.pdfmetrics import registerFontFamily
-    from reportlab.lib.fonts import addMapping
-    addMapping("CJK", 0, 0, "Helvetica")
-    addMapping("CJK", 1, 0, "Helvetica-Bold")
-    addMapping("CJK-Bold", 0, 0, "Helvetica-Bold")
-    addMapping("CJK-Bold", 1, 0, "Helvetica-Bold")
+            bold_file = bold_path if os.path.exists(bold_path) else regular_path
+            if bold_idx is not None:
+                pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file, subfontIndex=bold_idx))
+            else:
+                pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file))
+            return
+        except Exception:
+            continue
+
+    # 3. Last resort: use ReportLab's bundled Vera font (always available)
+    import reportlab
+    rl_fonts = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
+    pdfmetrics.registerFont(TTFont("CJK", os.path.join(rl_fonts, "Vera.ttf")))
+    pdfmetrics.registerFont(TTFont("CJK-Bold", os.path.join(rl_fonts, "VeraBd.ttf")))
 
 
 _register_fonts()

@@ -12,7 +12,7 @@ Key behaviors:
 import re
 from typing import Any
 
-from parse import get_doc_type, get_section_by_title
+from .parse import get_doc_type, get_section_by_title
 
 
 # ===== Enum Definitions =====
