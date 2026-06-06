@@ -56,18 +56,19 @@ Tag every Call Plan with the current AWS Sales Stage (sourced from EP / Opp Prog
 - 判断性变更（调整 Win Strategy、修改 stakeholder 重要性、改变 engagement 顺序）→ 提示销售确认后再写入
 
 ### Rule 6: Data Provenance Labeling
+
 Every piece of information must carry a provenance label so sales knows the confidence level.
 
-| Label | Meaning | Sales Action |
-|-------|---------|--------------|
-| `[销售确认]` | Information directly provided or explicitly confirmed by sales | Use directly |
-| `[AI推断]` | Information inferred by agent from context analysis | Recommend verification |
-| `[网络搜索]` | Publicly available information obtained via web search | Check timeliness |
+| 标签 | 含义 | 销售动作 |
+|------|------|---------|
+| `[销售确认]` | 销售直接提供或明确确认的信息 | 可直接使用 |
+| `[网络搜索]` | 通过网络搜索获取的公开信息 | 注意时效 |
+| `[AI推断]` | Agent 基于上下文分析推断的信息 | 建议核实 |
 
-**Labeling granularity:** Each independently verifiable assertion.
-**Display rules:** All three labels must be explicitly shown — `[销售确认]` `[网络搜索]` `[AI推断]`. No implicit defaults.
-**Upgrade mechanism:** After sales confirms → upgrade to `[销售确认]`.
-**Language rule:** Labels follow the conversation language — use Chinese labels when conversing in Chinese, English labels (`[Sales Confirmed]`/`[AI Inferred]`/`[Web Search]`) when conversing in English.
+**标注粒度：** 每条独立可判断真伪的断言。
+**显示规则：** 三种标签全部显式标注 — `[销售确认]`、`[网络搜索]`、`[AI推断]`，无隐含默认。每条信息必须有标签。
+**升级机制：** 销售确认后 → `[AI推断]` 升级为 `[销售确认]`（需销售明确确认，不可自动升级）。
+**语言规则：** 标签随对话语言切换 — 中文对话用 `[销售确认]`/`[网络搜索]`/`[AI推断]`，英文对话用 `[Sales Confirmed]`/`[Web Search]`/`[AI Inferred]`。
 
 ### Rule 7: Never Hallucinate
 Do not fabricate meeting objectives, attendee roles, customer stance, or expected outcomes. If information is unknown, mark as `[TBC]` and ask sales to provide it.

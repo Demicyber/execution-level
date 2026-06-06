@@ -62,17 +62,19 @@ Sales provides the results; agent structures the assessment.
 Do not fabricate meeting outcomes, stakeholder sentiments, or action items. PMR must reflect what actually happened. Mark unclear information as `[待确认]`.
 
 ### Rule 4: Data Provenance Labeling
+
 Every piece of information must carry a provenance label so sales knows the confidence level.
 
-| Label | Meaning | Sales Action |
-|-------|---------|--------------| 
-| `[Sales Confirmed]` | Information directly provided or explicitly confirmed by sales | Use directly |
-| `[AI Inferred]` | Information inferred by the agent based on context analysis | Suggest verification |
-| `[Web Search]` | Publicly available information obtained via web search | Check timeliness |
+| 标签 | 含义 | 销售动作 |
+|------|------|---------|
+| `[销售确认]` | 销售直接提供或明确确认的信息 | 可直接使用 |
+| `[网络搜索]` | 通过网络搜索获取的公开信息 | 注意时效 |
+| `[AI推断]` | Agent 基于上下文分析推断的信息 | 建议核实 |
 
-**Labeling granularity:** Each independently verifiable assertion.
-**Display rule:** All three labels must be explicitly shown — `[销售确认]` `[网络搜索]` `[AI推断]`. No implicit defaults.
-**Upgrade mechanism:** After sales confirms → upgrade to `[Sales Confirmed]`.
+**标注粒度：** 每条独立可判断真伪的断言。
+**显示规则：** 三种标签全部显式标注 — `[销售确认]`、`[网络搜索]`、`[AI推断]`，无隐含默认。每条信息必须有标签。
+**升级机制：** 销售确认后 → `[AI推断]` 升级为 `[销售确认]`（需销售明确确认，不可自动升级）。
+**语言规则：** 标签随对话语言切换 — 中文对话用 `[销售确认]`/`[网络搜索]`/`[AI推断]`，英文对话用 `[Sales Confirmed]`/`[Web Search]`/`[AI Inferred]`。
 
 ---
 
