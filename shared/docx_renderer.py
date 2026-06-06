@@ -71,6 +71,22 @@ BADGE_COLORS = {
     "remove": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
     "no-change": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
     "confirm": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "新增": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "更新": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "删除": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    "确认": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    # Milestone
+    "skipped": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    # Gap
+    "still a gap": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    # Objection categories
+    "status quo": RGBColor(0x7C, 0x3A, 0xED) if HAS_DOCX else None,
+    "status-quo": RGBColor(0x7C, 0x3A, 0xED) if HAS_DOCX else None,
+    "price/value": RGBColor(0xB4, 0x53, 0x09) if HAS_DOCX else None,
+    "price/competition": RGBColor(0xB4, 0x53, 0x09) if HAS_DOCX else None,
+    "capability": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "risk/trust": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    "authority/process": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
 }
 
 DOC_TYPE_LABELS = {

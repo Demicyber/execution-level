@@ -215,6 +215,7 @@ body {
 /* Gap Status */
 .badge-answered { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
 .badge-unanswered { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
+.badge-still-a-gap { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
 
 /* Change Type */
 .badge-update { color: var(--color-next); background: var(--color-primary-light); border-color: var(--color-next); }
@@ -223,6 +224,17 @@ body {
 .badge-no-change { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
 .badge-confirm { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
 .badge-open { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
+
+/* Milestone Status */
+.badge-skipped { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
+
+/* Objection Category */
+.badge-status-quo { color: #7C3AED; background: #F3E8FF; border-color: #7C3AED; }
+.badge-price-value { color: #B45309; background: #FFFBEB; border-color: #B45309; }
+.badge-price-competition { color: #B45309; background: #FFFBEB; border-color: #B45309; }
+.badge-capability { color: var(--color-next); background: var(--color-primary-light); border-color: var(--color-next); }
+.badge-risk-trust { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
+.badge-authority-process { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 
 /* Fallback */
 .badge-fallback { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }

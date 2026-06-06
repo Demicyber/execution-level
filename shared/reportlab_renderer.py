@@ -106,6 +106,14 @@ BADGE_COLORS = {
     "remove": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
     "no-change": (C.TEXT_MUTED, C.BG_SUBTLE),
     "confirm": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
+    "新增": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
+    "更新": (C.PRIMARY, C.PRIMARY_LIGHT),
+    "删除": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
+    "确认": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
+    # Milestone
+    "skipped": (C.UNKNOWN, C.BG_SUBTLE),
+    # Gap
+    "still a gap": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
 }
 
 CATEGORY_COLORS = {
@@ -113,7 +121,9 @@ CATEGORY_COLORS = {
     "risk/trust": C.RISK_TRUST,
     "capability": C.CAPABILITY,
     "authority": C.AUTHORITY,
+    "authority/process": C.AUTHORITY,
     "price-value": C.PRICE_VALUE,
+    "price/value": C.PRICE_VALUE,
     "price/competition": C.PRICE_VALUE,
     "status-quo": C.STATUS_QUO,
     "status quo": C.STATUS_QUO,

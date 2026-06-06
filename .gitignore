@@ -1,1 +1,11 @@
 __pycache__/
+*.pyc
+# Rendered output files
+*.html
+*.pdf
+*.docx
+!shared/DESIGN_SPEC.md
+# OS
+.DS_Store
+# Test
+.pytest_cache/

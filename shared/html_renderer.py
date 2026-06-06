@@ -271,22 +271,45 @@ def _render_table(block: dict) -> str:
 def _render_cell_with_badges(cell: str) -> str:
     cell_lower = cell.lower().strip()
 
+    # PMR Outcome Result
     if cell_lower in ("achieved", "partial", "not-achieved"):
         prefix = {"achieved": "✓", "partial": "△", "not-achieved": "✗"}.get(cell_lower, "")
         css_class = f"badge-{cell_lower}"
         return f'<span class="badge {css_class}">{prefix} {_esc(cell.strip().title())}</span>'
 
-    if cell_lower in ("high", "medium", "low"):
+    # Priority (action items + stakeholder)
+    if cell_lower in ("high", "medium", "low", "must-meet", "important", "nice-to-have"):
         return f'<span class="badge badge-{cell_lower}">{_esc(cell.strip().title())}</span>'
 
-    if cell_lower in ("pending", "in-progress", "done"):
+    # Action Status
+    if cell_lower in ("pending", "in-progress", "in progress", "done", "open"):
+        css = cell_lower.replace(" ", "-")
+        return f'<span class="badge badge-{css}">{_esc(cell.strip().title())}</span>'
+
+    # Gap Status (PMR Information Gap Check)
+    if cell_lower in ("answered", "unanswered", "still a gap"):
+        css = cell_lower.replace(" ", "-")
+        return f'<span class="badge badge-{css}">{_esc(cell.strip().title())}</span>'
+
+    # Change Type (PMR What Changed)
+    if cell_lower in ("update", "add", "remove", "no-change", "confirm", "新增", "更新", "删除", "确认"):
+        css = f"badge-{cell_lower}" if cell_lower.isascii() else "badge-add"
+        return f'<span class="badge {css}">{_esc(cell.strip())}</span>'
+
+    # Milestone Status (EP Roadmap)
+    if cell_lower in ("done", "planned", "skipped") or "next" in cell_lower:
+        css = "badge-next" if "next" in cell_lower else f"badge-{cell_lower}"
+        display = cell.strip()
+        return f'<span class="badge {css}">{_esc(display)}</span>'
+
+    # Stance values in table cells
+    if cell_lower in ("sponsor", "supporter", "neutral", "non-supporter", "adversary"):
         return f'<span class="badge badge-{cell_lower}">{_esc(cell.strip().title())}</span>'
 
-    if cell_lower in ("answered", "unanswered"):
-        return f'<span class="badge badge-{cell_lower}">{_esc(cell.strip().title())}</span>'
-
-    if cell_lower in ("update", "add", "remove", "no-change"):
-        return f'<span class="badge badge-{cell_lower}">{_esc(cell.strip().title())}</span>'
+    # Objection Category
+    if cell_lower in ("status quo", "status-quo", "price/value", "price/competition", "capability", "risk/trust", "authority/process"):
+        css = cell_lower.replace("/", "-").replace(" ", "-")
+        return f'<span class="badge badge-{css}">{_esc(cell.strip().title())}</span>'
 
     return _render_inline(cell)
 
