@@ -12,7 +12,7 @@ sales_stage: Prove
 
 | Objective | Target Outcome | Actual Outcome | Result |
 |-----------|---------------|----------------|--------|
-| Confirm Phase 2 scope and timeline appetite | Verbal commitment for Q2 start | CTO confirmed "我们Q2启动没问题" — pending board rubber stamp | `achieved` |
+| Confirm Phase 2 scope and timeline appetite [AI推断] | Verbal commitment for Q2 start | CTO confirmed "我们Q2启动没问题" — pending board rubber stamp | `achieved` |
 | Address multi-cloud governance concern | Governance framework agreement | CTO accepted "AWS-primary with open standards" framing | `achieved` |
 | Explore managed services expansion | Interest signal for new services | Not discussed — ran out of time | `not-achieved` |
 
@@ -47,7 +47,7 @@ sales_stage: Prove
 
 | Dimension | Change Type | Before | After | Evidence |
 |-----------|-------------|--------|-------|----------|
-| **Stakeholder: 刘建国** | `update` | Stance: supporter | Stance: champion — "我来内部推" | Direct quote in meeting |
+| **Stakeholder: 刘建国** | `update` | Stance: supporter | Stance: champion — "我来内部推" [销售确认] | Direct quote in meeting |
 | **Stakeholder: 赵明** | `update` | Stance: neutral | Stance: supporter — agreed to lead Phase 2 | Accepted technical lead role |
 | **Win Strategy** | `confirm` | AWS-primary positioning | Confirmed — CTO rejected multi-cloud complexity | "一个平台做深比三个平台都浅好" |
 | **Timeline** | `update` | Q2 tentative | Q2 confirmed — "4月开始没问题" | CTO verbal commitment |
@@ -82,7 +82,7 @@ Phase 2 进入加速模式。建议：(1) 本周内发 SOW 初稿给赵明 revie
 
 感谢刘总和赵总今天的时间。总结今天讨论的几个关键点：
 
-1. **Phase 2 时间线确认** — Q2（4月）启动，赵总作为技术负责人
+1. **Phase 2 时间线确认** — Q2（4月）启动，赵总作为技术负责人 [销售确认]
 2. **架构方向** — AWS-primary + open standards，确保灵活性
 3. **下一步** — 本周五前我们发 SOW 初稿给赵总 review
 

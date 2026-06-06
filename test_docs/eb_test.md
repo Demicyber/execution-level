@@ -30,7 +30,7 @@ sales_stage: Prove
 
 | Dimension | Details |
 |-----------|---------|
-| **Industry & Position** | Financial Services — Top 5 domestic bank, 2,400 branches |
+| **Industry & Position** | Financial Services — Top 5 domestic bank, 2,400 branches [网络搜索] |
 | **Strategic Priorities** | Digital transformation, cost optimization, regulatory compliance |
 | **Recent News** | Announced AI-first strategy in Q4 earnings call |
 | **Competitive Landscape** | Active Azure EA, exploring GCP for ML workloads |
@@ -64,7 +64,7 @@ Secure verbal commitment for Phase 2 SOW review and establish joint timeline for
 
 ### Strategic Alignment
 
-This meeting maps to EP Milestone #4 (Executive Alignment) — gate to procurement engagement.
+This meeting maps to EP Milestone #4 (Executive Alignment) — gate to procurement engagement. [AI推断]
 
 ### Objective 1: Confirm Phase 2 scope and timeline appetite
 
@@ -109,7 +109,7 @@ This meeting maps to EP Milestone #4 (Executive Alignment) — gate to procureme
 | Dimension | Details |
 |-----------|---------|
 | **Geo / Segment** | Greater China / Enterprise |
-| **Current Spend** | $2.4M ARR (Phase 1 steady state) |
+| **Current Spend** | $2.4M ARR (Phase 1 steady state) [销售确认] |
 | **PPA Status** | 3-year PPA signed, 18 months remaining, 67% utilized |
 | **Growth Trajectory** | Phase 2 would add ~$1.8M ARR |
 | **Account Health** | Green — TAM engagement active, 2 support cases (resolved) |
@@ -118,7 +118,7 @@ This meeting maps to EP Milestone #4 (Executive Alignment) — gate to procureme
 
 ### Previous Meeting Notes
 
-- **2025-02-15 QBR**: CTO praised Phase 1 delivery, raised multi-cloud governance question. VP Infra asked about training programs.
+- **2025-02-15 QBR**: CTO praised Phase 1 delivery, raised multi-cloud governance question. VP Infra asked about training programs. [销售确认]
 - **2025-03-01 Technical Review**: Security architecture approved (see PMR-2025-03-01). Data residency solution accepted.
 
 ### Competitive Intelligence

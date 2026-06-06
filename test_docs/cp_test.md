@@ -35,7 +35,7 @@ sales_stage: Qualify
 
 | # | Objective | Target Outcome | Priority |
 |---|-----------|----------------|----------|
-| 1 | Validate security architecture meets compliance | Written sign-off on design | `must-meet` |
+| 1 | Validate security architecture meets compliance | Written sign-off on design [AI推断] | `must-meet` |
 | 2 | Address data residency concern | Agreement on region strategy | `must-meet` |
 | 3 | Introduce managed SIEM integration | Interest for follow-up demo | `nice-to-have` |
 
@@ -43,7 +43,7 @@ sales_stage: Qualify
 
 | Tier | Criteria | Disqualifier |
 |------|----------|--------------|
-| ✅ Ideal | Security sign-off + demo scheduled + procurement timeline | `no` |
+| ✅ Ideal | Security sign-off + demo scheduled + procurement timeline [AI推断] | `no` |
 | ⚠️ Acceptable | Security sign-off + verbal interest in next step | `no` |
 | ❌ Minimum | Clear list of remaining blockers with owners | `no` |
 | 🚪 Walk-away | Customer reveals competing POC already in progress | `yes` |
@@ -54,7 +54,7 @@ sales_stage: Qualify
 
 | # | Question | Context | What Good Sounds Like |
 |---|----------|---------|----------------------|
-| 1 | "What's your current incident response SLA for P1 security events?" | They mentioned compliance audit coming Q2 | Specific SLA numbers → map to our automation value |
+| 1 | "What's your current incident response SLA for P1 security events?" | They mentioned compliance audit coming Q2 [销售确认] | Specific SLA numbers → map to our automation value |
 | 2 | "How does your security team handle cross-region data access today?" | Data residency concern from last meeting | Manual process = pain point for our solution |
 
 ### B. Information to Deliver
@@ -68,7 +68,7 @@ sales_stage: Qualify
 
 | Category | Objection | Acknowledge | Pivot | Elevate |
 |----------|-----------|-------------|-------|---------|
-| `capability` | "Can your encryption handle our custom key rotation policy?" | "Key rotation is critical for your compliance posture." | "Our KMS integration supports custom rotation schedules — let me show the config." | "This actually simplifies your audit trail significantly." |
+| `capability` | "Can your encryption handle our custom key rotation policy?" [AI推断] | "Key rotation is critical for your compliance posture." | "Our KMS integration supports custom rotation schedules — let me show the config." | "This actually simplifies your audit trail significantly." |
 | `risk/trust` | "What happens during a region failover?" | "Business continuity is non-negotiable." | "Our multi-region failover keeps data in-boundary — here's the DR architecture." | "You'd actually get better RPO than your current setup." |
 
 ### ⚠️ Landmines
@@ -91,7 +91,7 @@ sales_stage: Qualify
 ## 7. 🚀 Potential Next Steps
 
 ### Ideal Path
-- Security sign-off documented → share with procurement
+- Security sign-off documented → share with procurement [AI推断]
 - Schedule SIEM demo with broader team (Week of Mar 24)
 - Procurement kickoff call with 王芳
 

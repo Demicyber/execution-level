@@ -176,6 +176,9 @@ def validate(doc: dict, strict: bool = False) -> dict:
     elif doc_type == "post-meeting-report":
         _validate_pmr(sections, warnings, errors)
     
+    # 5. Provenance label check (mandatory for all doc types)
+    _validate_provenance(sections, doc_type, warnings, errors, strict)
+    
     valid = len(errors) == 0
     
     return {
@@ -430,3 +433,100 @@ def normalize_badge_value(value: str) -> str:
     if v in ALL_BADGE_VALUES:
         return v
     return "fallback"
+
+
+# ===== Provenance Label Validation =====
+
+_PROVENANCE_LABELS_ZH = {"[销售确认]", "[网络搜索]", "[AI推断]"}
+_PROVENANCE_LABELS_EN = {"[Sales Confirmed]", "[Web Search]", "[AI Inferred]"}
+_ALL_PROVENANCE = _PROVENANCE_LABELS_ZH | _PROVENANCE_LABELS_EN
+
+# Sections that are structural/meta and don't need provenance labels
+_PROVENANCE_EXEMPT_SECTIONS = {
+    "meeting details", "meeting agenda", "execution log", "change log",
+    "estimate & contingency", "next milestone detail", "meeting logistics",
+    "customer recap email",
+}
+
+
+def _validate_provenance(sections: list, doc_type: str, warnings: list, errors: list, strict: bool = False):
+    """Check that provenance labels are present in content sections.
+    
+    Rule: Every content-bearing section must contain at least one provenance label.
+    This ensures the agent is actually labeling information sources, not skipping them.
+    """
+    target = errors if strict else warnings
+    
+    sections_without_labels = []
+    total_content_sections = 0
+    
+    for section in sections:
+        title_lower = section.get("title", "").lower().strip()
+        
+        # Skip exempt sections (structural, not assertion-bearing)
+        if any(exempt in title_lower for exempt in _PROVENANCE_EXEMPT_SECTIONS):
+            continue
+        
+        # Skip placeholder sections
+        content_blocks = section.get("content", [])
+        if not content_blocks:
+            continue
+        if len(content_blocks) == 1 and content_blocks[0].get("text", "") in ("[待补充]", "[TBC]"):
+            continue
+        
+        total_content_sections += 1
+        
+        # Check if any provenance label exists in this section's text content
+        section_text = _extract_section_text(section)
+        has_label = any(label in section_text for label in _ALL_PROVENANCE)
+        
+        if not has_label:
+            sections_without_labels.append(section.get("title", "?"))
+    
+    if sections_without_labels and total_content_sections > 0:
+        # Only flag if more than half of content sections lack labels
+        # (allows partial drafts with [TBC] sections)
+        ratio = len(sections_without_labels) / total_content_sections
+        if ratio > 0.5:
+            target.append(
+                f"Provenance labels missing in {len(sections_without_labels)}/{total_content_sections} "
+                f"content sections: {', '.join(sections_without_labels[:5])}. "
+                f"Every assertion must carry [销售确认]/[网络搜索]/[AI推断]."
+            )
+
+
+def _extract_section_text(section: dict) -> str:
+    """Recursively extract all text from a section's content blocks."""
+    texts = []
+    for block in section.get("content", []):
+        _collect_text(block, texts)
+    return " ".join(texts)
+
+
+def _collect_text(block, texts: list):
+    """Recursively collect text from a content block."""
+    if isinstance(block, str):
+        texts.append(block)
+        return
+    if isinstance(block, dict):
+        for key in ("text", "stance", "role", "priority", "what_they_care_about",
+                    "what_we_need", "how_to_win", "focus", "communication", "our_goal",
+                    "context", "response", "plan_b", "acknowledge", "pivot", "elevate"):
+            val = block.get(key, "")
+            if val:
+                texts.append(str(val))
+        # Recurse into nested content
+        for sub in block.get("content", []):
+            _collect_text(sub, texts)
+        # Table rows
+        for row in block.get("rows", []):
+            if isinstance(row, list):
+                texts.extend(str(cell) for cell in row)
+            elif isinstance(row, dict):
+                texts.extend(str(v) for v in row.values())
+        # Fields dict
+        for v in block.get("fields", {}).values():
+            texts.append(str(v))
+        # Items list (bullets)
+        for item in block.get("items", []):
+            texts.append(str(item))
