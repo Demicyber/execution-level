@@ -196,6 +196,7 @@ def _register_fonts():
     if noto_regular.exists():
         pdfmetrics.registerFont(TTFont("CJK", str(noto_regular)))
         pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_bold if noto_bold.exists() else noto_regular)))
+        _register_emoji_font()
         return
 
     # 2. Try system CJK fonts (OS-specific)
@@ -214,6 +215,7 @@ def _register_fonts():
                 pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file, subfontIndex=bold_idx))
             else:
                 pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file))
+            _register_emoji_font()
             return
         except Exception:
             continue
@@ -224,6 +226,7 @@ def _register_fonts():
     rl_fonts = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
     pdfmetrics.registerFont(TTFont("CJK", os.path.join(rl_fonts, "Vera.ttf")))
     pdfmetrics.registerFont(TTFont("CJK-Bold", os.path.join(rl_fonts, "VeraBd.ttf")))
+    _register_emoji_font()
 
     import logging as _logging
     _logger = _logging.getLogger(__name__)
@@ -239,6 +242,62 @@ def _register_fonts():
         RuntimeWarning,
         stacklevel=2,
     )
+
+
+_EMOJI_FONT_AVAILABLE = False
+
+
+def _register_emoji_font():
+    """Register Noto Emoji font for emoji rendering in PDF."""
+    global _EMOJI_FONT_AVAILABLE
+    # Search paths for Noto Emoji
+    candidates = [
+        Path(__file__).parent / "fonts" / "NotoEmoji-Regular.ttf",
+        Path("/usr/share/fonts/google-noto-emoji/NotoEmoji-Regular.ttf"),
+        Path("/usr/share/fonts/truetype/noto/NotoEmoji-Regular.ttf"),
+        Path("/usr/share/fonts/noto-emoji/NotoEmoji-Regular.ttf"),
+    ]
+    for path in candidates:
+        if path.exists():
+            try:
+                pdfmetrics.registerFont(TTFont("Emoji", str(path)))
+                _EMOJI_FONT_AVAILABLE = True
+                return
+            except Exception:
+                continue
+
+
+def _wrap_emoji(text: str) -> str:
+    """Wrap emoji characters with <font name='Emoji'> tags for ReportLab Paragraph rendering.
+    If no emoji font is available, strip emoji to avoid ☒ glyphs."""
+    if not text:
+        return text
+
+    import re
+    # Emoji unicode ranges (covers most common emoji)
+    emoji_pattern = re.compile(
+        r'[\U0001F300-\U0001F9FF'   # Misc Symbols, Emoticons, Supplemental
+        r'\U0001FA00-\U0001FA6F'    # Chess, Extended-A
+        r'\U0001FA70-\U0001FAFF'    # Extended-A continued
+        r'\u2600-\u26FF'            # Misc Symbols
+        r'\u2700-\u27BF'            # Dingbats
+        r'\u2B50\u2B55'             # Stars, circles
+        r'\u23E9-\u23F3'            # Media controls
+        r'\u23F8-\u23FA'            # Media controls
+        r'\u25AA-\u25FE'            # Geometric shapes
+        r'\u200D'                   # ZWJ
+        r'\uFE0F]+'                 # Variation selector
+    )
+
+    if not _EMOJI_FONT_AVAILABLE:
+        # Strip emoji entirely to avoid ☒ display
+        return emoji_pattern.sub('', text).strip()
+
+    # Wrap each emoji sequence with font tag
+    def _replace(m):
+        return f'<font name="Emoji">{m.group(0)}</font>'
+
+    return emoji_pattern.sub(_replace, text)
 
 
 _register_fonts()
@@ -1369,13 +1428,14 @@ def _build_progress_bar(block: dict) -> list:
 
 # ===== Utilities =====
 def _esc(text: str) -> str:
-    """Escape XML special chars for ReportLab Paragraph."""
+    """Escape XML special chars for ReportLab Paragraph, then wrap emoji with font tags."""
     if not text:
         return ""
     text = str(text)
     text = text.replace("&", "&amp;")
     text = text.replace("<", "&lt;")
     text = text.replace(">", "&gt;")
+    text = _wrap_emoji(text)
     return text
 
 

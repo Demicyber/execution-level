@@ -38,3 +38,16 @@ fi
 
 echo "Done! Fonts installed:"
 ls -lh *.ttf 2>/dev/null || echo "No .ttf files found — download may have failed."
+
+# Download Noto Emoji for emoji rendering in PDFs
+echo ""
+echo "Downloading Noto Emoji (black-and-white emoji for PDF)..."
+curl -sL "https://github.com/google/fonts/raw/main/ofl/notoemoji/static/NotoEmoji-Regular.ttf" -o NotoEmoji-Regular.ttf
+
+if [ -s NotoEmoji-Regular.ttf ]; then
+  echo "Emoji font installed: $(ls -lh NotoEmoji-Regular.ttf)"
+else
+  echo "WARNING: Emoji font download failed. PDF emoji will be stripped."
+  echo "         Alternatively install system package: sudo yum install google-noto-emoji-fonts"
+  rm -f NotoEmoji-Regular.ttf
+fi
