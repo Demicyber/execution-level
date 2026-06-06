@@ -280,53 +280,62 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 }
 ```
 
-### 2.7 Roadmap Timeline (EP specific)
+### 2.7 Progress Bar (EP specific)
 
-```css
-.roadmap {
-  position: relative;
-  padding-left: 44px;
-}
+Horizontal metro-style progress indicator for `📈 Engagement Progress` section.
+Detected via `━━` pattern in markdown (e.g., `●━━━●━━━◉━━━○━━━○`).
 
-.roadmap::before {
-  content: '';
-  position: absolute;
-  left: 15px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(to bottom, var(--color-done), var(--color-primary), var(--color-border));
-  border-radius: 1px;
-}
-
-.milestone {
-  position: relative;
-  margin-bottom: 20px;
-  padding: 16px 20px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-}
-
-.milestone-marker {
-  position: absolute;
-  left: -37px;
-  top: 18px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.milestone-marker.done { background: var(--color-done); color: white; }
-.milestone-marker.next { background: var(--color-next); color: white; }
-.milestone-marker.planned { background: #F3F4F6; color: var(--color-text-secondary); border: 2px solid var(--color-border); }
+```
+Design: [done ●]──[done ●]──[current ◉]──[planned ○]──[planned ○]
 ```
 
-### 2.8 Objection Cards (CP specific)
+```css
+.progress-bar-track { display: flex; align-items: flex-start; justify-content: center; }
+.progress-node { display: flex; flex-direction: column; align-items: center; }
+.progress-dot { width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--color-border); }
+.progress-node.done .progress-dot { background: var(--color-achieved); border-color: var(--color-achieved); }
+.progress-node.current .progress-dot { width: 22px; height: 22px; background: var(--color-primary); box-shadow: 0 0 0 4px rgba(109,40,217,0.2); }
+.progress-node.planned .progress-dot { background: var(--color-bg-subtle); border-color: var(--color-border); }
+.progress-connector { flex: 1; height: 3px; background: var(--color-border); }
+.progress-connector.done { background: var(--color-achieved); }
+```
+
+- PDF: ReportLab draws circles + connecting lines inline
+- DOCX: Invisible table with ● ◉ ○ characters + colored labels
+
+### 2.8 Journey Map / Roadmap Timeline (EP specific)
+
+Vertical journey-map visualization for `📍 Engagement Roadmap` section.
+Detected via table with Status column containing `Done`/`Current`/`Planned`.
+
+```
+Design:
+  ┃ (purple)      [1] ✓  ─── Card (solid border)        "Done"
+  ┃ (purple)      [2] ✓  ─── Card (solid border)        "Done"
+  ┃ (purple→gray) [3]    ─── Card (dashed purple border) "Current"
+  ┃ (gray)        [4]    ─── Card (solid gray border)    "Planned"
+```
+
+```css
+.journey-container { padding: 1.5rem; border-radius: 12px; border: 1px solid var(--color-border); }
+.journey-progress-badge { font-size: 0.8rem; border-radius: 9999px; background: var(--color-primary-light); }
+.journey-timeline { position: relative; padding-left: 48px; }
+/* Segmented line: purple for done/current stations, gray for planned */
+.journey-station.done::before,
+.journey-station.current::before { width: 4px; background: var(--color-primary); }
+/* Nodes */
+.journey-node.done { background: var(--color-primary); color: #fff; box-shadow: 0 0 0 4px rgba(109,40,217,0.15); }
+.journey-node.current { background: var(--color-primary); color: #fff; box-shadow: 0 0 0 4px rgba(234,179,8,0.3); /* gold ring */ }
+.journey-node.planned { background: #fff; border: 2px solid var(--color-border); }
+/* Cards */
+.journey-card { border-radius: 10px; border: 1px solid var(--color-border); }
+.journey-card.current { border: 2px dashed var(--color-primary); background: #faf5ff; }
+```
+
+- PDF: ReportLab draws vertical circles + status-colored cards with left borders
+- DOCX: Standard table format (no journey map visualization)
+
+### 2.9 Objection Cards (CP specific)
 
 ```css
 .objection-card {

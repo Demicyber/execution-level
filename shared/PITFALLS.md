@@ -193,3 +193,5 @@ fc-list | grep -i "noto.*cjk"
 4. **Test CJK rendering** — verify Chinese characters appear in PDF/Word
 5. **Test long document pagination** — 5+ page EP, verify no orphaned headers or huge whitespace
 6. **Cross-format comparison** — same input should produce visually equivalent HTML/PDF/Word
+7. **Progress bar detection** — verify `━━` pattern renders metro-style dots (not raw text)
+8. **Journey map detection** — verify Roadmap table with Status column renders visual timeline (HTML/PDF only; DOCX keeps table)

@@ -702,9 +702,9 @@ def _build_roadmap_card(milestone: dict) -> list:
 
     # Status indicator
     if status == "done":
-        indicator_color = colors.HexColor("#386A20")
+        indicator_color = C.PRIMARY
         indicator_text = "✓ Done"
-        indicator_fg = colors.HexColor("#386A20")
+        indicator_fg = colors.HexColor("#166534")
         circle_label = "✓"
     elif status in ("next", "current", "in-progress"):
         indicator_color = C.PRIMARY
@@ -771,8 +771,9 @@ def _build_roadmap_card(milestone: dict) -> list:
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
     ]))
 
-    # Numbered circle on left
-    circle = _RoadmapCircle(circle_label, indicator_color)
+    # Numbered circle on left — gold ring for current
+    ring = colors.HexColor("#EAB308") if status in ("next", "current", "in-progress") else None
+    circle = _RoadmapCircle(circle_label, indicator_color, ring_color=ring)
 
     # Compose: [circle | card]
     outer = Table([[circle, card_inner]], colWidths=[8 * mm, CONTENT_W - 8 * mm])
@@ -790,10 +791,11 @@ def _build_roadmap_card(milestone: dict) -> list:
 class _RoadmapCircle(Flowable):
     """Small numbered circle for roadmap timeline."""
 
-    def __init__(self, label, color, size=5.5 * mm):
+    def __init__(self, label, color, size=5.5 * mm, ring_color=None):
         Flowable.__init__(self)
         self.label = label
         self.color = color
+        self.ring_color = ring_color
         self.size = size
         self.width = size
         self.height = size
@@ -802,6 +804,11 @@ class _RoadmapCircle(Flowable):
         c = self.canv
         c.saveState()
         r = self.size / 2
+        # Outer ring if specified
+        if self.ring_color:
+            c.setStrokeColor(self.ring_color)
+            c.setLineWidth(1.5)
+            c.circle(r, r, r + 1.5, fill=0, stroke=1)
         c.setFillColor(self.color)
         c.circle(r, r, r, fill=1, stroke=0)
         c.setFillColor(C.WHITE)
@@ -1196,6 +1203,20 @@ def _build_subsection(block: dict, doc_type: str) -> list:
         for b in content:
             elements.extend(_build_block(b, doc_type))
         return elements
+
+    # Roadmap journey map detection
+    if _is_roadmap_section(title):
+        milestones = _extract_milestones_from_table(content)
+        if milestones:
+            emoji = block.get("emoji", "")
+            emoji_prefix = f"{emoji} " if emoji else ""
+            elements = [Paragraph(f"<b>{_esc(emoji_prefix)}{_esc(title)}</b>", STYLES["sub_heading"])]
+            elements.extend(_build_roadmap_visual(milestones))
+            # Render non-table content after the visual
+            for b in content:
+                if b.get("type") != "table":
+                    elements.extend(_build_block(b, doc_type))
+            return elements
 
     emoji = block.get("emoji", "")
     emoji_prefix = f"{emoji} " if emoji else ""

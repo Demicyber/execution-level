@@ -508,6 +508,12 @@ def _render_subsection(block: dict, doc_type: str) -> str:
     if _is_next_steps_path(raw_title):
         return _render_next_steps_path(raw_title, content)
 
+    # Engagement Roadmap journey map detection
+    if "roadmap" in title.lower():
+        for b in content:
+            if b.get("type") == "table" and "Status" in b.get("headers", []):
+                return _render_roadmap_journey(block, b)
+
     has_milestones = any(b.get("type") == "milestone" for b in content)
 
     parts = []
@@ -673,6 +679,90 @@ def _render_progress_bar(block: dict) -> str:
         nodes_html.append(node)
     
     return f'  <div class="progress-bar-track">{"".join(nodes_html)}</div>'
+
+
+def _render_roadmap_journey(subsection: dict, table: dict) -> str:
+    """Render roadmap table as a vertical timeline journey map."""
+    title = subsection.get("title", "")
+    emoji = subsection.get("emoji", "")
+    emoji_str = f"{_esc(emoji)} " if emoji else ""
+    
+    headers = table.get("headers", [])
+    rows = table.get("rows", [])
+    
+    # Find column indices
+    status_idx = headers.index("Status") if "Status" in headers else -1
+    milestone_idx = headers.index("Milestone") if "Milestone" in headers else 1
+    stakeholder_idx = headers.index("Key Stakeholders") if "Key Stakeholders" in headers else 2
+    team_idx = headers.index("AWS Team") if "AWS Team" in headers else 3
+    
+    # Determine current milestone
+    current_idx = 0
+    for i, row in enumerate(rows):
+        status = row[status_idx].lower().replace("*", "").strip() if status_idx >= 0 else ""
+        if "next" in status:
+            current_idx = i
+            break
+        elif "done" in status:
+            current_idx = i + 1
+    
+    # Count done
+    done_count = sum(1 for row in rows if "done" in row[status_idx].lower().replace("*", ""))
+    total = len(rows)
+    
+    parts = []
+    parts.append(f'  <div class="journey-container">')
+    parts.append(f'    <div class="journey-header">')
+    parts.append(f'      <div class="sub-heading">{emoji_str}{_esc(title)}</div>')
+    parts.append(f'      <div class="journey-progress-badge">{done_count}/{total} Stations Complete</div>')
+    parts.append(f'    </div>')
+    parts.append(f'    <div class="journey-timeline">')
+    
+    for i, row in enumerate(rows):
+        status_raw = row[status_idx].lower().replace("*", "").strip() if status_idx >= 0 else "planned"
+        if "done" in status_raw:
+            state = "done"
+            badge_html = '<span class="journey-badge done">✓ Done</span>'
+        elif "next" in status_raw:
+            state = "current"
+            badge_html = '<span class="journey-badge current">▶ Next</span>'
+        else:
+            state = "planned"
+            badge_html = '<span class="journey-badge planned">Planned</span>'
+        
+        num = i + 1
+        milestone_text = row[milestone_idx] if milestone_idx < len(row) else ""
+        stakeholders = row[stakeholder_idx] if stakeholder_idx < len(row) else ""
+        team = row[team_idx] if team_idx < len(row) else ""
+        
+        # Node
+        if state == "done":
+            node_html = '<div class="journey-node done"><span>✓</span></div>'
+        elif state == "current":
+            node_html = f'<div class="journey-node current"><span>{num}</span></div>'
+        else:
+            node_html = f'<div class="journey-node planned"><span>{num}</span></div>'
+        
+        parts.append(f'      <div class="journey-station {state}">')
+        parts.append(f'        {node_html}')
+        parts.append(f'        <div class="journey-card {state}">')
+        parts.append(f'          <div class="journey-card-header">')
+        parts.append(f'            <div class="journey-card-title">{_render_inline(milestone_text)}</div>')
+        parts.append(f'            {badge_html}')
+        parts.append(f'          </div>')
+        parts.append(f'          <div class="journey-card-meta">')
+        if stakeholders:
+            parts.append(f'            <span class="journey-tag">👤 {_esc(stakeholders)}</span>')
+        if team:
+            parts.append(f'            <span class="journey-tag">👁 {_esc(team)}</span>')
+        parts.append(f'          </div>')
+        parts.append(f'        </div>')
+        parts.append(f'      </div>')
+    
+    parts.append(f'    </div>')
+    parts.append(f'  </div>')
+    
+    return '\n'.join(parts)
 
 
 def _render_highlight(block: dict) -> str:

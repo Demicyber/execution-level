@@ -688,3 +688,160 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 .progress-node.current + .progress-connector {
   margin-top: 12px;
 }
+
+/* Journey Map — Vertical timeline for Engagement Roadmap */
+.journey-container {
+  margin: 1rem 0;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+.journey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.journey-progress-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 9999px;
+  padding: 4px 14px;
+}
+.journey-timeline {
+  position: relative;
+  padding-left: 48px;
+}
+/* Segmented vertical line — purple for done, gray for planned */
+.journey-timeline::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-border);
+}
+.journey-station {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.journey-station:last-child {
+  margin-bottom: 0;
+}
+/* Purple line segment for done + current stations */
+.journey-station.done::before,
+.journey-station.current::before {
+  content: '';
+  position: absolute;
+  left: -31px;
+  top: 0;
+  bottom: -20px;
+  width: 4px;
+  background: var(--color-primary);
+  z-index: 0;
+}
+.journey-station.current::before {
+  bottom: 50%;
+}
+.journey-station:last-child.done::before,
+.journey-station:last-child.current::before {
+  bottom: 50%;
+}
+.journey-node {
+  position: absolute;
+  left: -48px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.journey-node.done {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.15);
+}
+.journey-node.current {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.3);
+}
+.journey-node.planned {
+  background: #fff;
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border);
+}
+.journey-card {
+  flex: 1;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+}
+.journey-card.current {
+  border: 2px dashed var(--color-primary);
+  background: #faf5ff;
+}
+.journey-card.done {
+  border: 1px solid var(--color-border);
+}
+.journey-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.journey-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+.journey-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+.journey-badge.done {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+.journey-badge.current {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border: 1px solid #a78bfa;
+}
+.journey-badge.planned {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+.journey-card-meta {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.journey-tag {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-subtle);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
