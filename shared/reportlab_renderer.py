@@ -718,6 +718,8 @@ def _build_roadmap_card(milestone: dict) -> list:
         circle_label = str(number)
 
     # Build card content
+    # Calculate available width inside the card (outer col - padding)
+    CARD_INNER_W = CONTENT_W - 8 * mm - 14 * mm  # outer col minus L+R padding (8+6)
     parts = []
 
     # Title + status badge on same row
@@ -725,7 +727,7 @@ def _build_roadmap_card(milestone: dict) -> list:
     status_style = ParagraphStyle("rm_status", fontName=FONT_BOLD, fontSize=7, leading=10, textColor=indicator_fg, alignment=TA_RIGHT)
     title_row = Table(
         [[Paragraph(_esc(title), title_style), Paragraph(indicator_text, status_style)]],
-        colWidths=[CONTENT_W - 34 * mm, 22 * mm]
+        colWidths=[CARD_INNER_W - 22 * mm, 22 * mm]
     )
     title_row.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -761,7 +763,7 @@ def _build_roadmap_card(milestone: dict) -> list:
 
     # Wrap card content in inner table
     card_inner_data = [[p] for p in parts]
-    card_inner = Table(card_inner_data, colWidths=[CONTENT_W - 16 * mm])
+    card_inner = Table(card_inner_data, colWidths=[CARD_INNER_W])
     card_inner.setStyle(TableStyle([
         ("BOX", (0, 0), (-1, -1), 0.5, C.BORDER),
         ("LINEBEFORE", (0, 0), (0, -1), 3, indicator_color),
@@ -861,18 +863,26 @@ def _build_table(block: dict) -> list:
     if not headers and not rows:
         return []
 
+    # Determine actual column count from max row width
+    col_count = max(len(headers), *(len(r) for r in rows)) if rows else len(headers)
+
+    # Pad headers if rows are wider (e.g. empty first header stripped by parser)
+    if headers and len(headers) < col_count:
+        headers = [""] * (col_count - len(headers)) + headers
+
     # Build data
     data = []
     if headers:
         data.append([Paragraph(f"<b>{_esc(h)}</b>", ParagraphStyle("th", fontName=FONT_BOLD, fontSize=8, leading=11, textColor=C.TEXT_SEC)) for h in headers])
 
     for row in rows:
-        data.append([_render_cell(cell) for cell in row])
+        # Pad or trim row to col_count
+        padded = (list(row) + [""] * col_count)[:col_count]
+        data.append([_render_cell(cell) for cell in padded])
 
     if not data:
         return []
 
-    col_count = len(data[0])
     col_widths = _calc_col_widths(headers, rows, col_count)
 
     t = Table(data, colWidths=col_widths, repeatRows=1 if headers else 0)
@@ -911,11 +921,14 @@ def _build_table(block: dict) -> list:
 
 
 def _calc_col_widths(headers: list, rows: list, col_count: int) -> list:
-    """Calculate proportional column widths based on content length."""
+    """Calculate proportional column widths based on content length (CJK-aware)."""
     max_lengths = [0] * col_count
     for row in ([headers] if headers else []) + rows:
         for i, cell in enumerate(row[:col_count]):
-            max_lengths[i] = max(max_lengths[i], len(str(cell)))
+            # CJK chars are ~2x width of ASCII
+            cell_str = str(cell)
+            visual_len = sum(2 if ord(c) > 0x2E7F else 1 for c in cell_str)
+            max_lengths[i] = max(max_lengths[i], visual_len)
 
     # Apply min/max constraints and proportional scaling
     min_col = 18 * mm
