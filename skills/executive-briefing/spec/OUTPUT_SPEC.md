@@ -50,7 +50,7 @@ EB has 5 top-level `##` sections matching the reference template:
 1. Section headers use format: `## {N}. {emoji} {Title}`
 2. Sub-sections use `###`
 3. Attendee Background uses paragraph format (one flowing paragraph per person, NOT bullet-point dimensions)
-4. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
+4. Provenance labels: ALL three must be shown explicitly — `[销售确认]`, `[网络搜索]`, `[AI推断]`
 5. Tables use standard Markdown table syntax
 6. All sections required except Appendix (optional)
 7. All content in Chinese, professional executive tone
