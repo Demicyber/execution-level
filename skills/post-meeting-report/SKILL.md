@@ -36,7 +36,7 @@ Every PMR run outputs in two stages:
    - Action Items (owner + deadline)
    - Key Findings (bullet list)
    
-2. **Full PMR (follows)** — complete 7-section report + EP update + referrals + email draft
+2. **Full PMR (follows)** — complete 5-section report + EP update + referrals + email draft
 
 Do not wait for the full PMR to finish before delivering the Quick Summary.
 
@@ -84,7 +84,7 @@ Every piece of information must carry a provenance label so sales knows the conf
 2. **Meeting Insights** — Customer sentiment per attendee + key findings with source and implication + information gap check
 3. **What Changed — EP Update** — Incremental changes by dimension (stakeholders, Win Strategy, competitive, risks, stage/timeline) + Agent Recommendation
 4. **Next Steps — Planned vs Actual** — Comparison table + Action Items sorted by priority (High first), with owner, ETA, status
-5. **Customer Recap Email** — Key points for sales review before sending (see §6)
+5. **Customer Recap Email (Handoff)** — Key points for sales review before sending (see §6)
 
 ---
 
@@ -95,7 +95,7 @@ When updating the EP from a PMR, **agent directly edits the EP file** and then a
 1. **Key Stakeholders** — update Current Stance; update Profiling if new behavioral observations emerged
 2. **Engagement Roadmap** — mark completed milestone as **Done**, promote next Planned to **Next ↓**, expand new Next Milestone Detail
 3. **Execution Log** — add new entry at top (most recent first): Planned vs Actual, People Updates, Key Learnings, Plan Adjustment
-4. **Estimate & Uncertainty** — re-forecast if timeline, call count, or risk profile changed
+4. **Estimate & Contingency** — re-forecast if timeline, call count, or risk profile changed
 5. **Incremental updates only** — modify only changed fields; preserve existing content
 6. **Timestamp annotations** — add `[Updated: YYYY-MM-DD]` next to every changed field
 7. **Gap detection** — if a topic was discussed but no outcome captured, flag: "⚠️ [Topic] discussed but no outcome captured — please confirm."

@@ -222,8 +222,8 @@ EP does NOT determine whether an opportunity should advance to the next sales st
 
 **REQUIRED: Load `references/engagement-plan.md` before generating any EP content.** The template has 3 sections:
 
-1. **Opportunity Snapshot + Win Strategy** — Key opp info pulled from Opportunity Progression Skill, plus deal-level win theme
-2. **Engagement Plan (搞定人 + 搞定事)** — Per-person analysis (engagement priority, role, stance, what they care about, profiling, what we need, how to win) followed by Engagement Roadmap (full opportunity roadmap from now to close), Next Milestone Detail card (triggers Call Plan), and Estimate & Contingency (with Plan B scenarios)
+1. **📊 Opportunity Snapshot** — Key opp info pulled from Opportunity Progression Skill, plus deal-level win theme (Win Strategy is a ### subsection)
+2. **📋 Engagement Plan (搞定人 + 搞定事)** — Per-person analysis (engagement priority, role, stance, what they care about, profiling, what we need, how to win) followed by Engagement Roadmap (full opportunity roadmap from now to close), Estimate & Contingency (with Plan B scenarios), and Next Milestone Detail card (triggers Call Plan)
 3. **Execution Log (回滚)** — Actual results from each visit, auto-updated after PMR. Plan adjustments tracked here.
 
 ---

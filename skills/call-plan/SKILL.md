@@ -81,7 +81,7 @@ Call Plan accepts input from two paths:
 ### Path A: Auto-triggered from Engagement Plan (preferred)
 When EP's Next Milestone is confirmed, auto-pull:
 - **Objective, Customer Attendees, Target Outcome, AWS Team** from Next Milestone Detail
-- **Opportunity context** from EP Section 1 (Opportunity Snapshot + Win Strategy)
+- **Opportunity context** from EP Section 1 (📊 Opportunity Snapshot)
 - **Stakeholder stance and priorities** from EP Key Stakeholders
 - **Sales Stage** from EP (originally sourced from Opp Progression)
 
