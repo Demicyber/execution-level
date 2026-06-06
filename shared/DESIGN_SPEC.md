@@ -457,7 +457,7 @@ Emojis are used as **section icons** and **inline markers**:
 
 | Context | Emojis |
 |---------|--------|
-| **Section Headers** | 📊 Opportunity Snapshot, 👥 Engagement Plan / Key Stakeholders, 📝 Execution Log, 📈 Engagement Progress, 📍 Engagement Roadmap, 📐 Estimate & Contingency, 📋 Next Milestone Detail / Meeting Details / Next Steps, 🎯 Target Meeting Outcomes / Meeting Objectives, ✅ Success Criteria, 💡 Information Exchange / Meeting Insights, ⚡ Potential Objections, 📅 Meeting Agenda, 🚀 Potential Next Steps, 👤 Customer Attendee Background, 📎 Appendix, 🔄 What Changed, ✉️ Customer Recap Email |
+| **Section Headers** | 📊 Opportunity Snapshot, 👥 Engagement Plan / Key Stakeholders, 📝 Execution Log, 📈 Engagement Progress, 📍 Engagement Roadmap, 📐 Estimate & Contingency, 📋 Next Milestone Detail / Meeting Details / Next Steps, 🎯 Target Meeting Outcomes / Meeting Objectives, ✅ Success Criteria, 🔄 Information Exchange, 🔍 Meeting Insights, ⚡ Potential Objections, 📅 Meeting Agenda, 🚀 Potential Next Steps, 👤 Customer Attendee Background, 📎 Appendix, ✏️ What Changed, ✉️ Customer Recap Email |
 | **Status** | ✅ Achieved, ⚠️ Partial, ❌ Not achieved, ✓ Done, ▶ Next, ○ Planned |
 | **Paths** | ✅ Primary path, ⏳ Fallback path, 🚪 Graceful exit |
 | **Priority** | 🔴 High, 🟡 Medium, 🟢 Low |

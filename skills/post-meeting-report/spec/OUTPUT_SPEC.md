@@ -38,8 +38,8 @@ version: "2026-04-10"
 
 PMR has 5 top-level `##` sections matching the reference template:
 1. `## 1. 📊 Outcome Assessment` — planned vs actual outcomes
-2. `## 2. 💡 Meeting Insights` — sentiment shifts, key findings, info gaps
-3. `## 3. 🔄 What Changed — EP Update` — specific EP field changes + recommendation
+2. `## 2. 🔍 Meeting Insights` — sentiment shifts, key findings, info gaps
+3. `## 3. ✏️ What Changed — EP Update` — specific EP field changes + recommendation
 4. `## 4. 📋 Next Steps — Planned vs Actual` — comparison + action items
 5. `## 5. ✉️ Customer Recap Email (Handoff)` — draft email for customer
 
@@ -77,10 +77,10 @@ PMR has 5 top-level `##` sections matching the reference template:
 
 ---
 
-## 2. 💡 Meeting Insights
+## 2. 🔍 Meeting Insights
 
 ```markdown
-## 2. 💡 Meeting Insights
+## 2. 🔍 Meeting Insights
 
 ### Customer Sentiment
 
@@ -111,10 +111,10 @@ PMR has 5 top-level `##` sections matching the reference template:
 
 ---
 
-## 3. 🔄 What Changed — EP Update
+## 3. ✏️ What Changed — EP Update
 
 ```markdown
-## 3. 🔄 What Changed — EP Update
+## 3. ✏️ What Changed — EP Update
 
 | # | EP Section to Update | Change Type | What to Write |
 |---|---------------------|-------------|---------------|

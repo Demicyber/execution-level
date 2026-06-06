@@ -41,7 +41,7 @@ CP has 7 top-level `##` sections matching the reference template:
 1. `## 1. 📋 Meeting Details` — logistics, attendees, insights
 2. `## 2. 🎯 Target Meeting Outcomes` — dual-perspective goals
 3. `## 3. ✅ Success Criteria` — tri-level evidence-based criteria
-4. `## 4. 💡 Information Exchange` — questions to ask + insights to share
+4. `## 4. 🔄 Information Exchange` — questions to ask + insights to share
 5. `## 5. ⚡ Potential Objections & Responses` — anticipated pushback + handling
 6. `## 6. 📅 Meeting Agenda` — time-boxed, purpose-driven agenda
 7. `## 7. 🚀 Potential Next Steps` — multi-path next actions
@@ -146,10 +146,10 @@ CP has 7 top-level `##` sections matching the reference template:
 
 ---
 
-## 4. 💡 Information Exchange
+## 4. 🔄 Information Exchange
 
 ```markdown
-## 4. 💡 Information Exchange
+## 4. 🔄 Information Exchange
 
 ### Information to Gather
 
