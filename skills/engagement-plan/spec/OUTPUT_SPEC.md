@@ -46,7 +46,7 @@ EP has 3 top-level `##` sections matching the reference template:
 1. Section headers use format: `## {N}. {emoji} {Title}` for top-level, `### {emoji} {Title}` for subsections
 2. Subsection headers use `###` (Key Stakeholders, Engagement Roadmap, Estimate & Contingency, Next Milestone Detail are ALL under `## 2.`)
 3. Stance/Role/Priority values written directly as field values (renderer maps to badge colors)
-4. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
+4. Provenance labels: ALL three must be shown explicitly — `[销售确认]`, `[网络搜索]`, `[AI推断]`
 5. Tables use standard Markdown table syntax
 6. Each section is REQUIRED unless marked (optional)
 

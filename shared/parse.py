@@ -620,7 +620,7 @@ def extract_badges(text: str) -> list[dict]:
 def extract_provenance(text: str) -> tuple[str, str | None]:
     """Extract provenance label and return (clean_text, provenance_type).
     
-    provenance_type: "sales", "web", or None (AI inferred / no label)
+    provenance_type: "sales", "web", or "ai" (always explicitly labeled in output)
     """
     if '[销售确认]' in text:
         return text.replace('[销售确认]', '').strip(), "sales"

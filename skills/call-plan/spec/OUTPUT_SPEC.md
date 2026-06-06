@@ -47,11 +47,12 @@ CP has 7 top-level `##` sections matching the reference template:
 7. `## 7. 🚀 Potential Next Steps` — multi-path next actions
 
 ### Rules:
-1. Section headers use format: `## {N}. {emoji} {Title}`
-2. Sub-sections use `###` (Customer Attendees, AWS Attendees, etc.)
-3. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
-4. Tables use standard Markdown table syntax
-5. Each section is REQUIRED
+1. Section headers MUST use `## N. {Title}` format matching template
+2. Sub-sections use `###`
+3. Stance/Role/Category values written directly as field values (renderer maps to badge colors)
+4. Provenance labels: ALL three must be shown explicitly — `[销售确认]`, `[网络搜索]`, `[AI推断]`
+5. Tables use standard Markdown table syntax
+6. Each section is REQUIRED
 
 ---
 

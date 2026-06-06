@@ -460,7 +460,7 @@ def _add_eb_person(document, block):
         run.font.size = Pt(9)
     
     for label, value in fields.items():
-        _add_field(document, label, _strip_provenance(value))
+        _add_field(document, label, value)
     
     document.add_paragraph()
 
@@ -680,17 +680,19 @@ def _add_engagement_entry(document, block):
 
 
 def _add_field(document, label, value, highlight=False):
-    """Add a labeled field."""
+    """Add a labeled field with provenance label support."""
     if not value:
         return
     para = document.add_paragraph()
     run = para.add_run(f"{label}: ")
     run.bold = True
     run.font.size = Pt(10)
-    run = para.add_run(_strip_markdown(value))
-    run.font.size = Pt(10)
+    _add_text_with_provenance(para, _strip_markdown(value), size=10)
     if highlight:
-        run.font.color.rgb = RGBColor(0x6D, 0x28, 0xD9)
+        # Color the last run
+        for run in para.runs:
+            if run.text and run.text != f"{label}: ":
+                run.font.color.rgb = RGBColor(0x6D, 0x28, 0xD9)
     _set_paragraph_spacing(para, before=0, after=2)
 
 
@@ -737,17 +739,35 @@ def _style_cell(cell, bold=False, size=10, color=None):
 
 
 def _strip_markdown(text: str) -> str:
-    """Strip markdown formatting from text for Word."""
+    """Strip markdown formatting from text for Word (preserves provenance labels)."""
     import re
     # Remove bold markers
     text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
-    # Remove provenance labels (keep text)
-    text = text.replace('[销售确认]', '').replace('[网络搜索]', '').replace('[AI推断]', '')
     # Remove badge syntax
     text = re.sub(r'\{(\w+):([\w-]+)\}', r'\2', text)
     return text.strip()
 
 
-def _strip_provenance(text: str) -> str:
-    """Strip provenance labels from text."""
-    return text.replace('[销售确认]', '').replace('[网络搜索]', '').replace('[AI推断]', '').strip()
+# Provenance label colors (RGB)
+_PROVENANCE_COLORS = {
+    '[销售确认]': RGBColor(0x16, 0x65, 0x34),  # green-800
+    '[网络搜索]': RGBColor(0x1E, 0x40, 0xAF),  # blue-800
+    '[AI推断]': RGBColor(0x6B, 0x72, 0x80),    # gray-500
+}
+
+
+def _add_text_with_provenance(para, text: str, size=10, bold=False):
+    """Add text to a paragraph, rendering provenance labels as colored runs."""
+    import re
+    # Split on provenance labels, keeping the delimiters
+    parts = re.split(r'(\[销售确认\]|\[网络搜索\]|\[AI推断\])', text)
+    for part in parts:
+        if not part:
+            continue
+        run = para.add_run(part)
+        run.font.size = Pt(size)
+        run.bold = bold
+        if part in _PROVENANCE_COLORS:
+            run.font.color.rgb = _PROVENANCE_COLORS[part]
+            run.font.size = Pt(max(7, size - 2))
+            run.bold = False
