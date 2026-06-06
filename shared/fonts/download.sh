@@ -12,10 +12,15 @@ FONT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$FONT_DIR"
 
 echo "=== Downloading Inter (Latin) ==="
-curl -fsSL -o Inter-Regular.ttf \
-  "https://github.com/rsms/inter/raw/master/docs/font-files/Inter-Regular.ttf"
-curl -fsSL -o Inter-Bold.ttf \
-  "https://github.com/rsms/inter/raw/master/docs/font-files/Inter-Bold.ttf"
+# Download from official release (v4.1 static TTF)
+INTER_VERSION="v4.1"
+INTER_ZIP="Inter-4.1.zip"
+curl -fsSL -o "$INTER_ZIP" \
+  "https://github.com/rsms/inter/releases/download/${INTER_VERSION}/Inter-4.1.zip"
+if [ -s "$INTER_ZIP" ]; then
+  unzip -jo "$INTER_ZIP" "extras/ttf/Inter-Regular.ttf" "extras/ttf/Inter-Bold.ttf" -d . 2>/dev/null
+  rm -f "$INTER_ZIP"
+fi
 
 if [ ! -s Inter-Regular.ttf ] || [ ! -s Inter-Bold.ttf ]; then
   echo "WARNING: Inter download failed. Falling back to Noto Sans SC for Latin."

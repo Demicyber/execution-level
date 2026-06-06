@@ -233,11 +233,59 @@ def _wrap_emoji(text: str) -> str:
 
 _register_fonts()
 
+
+def _wrap_cjk(text: str) -> str:
+    """Wrap CJK characters with <font name='CJK'> tags so Inter handles Latin
+    and Noto Sans SC handles Chinese/Japanese/Korean in the same paragraph.
+    If Inter is not available, returns text unchanged (everything uses CJK font)."""
+    if not text or not _LATIN_FONT_AVAILABLE:
+        return text
+
+    import re
+    cjk_pattern = re.compile(
+        r'(['
+        r'\u2E80-\u2FFF'     # CJK Radicals
+        r'\u3000-\u303F'     # CJK Symbols and Punctuation
+        r'\u3040-\u309F'     # Hiragana
+        r'\u30A0-\u30FF'     # Katakana
+        r'\u3100-\u312F'     # Bopomofo
+        r'\u3400-\u4DBF'     # CJK Extension A
+        r'\u4E00-\u9FFF'     # CJK Unified Ideographs
+        r'\uF900-\uFAFF'     # CJK Compatibility
+        r'\uFE30-\uFE4F'     # CJK Compatibility Forms
+        r'\U00020000-\U0002A6DF'  # CJK Extension B
+        r'\U0002A700-\U0002EBEF'  # CJK Extensions C-F
+        r'\uFF00-\uFFEF'     # Fullwidth Forms
+        r']+)'
+    )
+
+    def _replace(m):
+        return f'<font name="CJK">{m.group(0)}</font>'
+
+    return cjk_pattern.sub(_replace, text)
+
+
+def _wrap_cjk_safe(text: str) -> str:
+    """Like _wrap_cjk but skips text already inside <font ...> tags to avoid double-wrapping."""
+    if not text or not _LATIN_FONT_AVAILABLE:
+        return text
+
+    import re
+    # Split on existing <font...>...</font> segments, only process outside parts
+    parts = re.split(r'(<font[^>]*>.*?</font>)', text)
+    result = []
+    for part in parts:
+        if part.startswith('<font'):
+            result.append(part)  # already tagged, leave alone
+        else:
+            result.append(_wrap_cjk(part))
+    return ''.join(result)
+
+
 # ===== Styles =====
-FONT = "CJK"
-FONT_BOLD = "CJK-Bold"
-FONT_LATIN = "Latin" if _LATIN_FONT_AVAILABLE else "CJK"
-FONT_LATIN_BOLD = "Latin-Bold" if _LATIN_FONT_AVAILABLE else "CJK-Bold"
+# Primary: Inter (Latin), fallback: Noto Sans SC (CJK) via _wrap_cjk()
+FONT = "Latin" if _LATIN_FONT_AVAILABLE else "CJK"
+FONT_BOLD = "Latin-Bold" if _LATIN_FONT_AVAILABLE else "CJK-Bold"
 
 PAGE_W, PAGE_H = A4
 MARGIN_L = 18 * mm
@@ -1361,7 +1409,20 @@ def _build_progress_bar(block: dict) -> list:
 
 # ===== Utilities =====
 def _esc(text: str) -> str:
-    """Escape XML special chars for ReportLab Paragraph, then wrap emoji with font tags."""
+    """Escape XML special chars for ReportLab Paragraph, then wrap emoji and CJK with font tags."""
+    if not text:
+        return ""
+    text = str(text)
+    text = text.replace("&", "&amp;")
+    text = text.replace("<", "&lt;")
+    text = text.replace(">", "&gt;")
+    text = _wrap_emoji(text)
+    text = _wrap_cjk(text)
+    return text
+
+
+def _esc_raw(text: str) -> str:
+    """Escape XML + emoji only (no CJK wrap). Used by _inline which handles CJK separately."""
     if not text:
         return ""
     text = str(text)
@@ -1376,11 +1437,14 @@ def _inline(text: str) -> str:
     """Process inline formatting for ReportLab Paragraph markup."""
     if not text:
         return ""
-    result = _esc(text)
+    result = _esc_raw(text)
     # Bold
     result = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', result)
-    # Provenance labels
-    result = result.replace('[销售确认]', f'<font color="{C.CHAMPION.hexval()}" size="7">[销售确认]</font>')
-    result = result.replace('[网络搜索]', f'<font color="{C.PRIMARY.hexval()}" size="7">[网络搜索]</font>')
-    result = result.replace('[AI推断]', f'<font color="{C.TEXT_MUTED.hexval()}" size="7">[AI推断]</font>')
+    # Provenance labels (before CJK wrap so Chinese chars in labels aren't broken)
+    result = result.replace('[销售确认]', f'<font name="CJK" color="{C.CHAMPION.hexval()}" size="7">[销售确认]</font>')
+    result = result.replace('[网络搜索]', f'<font name="CJK" color="{C.PRIMARY.hexval()}" size="7">[网络搜索]</font>')
+    result = result.replace('[AI推断]', f'<font name="CJK" color="{C.TEXT_MUTED.hexval()}" size="7">[AI推断]</font>')
+    # CJK font switching (Inter for Latin, Noto Sans SC for CJK)
+    # Skip text already inside <font> tags to avoid double-wrapping
+    result = _wrap_cjk_safe(result)
     return result
