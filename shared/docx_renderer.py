@@ -124,8 +124,8 @@ def render_docx(doc: dict, output_path: str) -> str:
     _add_header(document, frontmatter, doc_type)
     
     # Sections
-    for section in sections:
-        _add_section(document, section, doc_type)
+    for i, section in enumerate(sections, 1):
+        _add_section(document, section, doc_type, section_num=i)
     
     # Footer
     _add_footer(document, frontmatter, doc_type)
@@ -213,16 +213,19 @@ def _add_header(document, frontmatter, doc_type):
     document.add_paragraph("─" * 60)
 
 
-def _add_section(document, section, doc_type):
+def _add_section(document, section, doc_type, section_num=None):
     """Add a section to the document."""
     emoji = section.get("emoji", "")
     title = section.get("title", "")
     content_blocks = section.get("content", [])
     
-    # Section heading
-    heading_text = f"{emoji} {title}" if emoji else title
+    # Section heading: "N. emoji Title" format (consistent with HTML/PDF)
+    emoji_str = f"{emoji} " if emoji else ""
+    num_prefix = f"{section_num}. " if section_num else ""
+    heading_text = f"{num_prefix}{emoji_str}{title}"
     heading = document.add_heading(heading_text, level=2)
-    heading.runs[0].font.size = Pt(14)
+    if heading.runs:
+        heading.runs[0].font.size = Pt(14)
     
     # Content blocks
     for block in content_blocks:
@@ -245,6 +248,8 @@ def _add_block(document, block, doc_type):
         _add_eb_person(document, block)
     elif block_type == "subsection":
         _add_subsection(document, block, doc_type)
+    elif block_type == "subsubsection":
+        _add_subsubsection(document, block)
     elif block_type == "bullet_list":
         _add_bullet_list(document, block)
     elif block_type == "paragraph":
@@ -441,10 +446,26 @@ def _add_subsection(document, block, doc_type):
     
     prefix = f"{emoji} " if emoji else ""
     heading = document.add_heading(f"{prefix}{title}", level=3)
-    heading.runs[0].font.size = Pt(12)
+    if heading.runs:
+        heading.runs[0].font.size = Pt(12)
     
     for b in content:
         _add_block(document, b, doc_type)
+
+
+def _add_subsubsection(document, block):
+    """Add a sub-subsection (#### level)."""
+    title = block.get("title", "")
+    emoji = block.get("emoji", "")
+    content = block.get("content", [])
+
+    prefix = f"{emoji} " if emoji else ""
+    heading = document.add_heading(f"{prefix}{title}", level=4)
+    if heading.runs:
+        heading.runs[0].font.size = Pt(11)
+
+    for b in content:
+        _add_block(document, b, "unknown")
 
 
 def _add_bullet_list(document, block):

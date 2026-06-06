@@ -29,7 +29,7 @@ OBJECTION_CATEGORY_VALUES = {"risk-trust", "risk/trust", "capability", "authorit
 RESULT_VALUES = {"achieved", "partial", "not-achieved"}
 GAP_STATUS_VALUES = {"answered", "unanswered"}
 CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change", "confirm"}
-ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "done"}
+ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "in progress", "done"}
 
 ALL_BADGE_VALUES = (
     STANCE_VALUES | ROLE_VALUES | PRIORITY_VALUES | MILESTONE_STATUS_VALUES |
@@ -40,30 +40,31 @@ ALL_BADGE_VALUES = (
 # ===== Required Sections Per Document Type =====
 
 REQUIRED_SECTIONS = {
+    # EP reference: ## 1. Opportunity Snapshot, ## 2. Engagement Plan, ## 3. Execution Log
+    # Key Stakeholders, Roadmap, Estimate, Next Milestone are ### under ## 2
     "engagement-plan": [
         "Opportunity Snapshot",
-        "Key Stakeholders",
-        "Engagement Roadmap",
-        "Next Milestone Detail",
-        "Estimated Objections",
+        "Engagement Plan",
         "Execution Log",
     ],
+    # CP reference: ## 1-7 (Meeting Details through Potential Next Steps)
     "call-plan": [
+        "Meeting Details",
         "Target Meeting Outcomes",
         "Success Criteria",
-        "Customer Attendees",
-        "AWS Team",
         "Information Exchange",
         "Potential Objections & Responses",
         "Meeting Agenda",
         "Potential Next Steps",
     ],
+    # EB reference: ## 1-5 + Anticipated Concerns + Proposed Next Steps
     "executive-briefing": [
         "Meeting Logistics",
         "Customer Attendee Background",
         "Meeting Objectives",
         "AWS Account Background",
     ],
+    # PMR reference: ## 1-5
     "post-meeting-report": [
         "Outcome Assessment",
         "Meeting Insights",
@@ -77,13 +78,16 @@ REQUIRED_SECTIONS = {
 # If an existing section title matches an alias, it counts as the required section(s).
 # Values can be a string (single target) or list (multiple targets satisfied by one section).
 SECTION_ALIASES = {
-    # EP
-    "tcv estimate": ["Estimate & Contingency"],
-    "cost estimate": ["Estimate & Contingency"],
-    "estimate": ["Estimate & Contingency"],
+    # EP — subsections of "Engagement Plan"
+    "key stakeholders": ["Engagement Plan"],
+    "stakeholders": ["Engagement Plan"],
+    "engagement roadmap": ["Engagement Plan"],
+    "roadmap": ["Engagement Plan"],
+    "estimate & contingency": ["Engagement Plan"],
+    "estimate": ["Engagement Plan"],
+    "next milestone detail": ["Engagement Plan"],
+    "next milestone": ["Engagement Plan"],
     # CP
-    "meeting attendees": ["Customer Attendees", "AWS Team"],
-    "attendees": ["Customer Attendees"],
     "agenda": ["Meeting Agenda"],
     "information gaps": ["Information Exchange"],
     "questions": ["Information Exchange"],
@@ -91,16 +95,16 @@ SECTION_ALIASES = {
     "objections": ["Potential Objections & Responses"],
     "next steps": ["Potential Next Steps"],
     "conversation strategy": ["Meeting Agenda"],
-    "pre-meeting preparation": ["Potential Next Steps"],
     # EB
-    "customer business context": ["Company Profile"],
-    "business context": ["Company Profile"],
     "account background": ["AWS Account Background"],
+    "attendee background": ["Customer Attendee Background"],
+    "objectives": ["Meeting Objectives"],
     # PMR
     "action items": ["Next Steps"],
-    "follow-up email draft": ["Next Steps"],
-    "follow-up email": ["Next Steps"],
-    "customer recap email": ["Next Steps"],
+    "follow-up email draft": ["Customer Recap Email"],
+    "follow-up email": ["Customer Recap Email"],
+    "customer recap": ["Customer Recap Email"],
+    "recap email": ["Customer Recap Email"],
     "ep update": ["What Changed"],
     "changes": ["What Changed"],
     "ep changes": ["What Changed"],
