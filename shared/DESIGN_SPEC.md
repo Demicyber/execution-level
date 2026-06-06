@@ -79,11 +79,12 @@ LLM generates Structured Markdown (per-skill spec)
   
   /* Neutral */
   --color-bg: #FFFFFF;
-  --color-bg-page: #F9FAFB;       /* Gray 50 — page background */
-  --color-border: #E5E7EB;        /* Gray 200 */
-  --color-text: #111827;          /* Gray 900 */
-  --color-text-secondary: #6B7280; /* Gray 500 */
-  --color-text-muted: #9CA3AF;    /* Gray 400 */
+  --color-bg-subtle: #F9FAFB;      /* Gray 50 — subtle backgrounds */
+  --color-border: #E5E7EB;         /* Gray 200 */
+  --color-border-light: #F3F4F6;   /* Gray 100 */
+  --color-text: #111827;           /* Gray 900 */
+  --color-text-secondary: #374151; /* Gray 700 */
+  --color-text-muted: #6B7280;     /* Gray 500 */
   
   /* Document Type Accents (header label color) */
   --color-ep: #6D28D9;            /* Purple */
@@ -98,25 +99,30 @@ LLM generates Structured Markdown (per-skill spec)
 
 ### 2.2 Typography
 
+> **Note:** These values reflect the actual `theme.css` implementation.
+
 ```css
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", 
-               "PingFang SC", "Hiragino Sans GB", sans-serif;
-  font-size: 14px;
-  line-height: 1.75;  /* Optimized for CJK mixed content */
+  font-family: "Amazon Ember", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
   color: var(--color-text);
 }
 
-h1 { font-size: 28px; font-weight: 700; }  /* Document title */
-h2 { font-size: 18px; font-weight: 600; }  /* Section header */
-h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
-
 .doc-type-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-primary);
+}
+
+.section-header {
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 ```
 
@@ -124,39 +130,35 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
 
 ```css
 .page {
-  max-width: 820px;
+  max-width: 780px;
   margin: 0 auto;
-  padding: 40px 48px;
+  padding: 32px 40px;
+  border-radius: 12px;
   background: var(--color-bg);
 }
 
 .section-card {
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 24px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  padding: 20px 24px;
   margin-bottom: 20px;
   background: var(--color-bg);
 }
 
 .section-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--color-primary-light);
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.section-header .emoji {
-  font-size: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--color-primary);
+  color: var(--color-primary);
 }
 ```
 
 ### 2.4 Badge / Tag Styles
 
-**Stance badges — outline style (print-friendly):**
+**Stance badges — solid fill (high contrast):**
 
 ```css
 .badge {
@@ -164,23 +166,25 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
   align-items: center;
   padding: 2px 10px;
   border-radius: 9999px;  /* full pill */
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   border: 1.5px solid;
   white-space: nowrap;
 }
 
-.badge-champion    { color: var(--color-champion); border-color: var(--color-champion); background: #ECFDF5; }
-.badge-supporter   { color: var(--color-supporter); border-color: var(--color-supporter); background: #ECFDF5; }
-.badge-neutral     { color: var(--color-neutral); border-color: var(--color-neutral); background: #FFFBEB; }
-.badge-non-supporter { color: var(--color-non-supporter); border-color: var(--color-non-supporter); background: #FEF2F2; }
-.badge-unknown     { color: var(--color-unknown); border-color: var(--color-unknown); background: #F9FAFB; }
+.badge-champion    { color: #FFF; background: var(--color-champion); border-color: var(--color-champion); }
+.badge-sponsor     { color: #FFF; background: var(--color-champion); border-color: var(--color-champion); }
+.badge-supporter   { color: #FFF; background: var(--color-supporter); border-color: var(--color-supporter); }
+.badge-neutral     { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
+.badge-non-supporter { color: #FFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
+.badge-adversary   { color: #FFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
+.badge-unknown     { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
 
-/* Role badges — subtle filled */
-.badge-decision-maker { color: #1F2937; background: #F3F4F6; border-color: #D1D5DB; }
-.badge-technical-evaluator { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: #C4B5FD; }
-.badge-influencer { color: #92400E; background: #FEF3C7; border-color: #FCD34D; }
-.badge-end-user   { color: #6B7280; background: #F9FAFB; border-color: #E5E7EB; }
+/* Role badges */
+.badge-decision-maker { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-technical-evaluator { color: var(--color-primary); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-economic-buyer { color: #92400E; background: #FEF3C7; border-color: #D97706; }
+.badge-influencer { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 
 /* Priority badges */
 .badge-high   { color: #FFF; background: var(--color-high); border-color: var(--color-high); }
@@ -188,9 +192,9 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
 .badge-low    { color: #FFF; background: var(--color-low); border-color: var(--color-low); }
 
 /* Status badges */
-.badge-achieved     { color: var(--color-achieved); border-color: var(--color-achieved); background: #ECFDF5; }
-.badge-partial      { color: var(--color-partial); border-color: var(--color-partial); background: #FFFBEB; }
-.badge-not-achieved { color: var(--color-not-achieved); border-color: var(--color-not-achieved); background: #FEF2F2; }
+.badge-achieved     { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
+.badge-partial      { color: var(--color-partial); background: #FFFBEB; border-color: var(--color-partial); }
+.badge-not-achieved { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
 ```
 
 **Provenance labels:**
@@ -202,37 +206,41 @@ h3 { font-size: 15px; font-weight: 600; }  /* Sub-section */
   font-weight: 500;
 }
 .provenance-sales    { color: #059669; background: #ECFDF5; }  /* [销售确认] */
-.provenance-web { color: #2563EB; background: #EFF6FF; }  /* [网络搜索] */
-.provenance-ai { color: #6B7280; background: #F3F4F6; }   /* [AI推断] */
+.provenance-web { color: var(--color-primary); background: var(--color-primary-light); }  /* [网络搜索] */
+.provenance-ai { color: #6B7280; background: #F3F4F6; }   /* [AI推断] — rarely shown (default = no label) */
 ```
 
 ### 2.5 Tables
+
+**McKinsey exhibit style — top/bottom rules, uppercase headers:**
 
 ```css
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 th {
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text-secondary);
-  font-size: 12px;
-  padding: 8px 12px;
-  border-bottom: 2px solid var(--color-border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  border-top: 2px solid var(--color-primary);
+  border-bottom: 1px solid var(--color-primary);
 }
 
 td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #F3F4F6;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border-light);
   vertical-align: top;
 }
 
-tr:last-child td {
-  border-bottom: none;
-}
+tr:nth-child(even) td { background: var(--color-bg-subtle); }
+tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 ```
 
 ### 2.6 Stakeholder Card

@@ -61,9 +61,16 @@ BADGE_COLORS = {
     "planned": RGBColor(0x9C, 0xA3, 0xAF) if HAS_DOCX else None,
     # Action / Gap
     "pending": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
+    "open": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
     "in-progress": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
     "answered": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
     "unanswered": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
+    # Change types (PMR)
+    "update": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "add": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "remove": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    "no-change": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    "confirm": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
 }
 
 DOC_TYPE_LABELS = {

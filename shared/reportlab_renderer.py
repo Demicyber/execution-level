@@ -98,7 +98,14 @@ BADGE_COLORS = {
     "answered": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
     "unanswered": (C.NEUTRAL, colors.HexColor("#FFFBEB")),
     "pending": (C.NEUTRAL, colors.HexColor("#FFFBEB")),
+    "open": (C.NEUTRAL, colors.HexColor("#FFFBEB")),
     "in-progress": (C.PRIMARY, C.PRIMARY_LIGHT),
+    # Change types (PMR)
+    "update": (C.PRIMARY, C.PRIMARY_LIGHT),
+    "add": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
+    "remove": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
+    "no-change": (C.TEXT_MUTED, C.BG_SUBTLE),
+    "confirm": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
 }
 
 CATEGORY_COLORS = {

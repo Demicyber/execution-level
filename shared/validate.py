@@ -17,19 +17,19 @@ from .parse import get_doc_type, get_section_by_title
 
 # ===== Enum Definitions =====
 
-STANCE_VALUES = {"champion", "supporter", "neutral", "non-supporter", "unknown"}
+STANCE_VALUES = {"champion", "sponsor", "supporter", "neutral", "non-supporter", "adversary", "unknown"}
 ROLE_VALUES = {
-    "decision-maker", "technical-evaluator", "influencer", "end-user",
-    "champion", "blocker", "sponsor", "economic-buyer"
+    "decision-maker", "technical-evaluator", "evaluator", "influencer", "end-user",
+    "champion", "blocker", "sponsor", "economic-buyer", "procurement", "eb"
 }
 PRIORITY_VALUES = {"high", "medium", "low", "must-meet", "important", "nice-to-have"}
-MILESTONE_STATUS_VALUES = {"done", "next", "planned"}
+MILESTONE_STATUS_VALUES = {"done", "next", "planned", "skipped"}
 CONFIDENCE_VALUES = {"high", "medium", "low"}
-OBJECTION_CATEGORY_VALUES = {"risk-trust", "capability", "authority", "price-value", "status-quo"}
+OBJECTION_CATEGORY_VALUES = {"risk-trust", "risk/trust", "capability", "authority", "price-value", "price/competition", "status-quo", "status quo"}
 RESULT_VALUES = {"achieved", "partial", "not-achieved"}
 GAP_STATUS_VALUES = {"answered", "unanswered"}
-CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change"}
-ACTION_STATUS_VALUES = {"pending", "in-progress", "done"}
+CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change", "confirm"}
+ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "done"}
 
 ALL_BADGE_VALUES = (
     STANCE_VALUES | ROLE_VALUES | PRIORITY_VALUES | MILESTONE_STATUS_VALUES |
@@ -45,9 +45,8 @@ REQUIRED_SECTIONS = {
         "Key Stakeholders",
         "Engagement Roadmap",
         "Next Milestone Detail",
-        "Estimate & Contingency",
+        "Estimated Objections",
         "Execution Log",
-        "Change Log",
     ],
     "call-plan": [
         "Target Meeting Outcomes",
@@ -62,7 +61,6 @@ REQUIRED_SECTIONS = {
     "executive-briefing": [
         "Meeting Logistics",
         "Customer Attendee Background",
-        "Company Profile",
         "Meeting Objectives",
         "AWS Account Background",
     ],
@@ -71,6 +69,7 @@ REQUIRED_SECTIONS = {
         "Meeting Insights",
         "What Changed",
         "Next Steps",
+        "Customer Recap Email",
     ],
 }
 

@@ -221,6 +221,8 @@ body {
 .badge-add { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
 .badge-remove { color: var(--color-not-achieved); background: #FFEBE9; border-color: var(--color-not-achieved); }
 .badge-no-change { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
+.badge-confirm { color: var(--color-achieved); background: #DAFBE1; border-color: var(--color-achieved); }
+.badge-open { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 
 /* Fallback */
 .badge-fallback { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
