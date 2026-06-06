@@ -302,3 +302,208 @@ version: "1.0"
     assert not any("Customer Attendees" in af for af in auto_fix_titles)
     assert not any("Information Exchange" in af for af in auto_fix_titles)
     assert not any("Meeting Agenda" in af for af in auto_fix_titles)
+
+
+def test_validate_eb_basic():
+    """Executive Briefing with all required sections passes."""
+    md = """---
+type: executive-briefing
+customer: Test Corp
+opportunity: Cloud Deal
+meeting_title: CTO Review
+date: 2026-06-01
+format: Video
+stage: Prove
+version: "1.0"
+---
+
+## 1. 📋 Meeting Logistics
+
+| Field | Details |
+|-------|---------|
+| **Date & Time** | 2026-06-01, 10:00 CST |
+| **Format** | Video |
+
+### AWS Attendees
+
+| Name | Role |
+|------|------|
+| Sarah | AM — lead |
+
+## 2. 👤 Customer Attendee Background
+
+### Company Profile
+
+| Dimension | Details |
+|-----------|---------|
+| **Industry** | Tech |
+
+### John Smith — CEO
+
+| Dimension | Details |
+|-----------|---------|
+| **Role & Influence** | CEO — decision-maker |
+| **Current Stance** | supporter |
+
+## 3. 🎯 Meeting Objectives
+
+### Success Definition
+
+Get commitment to next step.
+
+### Objective 1: Confirm timeline
+
+| Field | Details |
+|-------|---------|
+| **Context** | Q2 planning |
+| **Talking Points** | ROI data |
+| **Asks** | Timeline confirmation |
+
+## 4. 📊 AWS Account Background
+
+| Dimension | Details |
+|-----------|---------|
+| **Geo / Segment** | US / Enterprise |
+| **Current Spend** | $1M ARR |
+
+## 5. 📎 Appendix
+
+Previous meeting notes.
+"""
+    doc = parse_markdown(md)
+    result = validate(doc)
+    assert result["valid"] is True
+    # Should not have errors (warnings are OK)
+    assert len(result["errors"]) == 0
+
+
+def test_validate_eb_missing_section():
+    """EB missing a required section triggers auto-fix."""
+    md = """---
+type: executive-briefing
+customer: Test Corp
+opportunity: Cloud Deal
+meeting_title: CTO Review
+date: 2026-06-01
+format: Video
+stage: Prove
+version: "1.0"
+---
+
+## 1. 📋 Meeting Logistics
+
+Basic info.
+
+## 3. 🎯 Meeting Objectives
+
+Goals here.
+"""
+    doc = parse_markdown(md)
+    result = validate(doc)
+    # Should auto-fix missing sections
+    assert len(result["auto_fixes"]) > 0
+
+
+def test_validate_pmr_basic():
+    """Post-Meeting Report with all required sections passes."""
+    md = """---
+type: post-meeting-report
+customer: Test Corp
+opportunity: Cloud Deal
+meeting_title: Technical Review
+date: 2026-06-01
+source: call-plan
+stage: Prove
+version: "1.0"
+---
+
+## 1. 📊 Outcome Assessment
+
+| Objective | Target Outcome | Actual Outcome | Result |
+|-----------|---------------|----------------|--------|
+| Validate architecture | Sign-off | Approved | achieved |
+
+## 2. 🔍 Meeting Insights
+
+### Customer Sentiment
+
+| Attendee | Pre-Meeting Stance | Post-Meeting Stance |
+|----------|-------------------|---------------------|
+| John | neutral | supporter |
+
+### Key Findings
+
+| # | Finding | Source | Implication |
+|---|---------|--------|-------------|
+| 1 | Budget approved | CTO [销售确认] | Can proceed |
+
+## 3. ✏️ What Changed — EP Update
+
+| Dimension | Change Type | Before | After | Evidence |
+|-----------|-------------|--------|-------|----------|
+| Timeline | update | Q3 | Q2 | CTO confirmed |
+
+## 4. 📋 Next Steps — Planned vs Actual
+
+| Planned | Actual | Delta |
+|---------|--------|-------|
+| SOW in 2 weeks | SOW next week | Ahead |
+
+### Action Items
+
+| # | Action | Owner | ETA | Priority | Status |
+|---|--------|-------|-----|----------|--------|
+| 1 | Send SOW | Sarah | 2026-06-05 | high | pending |
+
+## 5. ✉️ Customer Recap Email (Handoff)
+
+Thanks for the meeting. Key next steps...
+"""
+    doc = parse_markdown(md)
+    result = validate(doc)
+    assert result["valid"] is True
+    assert len(result["errors"]) == 0
+
+def test_validate_pmr_invalid_result_badge():
+    """PMR with missing recommended frontmatter triggers warning."""
+    md = """\
+---
+type: post-meeting-report
+customer: Test Corp
+opportunity: Cloud Deal
+meeting_title: Review
+date: 2026-06-01
+source: call-plan
+stage: Prove
+version: "1.0"
+---
+
+## 1. 📊 Outcome Assessment
+
+| Objective | Result |
+|-----------|--------|
+| Goal 1 | super-achieved |
+
+## 2. 🔍 Meeting Insights
+
+Findings.
+
+## 3. ✏️ What Changed — EP Update
+
+| Dimension | Change Type |
+|-----------|-------------|
+| Timeline | update |
+
+## 4. 📋 Next Steps — Planned vs Actual
+
+Actions.
+
+## 5. ✉️ Customer Recap Email (Handoff)
+
+Email draft.
+"""
+    doc = parse_markdown(md)
+    result = validate(doc)
+    # PMR should warn about missing recommended frontmatter fields
+    assert any("recorded_by" in w or "related_document" in w for w in result["warnings"])
+

@@ -96,7 +96,7 @@ def _render_header(frontmatter: dict, doc_type: str) -> str:
         opportunity = frontmatter.get("opportunity", "")
         if meeting_title:
             subtitle_parts.append(meeting_title)
-        elif opportunity:
+        if opportunity:
             subtitle_parts.append(opportunity)
     elif doc_type == "engagement-plan":
         opportunity = frontmatter.get("opportunity", "")

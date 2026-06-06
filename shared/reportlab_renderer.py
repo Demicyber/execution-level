@@ -110,6 +110,9 @@ BADGE_COLORS = {
     "更新": (C.PRIMARY, C.PRIMARY_LIGHT),
     "删除": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
     "确认": (C.ACHIEVED, colors.HexColor("#ECFDF5")),
+    # Role (extra)
+    "end-user": (C.UNKNOWN, C.BG_SUBTLE),
+    "blocker": (C.NOT_ACHIEVED, colors.HexColor("#FEF2F2")),
     # Milestone
     "skipped": (C.UNKNOWN, C.BG_SUBTLE),
     # Gap

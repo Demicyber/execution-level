@@ -187,6 +187,10 @@ body {
 .badge-end-user { color: var(--color-text-secondary); background: var(--color-bg-subtle); border-color: var(--color-border); }
 .badge-sponsor { color: var(--color-primary-dark); background: var(--color-primary-light); border-color: var(--color-primary); }
 .badge-blocker { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
+.badge-evaluator { color: var(--color-primary); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-procurement { color: var(--color-text-secondary); background: var(--color-bg-subtle); border-color: var(--color-border); }
+.badge-eb { color: var(--color-primary); background: var(--color-primary-light); border-color: var(--color-primary); }
+.badge-overdue { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
 .badge-champion-role { color: #FFFFFF; background: var(--color-champion); border-color: var(--color-champion); }
 .badge-economic-buyer { color: #92400E; background: #FEF3C7; border-color: #D97706; }
 

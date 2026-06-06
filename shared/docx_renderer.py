@@ -79,12 +79,12 @@ BADGE_COLORS = {
     "skipped": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
     # Gap
     "still a gap": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
-    # Objection categories
-    "status quo": RGBColor(0x7C, 0x3A, 0xED) if HAS_DOCX else None,
-    "status-quo": RGBColor(0x7C, 0x3A, 0xED) if HAS_DOCX else None,
-    "price/value": RGBColor(0xB4, 0x53, 0x09) if HAS_DOCX else None,
-    "price/competition": RGBColor(0xB4, 0x53, 0x09) if HAS_DOCX else None,
-    "capability": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    # Objection categories (match DESIGN_SPEC)
+    "status quo": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    "status-quo": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    "price/value": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "price/competition": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "capability": RGBColor(0xEA, 0x58, 0x0C) if HAS_DOCX else None,
     "risk/trust": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
     "authority/process": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
 }
@@ -265,7 +265,7 @@ def _add_block(document, block, doc_type):
     elif block_type == "subsection":
         _add_subsection(document, block, doc_type)
     elif block_type == "subsubsection":
-        _add_subsubsection(document, block)
+        _add_subsubsection(document, block, doc_type)
     elif block_type == "bullet_list":
         _add_bullet_list(document, block)
     elif block_type == "paragraph":
@@ -469,7 +469,7 @@ def _add_subsection(document, block, doc_type):
         _add_block(document, b, doc_type)
 
 
-def _add_subsubsection(document, block):
+def _add_subsubsection(document, block, doc_type="unknown"):
     """Add a sub-subsection (#### level)."""
     title = block.get("title", "")
     emoji = block.get("emoji", "")
@@ -481,7 +481,7 @@ def _add_subsubsection(document, block):
         heading.runs[0].font.size = Pt(11)
 
     for b in content:
-        _add_block(document, b, "unknown")
+        _add_block(document, b, doc_type)
 
 
 def _add_bullet_list(document, block):

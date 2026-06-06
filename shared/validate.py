@@ -29,7 +29,7 @@ OBJECTION_CATEGORY_VALUES = {"risk-trust", "risk/trust", "capability", "authorit
 RESULT_VALUES = {"achieved", "partial", "not-achieved"}
 GAP_STATUS_VALUES = {"answered", "unanswered", "still a gap"}
 CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change", "confirm", "新增", "更新", "删除", "确认"}
-ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "in progress", "done"}
+ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "in progress", "done", "overdue"}
 ACTION_PRIORITY_VALUES = {"high", "medium", "low"}
 NEXT_STEP_TIER_VALUES = {"ideal", "acceptable", "minimum"}
 

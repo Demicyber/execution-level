@@ -167,7 +167,7 @@ This is the core section containing 4 subsections (all `###` level):
 
 #### Milestone Risk & Contingency
 
-| Milestone Node | Risk Item | Trigger Condition | Impact | Plan B |
+| 里程碑节点 | 风险项 | 触发条件 | 影响 | Plan B |
 |---------------|-----------|-------------------|--------|--------|
 | {#N milestone} | 🧑 {person risk} or 🚩 {process risk} | {specific trigger} | {time/scope impact} | {alternative path} |
 ```
@@ -213,7 +213,7 @@ This is the core section containing 4 subsections (all `###` level):
 ```markdown
 ## 3. 📝 Execution Log
 
-### Engagement #{n} — {Date} — {Attendees}
+### Engagement #{n} - {Date} - {Attendees}
 
 | Field | Details |
 |-------|---------| 
