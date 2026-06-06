@@ -905,13 +905,13 @@ def _build_block(block: dict, doc_type: str) -> list:
     elif block_type == "bullet_list":
         return _build_bullets(block)
     elif block_type == "paragraph":
-        return [Paragraph(_esc(block.get("text", "")), STYLES["body"]), Spacer(1, 2 * mm)]
+        return [Paragraph(_inline(block.get("text", "")), STYLES["body"]), Spacer(1, 2 * mm)]
     elif block_type == "progress_bar":
         return _build_progress_bar(block)
     elif block_type == "highlight":
         return _build_highlight(block)
     else:
-        return [Paragraph(_esc(str(block)), STYLES["body_small"])]
+        return [Paragraph(_inline(str(block)), STYLES["body_small"])]
 
 
 # ===== Table =====
@@ -1012,7 +1012,7 @@ def _render_cell(cell: str) -> Paragraph:
         style = ParagraphStyle("badge_cell", fontName=FONT_BOLD, fontSize=8, leading=10, textColor=fg)
         return Paragraph(f"{_esc(label)}", style)
 
-    return Paragraph(_esc(cell), ParagraphStyle("cell", fontName=FONT, fontSize=9, leading=12, textColor=C.TEXT))
+    return Paragraph(_inline(cell), ParagraphStyle("cell", fontName=FONT, fontSize=9, leading=12, textColor=C.TEXT))
 
 
 # ===== Stakeholder Card =====
@@ -1153,7 +1153,7 @@ def _build_eb_person(block: dict) -> list:
     for label, value in fields.items():
         text, prov = extract_provenance(value)
         prov_str = f' <font color="{C.TEXT_MUTED.hexval()}" size="7">[{prov}]</font>' if prov else ""
-        parts.append(Paragraph(f"<b>{_esc(label)}:</b> {_esc(text)}{prov_str}", STYLES["body_small"]))
+        parts.append(Paragraph(f"<b>{_esc(label)}:</b> {_inline(text)}{prov_str}", STYLES["body_small"]))
 
     card_data = [[p] for p in parts]
     card = Table(card_data, colWidths=[CONTENT_W - 4 * mm])
@@ -1243,7 +1243,7 @@ def _build_engagement_entry(block: dict) -> list:
                        ("plan_adjustment", "Plan Adjustment")]:
         val = block.get(key, "")
         if val:
-            parts.append(Paragraph(f"<b>{label}:</b> {_esc(val)}", STYLES["body_small"]))
+            parts.append(Paragraph(f"<b>{label}:</b> {_inline(val)}", STYLES["body_small"]))
 
     card_data = [[p] for p in parts]
     card = Table(card_data, colWidths=[CONTENT_W - 4 * mm])
