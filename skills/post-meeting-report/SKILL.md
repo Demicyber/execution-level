@@ -71,7 +71,7 @@ Every piece of information must carry a provenance label so sales knows the conf
 | `[Web Search]` | Publicly available information obtained via web search | Check timeliness |
 
 **Labeling granularity:** Each independently verifiable assertion.
-**Display rule:** Only `[销售确认]` and `[网络搜索]` are shown explicitly. No label = AI推断 (default).
+**Display rule:** All three labels must be explicitly shown — `[销售确认]` `[网络搜索]` `[AI推断]`. No implicit defaults.
 **Upgrade mechanism:** After sales confirms → upgrade to `[Sales Confirmed]`.
 
 ---
