@@ -1182,7 +1182,9 @@ def _build_subsection(block: dict, doc_type: str) -> list:
             elements.extend(_build_block(b, doc_type))
         return elements
 
-    elements = [Paragraph(f"<b>{_esc(title)}</b>", STYLES["sub_heading"])]
+    emoji = block.get("emoji", "")
+    emoji_prefix = f"{emoji} " if emoji else ""
+    elements = [Paragraph(f"<b>{_esc(emoji_prefix)}{_esc(title)}</b>", STYLES["sub_heading"])]
     for b in content:
         elements.extend(_build_block(b, doc_type))
     return elements

@@ -491,7 +491,9 @@ def _render_subsection(block: dict, doc_type: str) -> str:
             parts.append(_render_block(b, doc_type))
         parts.append('  </div>')
     else:
-        parts.append(f'  <div class="sub-heading">{_esc(title)}</div>')
+        emoji = block.get("emoji", "")
+        emoji_str = f"{_esc(emoji)} " if emoji else ""
+        parts.append(f'  <div class="sub-heading">{emoji_str}{_esc(title)}</div>')
         for b in content:
             parts.append(_render_block(b, doc_type))
 

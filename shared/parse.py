@@ -91,17 +91,29 @@ def _split_sections(body: str) -> list[dict]:
 
 
 def _extract_emoji(title: str) -> tuple[str, str]:
-    """Extract leading emoji from title string."""
+    """Extract leading emoji from title string.
+    
+    Handles two formats:
+    - Direct emoji: "📊 Opportunity Snapshot" → ("📊", "Opportunity Snapshot")
+    - Numbered+emoji: "1. 📊 Opportunity Snapshot" → ("📊", "Opportunity Snapshot")
+    
+    The number prefix (N.) is stripped during extraction so renderers can
+    apply their own numbering consistently.
+    """
+    # First: strip leading number prefix "N. " if present
+    number_prefix_pattern = re.compile(r'^\d+\.\s*')
+    stripped = number_prefix_pattern.sub('', title)
+    
     # Match common emoji patterns (single emoji at start)
     emoji_pattern = re.compile(
         r'^([\U0001F300-\U0001FAF0\u2600-\u27BF\u2B50\u2705\u274C\u26A0\u2139'
         r'\u2934\u2935\u25B6\u25CB\u23F3\u2709\U0001F170-\U0001F19A'
         r'\U0001F1E0-\U0001F1FF\u200D\uFE0F]+)\s*'
     )
-    m = emoji_pattern.match(title)
+    m = emoji_pattern.match(stripped)
     if m:
         emoji = m.group(1).strip()
-        rest = title[m.end():].strip()
+        rest = stripped[m.end():].strip()
         return emoji, rest
     
     # Fallback: check for emoji-like characters NOT in CJK/punctuation ranges
@@ -109,26 +121,27 @@ def _extract_emoji(title: str) -> tuple[str, str]:
     # CJK punctuation: U+3000–U+303F
     # Fullwidth forms: U+FF00–U+FFEF
     # We only match if the character is clearly emoji (Miscellaneous Symbols, Dingbats, etc.)
-    if title:
-        ch = title[0]
+    if stripped:
+        ch = stripped[0]
         cp = ord(ch)
         # Exclude CJK ideographs, CJK punctuation, fullwidth forms, and general punctuation
         is_cjk = (0x3000 <= cp <= 0x9FFF) or (0xF900 <= cp <= 0xFAFF) or (0xFF00 <= cp <= 0xFFEF)
         is_emoji_range = cp > 0x2000 and not is_cjk
         if is_emoji_range:
             idx = 0
-            while idx < len(title):
-                c = ord(title[idx])
+            while idx < len(stripped):
+                c = ord(stripped[idx])
                 c_is_cjk = (0x3000 <= c <= 0x9FFF) or (0xF900 <= c <= 0xFAFF) or (0xFF00 <= c <= 0xFFEF)
                 if c <= 0x2000 or c_is_cjk:
                     break
-                if title[idx] not in '\uFE0F\u200D' and c < 0x2100:
+                if stripped[idx] not in '\uFE0F\u200D' and c < 0x2100:
                     break
                 idx += 1
             if idx > 0:
-                return title[:idx].strip(), title[idx:].strip()
+                return stripped[:idx].strip(), stripped[idx:].strip()
     
-    return "", title
+    # No emoji found — return stripped title (number prefix already removed)
+    return "", stripped
 
 
 def _parse_section_content(text: str) -> list[dict]:
@@ -211,6 +224,12 @@ def _parse_section_content(text: str) -> list[dict]:
                 text_content += ' ' + lines[i].strip()
                 i += 1
             blocks.append({"type": "highlight", "text": text_content})
+            continue
+        
+        # Bold name lines (**Name** — Title) — common in stakeholder/attendee sections
+        if line.strip().startswith('**') and ':**' not in line:
+            blocks.append({"type": "paragraph", "text": line.strip()})
+            i += 1
             continue
         
         # Bullet list
