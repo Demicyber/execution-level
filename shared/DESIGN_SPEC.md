@@ -126,6 +126,8 @@ body {
 }
 ```
 
+**PDF Fonts:** Noto Sans SC (Regular/Bold) for CJK text + Noto Emoji (B&W) for emoji glyphs. Run `shared/fonts/download.sh` to install both.
+
 ### 2.3 Layout
 
 ```css
@@ -487,6 +489,7 @@ Emojis are used as **section icons** and **inline markers**:
 | Table parse failure | Render raw markdown text in a code block, flag in output |
 | Render script crash | Return partial HTML up to the crash point + error message |
 | Font not available | System font stack gracefully degrades |
+| Emoji font missing (PDF) | Emoji characters stripped (no ☒ glyphs); install Noto Emoji or run `fonts/download.sh` |
 
 ---
 

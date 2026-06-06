@@ -287,10 +287,19 @@ def _add_table(document, block):
     headers = block.get("headers", [])
     rows = block.get("rows", [])
     
-    if not headers:
+    if not headers and not rows:
         return
     
-    table = document.add_table(rows=1 + len(rows), cols=len(headers))
+    # Determine actual column count (rows may be wider than headers)
+    col_count = max(len(headers), *(len(r) for r in rows)) if rows else len(headers)
+    
+    # Pad headers if rows are wider (e.g. empty first header stripped by parser)
+    if headers and len(headers) < col_count:
+        headers = [""] * (col_count - len(headers)) + headers
+    elif not headers:
+        headers = [""] * col_count
+    
+    table = document.add_table(rows=1 + len(rows), cols=col_count)
     table.style = 'Table Grid'
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     
@@ -303,7 +312,7 @@ def _add_table(document, block):
     # Data rows
     for row_idx, row in enumerate(rows):
         for col_idx, cell_text in enumerate(row):
-            if col_idx < len(headers):
+            if col_idx < col_count:
                 cell = table.rows[row_idx + 1].cells[col_idx]
                 cell.text = _strip_markdown(cell_text)
                 _style_cell(cell, size=10)
