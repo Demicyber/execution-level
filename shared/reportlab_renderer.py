@@ -434,9 +434,11 @@ def _build_section(section: dict, doc_type: str, num: int, ep_milestones: list =
 
     elements = []
 
-    # Section header with numbered circle (MD3 style)
+    # Section header with numbered circle + emoji (MD3 style)
+    emoji = section.get("emoji", "")
+    emoji_prefix = f"{emoji} " if emoji else ""
     num_circle = _section_number_circle(num)
-    title_para = Paragraph(f"<b>{_esc(title)}</b>", STYLES["section_header"])
+    title_para = Paragraph(f"<b>{_esc(emoji_prefix)}{_esc(title)}</b>", STYLES["section_header"])
     header_table = Table(
         [[num_circle, title_para]],
         colWidths=[8 * mm, CONTENT_W - 8 * mm],

@@ -6,8 +6,8 @@ html_renderer.py — Dict -> Self-contained HTML.
 Generates a single HTML file with all CSS inlined (no external dependencies).
 Handles all 4 document types: EP, CP, EB, PMR.
 
-Design: AWS color scheme + McKinsey/BCG report style.
-- No emoji in section headers (uses numbered exhibits)
+Design: MD3 Purple + McKinsey/BCG report style.
+- Numbered exhibits with emoji in section headers
 - Tight spacing, professional typography
 - Exhibit-style tables with top/bottom rules
 """
@@ -179,7 +179,9 @@ def _render_section(section: dict, doc_type: str, frontmatter: dict, section_num
 
     parts = []
     parts.append('<div class="section-card">')
-    parts.append(f'  <div class="section-header"><span class="section-number">{section_num}.</span> {_esc(title)}</div>')
+    emoji = section.get("emoji", "")
+    emoji_str = f"{_esc(emoji)} " if emoji else ""
+    parts.append(f'  <div class="section-header"><span class="section-number">{section_num}.</span> {emoji_str}{_esc(title)}</div>')
 
     has_milestones = any(b.get("type") == "milestone" for b in content_blocks)
 
