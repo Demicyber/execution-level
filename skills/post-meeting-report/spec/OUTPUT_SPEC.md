@@ -46,10 +46,9 @@ PMR has 5 top-level `##` sections matching the reference template:
 ### Rules:
 1. Section headers use format: `## {N}. {emoji} {Title}`
 2. Sub-sections use `###`
-3. Provenance labels: ALL three must be shown explicitly — `[销售确认]`, `[网络搜索]`, `[AI推断]`
-4. Tables use standard Markdown table syntax
-5. Each section is REQUIRED
-6. Data auto-pulled from related Call Plan where marked
+3. Tables use standard Markdown table syntax
+4. Each section is REQUIRED
+5. Data auto-pulled from related Call Plan where marked
 
 ---
 

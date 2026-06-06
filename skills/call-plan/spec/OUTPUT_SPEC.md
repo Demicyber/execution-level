@@ -50,9 +50,8 @@ CP has 7 top-level `##` sections matching the reference template:
 1. Section headers MUST use `## N. {Title}` format matching template
 2. Sub-sections use `###`
 3. Stance/Role/Category values written directly as field values (renderer maps to badge colors)
-4. Provenance labels: ALL three must be shown explicitly — `[销售确认]`, `[网络搜索]`, `[AI推断]`
-5. Tables use standard Markdown table syntax
-6. Each section is REQUIRED
+4. Tables use standard Markdown table syntax
+5. Each section is REQUIRED
 
 ---
 

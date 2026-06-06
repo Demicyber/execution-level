@@ -15,19 +15,7 @@
 >
 > ✅ *After generating, agent always asks sales to review and revise as needed.*
 
-<!-- AGENT GUIDANCE — Data Provenance Labeling（信息溯源标注）
 
-所有生成的内容必须标注信息来源，让销售清楚每条信息的置信度。
-
-三个标签：
-- [销售确认] — 销售直接提供或明确确认的信息，可直接使用
-- [AI推断] — Agent 根据上下文分析推断的信息，建议核实
-- [网络搜索] — 通过网络搜索获取的公开信息，注意时效
-
-标注粒度：每条独立可判断真伪的断言。
-显示规则：三种标签全部显式标注：[销售确认]、[网络搜索]、[AI推断]。每条信息必须有标签。
-升级机制：销售确认后可将 [AI推断] 升级为 [销售确认]（标签始终显式存在）。
--->
 
 <!-- GLOBAL AGENT LOGIC:
 
