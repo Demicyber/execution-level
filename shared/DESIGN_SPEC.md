@@ -456,7 +456,7 @@ Emojis are used as **section icons** and **inline markers**:
 
 **Rule:** Emojis appear BEFORE text in headers. Maximum 1 emoji per header. No emoji in body text (except provenance markers and inline person/date references).
 
-**Provenance display:** All three labels are always shown explicitly: `[销售确认]`, `[网络搜索]`, `[AI推断]`. No "hidden default" — every assertion gets a visible label.
+**Provenance display:** Only `[销售确认]` and `[网络搜索]` are shown explicitly. No label = AI推断 (default). This follows the principle of minimal annotation — only flag non-AI sources.
 
 ---
 

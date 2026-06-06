@@ -104,15 +104,29 @@ def _extract_emoji(title: str) -> tuple[str, str]:
         rest = title[m.end():].strip()
         return emoji, rest
     
-    # Try matching a few specific emoji
-    if title and ord(title[0]) > 0x2000:
-        # Likely an emoji character
-        # Find the boundary where text starts
-        idx = 0
-        while idx < len(title) and (ord(title[idx]) > 0x2000 or title[idx] in '\uFE0F\u200D'):
-            idx += 1
-        if idx > 0:
-            return title[:idx].strip(), title[idx:].strip()
+    # Fallback: check for emoji-like characters NOT in CJK/punctuation ranges
+    # CJK Unified Ideographs: U+4E00–U+9FFF, U+3400–U+4DBF, U+F900–U+FAFF
+    # CJK punctuation: U+3000–U+303F
+    # Fullwidth forms: U+FF00–U+FFEF
+    # We only match if the character is clearly emoji (Miscellaneous Symbols, Dingbats, etc.)
+    if title:
+        ch = title[0]
+        cp = ord(ch)
+        # Exclude CJK ideographs, CJK punctuation, fullwidth forms, and general punctuation
+        is_cjk = (0x3000 <= cp <= 0x9FFF) or (0xF900 <= cp <= 0xFAFF) or (0xFF00 <= cp <= 0xFFEF)
+        is_emoji_range = cp > 0x2000 and not is_cjk
+        if is_emoji_range:
+            idx = 0
+            while idx < len(title):
+                c = ord(title[idx])
+                c_is_cjk = (0x3000 <= c <= 0x9FFF) or (0xF900 <= c <= 0xFAFF) or (0xFF00 <= c <= 0xFFEF)
+                if c <= 0x2000 or c_is_cjk:
+                    break
+                if title[idx] not in '\uFE0F\u200D' and c < 0x2100:
+                    break
+                idx += 1
+            if idx > 0:
+                return title[:idx].strip(), title[idx:].strip()
     
     return "", title
 

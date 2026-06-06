@@ -30,20 +30,40 @@ except ImportError:
 
 # Color mapping for badges
 BADGE_COLORS = {
+    # Stance
     "champion": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "sponsor": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
     "supporter": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
     "neutral": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
     "non-supporter": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    "adversary": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
     "unknown": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    # Role
+    "decision-maker": RGBColor(0x4C, 0x1D, 0x95) if HAS_DOCX else None,
+    "technical-evaluator": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "economic-buyer": RGBColor(0x92, 0x40, 0x0E) if HAS_DOCX else None,
+    "influencer": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
+    "end-user": RGBColor(0x6B, 0x72, 0x80) if HAS_DOCX else None,
+    "blocker": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    # Priority
     "high": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
     "medium": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
     "low": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "must-meet": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
+    "important": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
+    "nice-to-have": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    # Result / Status
     "achieved": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
     "partial": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
     "not-achieved": RGBColor(0xDC, 0x26, 0x26) if HAS_DOCX else None,
     "done": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
     "next": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
     "planned": RGBColor(0x9C, 0xA3, 0xAF) if HAS_DOCX else None,
+    # Action / Gap
+    "pending": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
+    "in-progress": RGBColor(0x6D, 0x28, 0xD9) if HAS_DOCX else None,
+    "answered": RGBColor(0x05, 0x96, 0x69) if HAS_DOCX else None,
+    "unanswered": RGBColor(0xD9, 0x77, 0x06) if HAS_DOCX else None,
 }
 
 DOC_TYPE_LABELS = {

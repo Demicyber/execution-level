@@ -60,15 +60,16 @@ body {
 .page {
   max-width: 780px;
   margin: 0 auto;
-  padding: 28px 36px;
+  padding: 32px 40px;
   background: var(--color-bg);
+  border-radius: 12px;
 }
 
 /* ===== Document Header ===== */
 .doc-header {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 3px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
 }
 
 .doc-type-label {
@@ -109,6 +110,7 @@ body {
   font-weight: 500;
   background: var(--color-bg-subtle);
   border: 1px solid var(--color-border-light);
+  border-radius: 9999px;
   color: var(--color-text-secondary);
 }
 
@@ -116,14 +118,17 @@ body {
   background: var(--color-primary);
   color: #FFFFFF;
   border-color: var(--color-primary);
+  border-radius: 9999px;
   font-weight: 600;
 }
 
 /* ===== Section ===== */
 .section-card {
   margin-bottom: 20px;
-  padding: 0;
-  border: none;
+  padding: 20px 24px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  background: var(--color-bg);
 }
 
 .section-header {
@@ -159,10 +164,11 @@ body {
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 1px 8px;
+  padding: 2px 10px;
   font-size: 11px;
   font-weight: 600;
-  border: 1px solid;
+  border: 1.5px solid;
+  border-radius: 9999px;
   white-space: nowrap;
 }
 
@@ -171,6 +177,7 @@ body {
 .badge-supporter { color: #FFFFFF; background: var(--color-supporter); border-color: var(--color-supporter); }
 .badge-neutral { color: var(--color-neutral); background: #FFFBEB; border-color: var(--color-neutral); }
 .badge-non-supporter { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
+.badge-adversary { color: #FFFFFF; background: var(--color-non-supporter); border-color: var(--color-non-supporter); }
 .badge-unknown { color: var(--color-unknown); background: var(--color-bg-subtle); border-color: var(--color-border); }
 
 /* Role */
@@ -266,7 +273,8 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
 .stakeholder-card {
   border: 1px solid var(--color-border-light);
   border-top: 3px solid var(--color-primary);
-  padding: 12px 16px;
+  border-radius: 10px;
+  padding: 14px 18px;
   margin-bottom: 10px;
   position: relative;
   background: var(--color-bg);
@@ -337,6 +345,7 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
   padding: 10px 14px;
   border: 1px solid var(--color-border-light);
   border-left: 3px solid var(--color-border);
+  border-radius: 8px;
   background: var(--color-bg);
 }
 
@@ -349,8 +358,9 @@ tr:last-child td { border-bottom: 1px solid var(--color-primary); }
   position: absolute;
   left: -28px;
   top: 12px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;

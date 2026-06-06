@@ -199,10 +199,26 @@ def _register_fonts():
             continue
 
     # 3. Last resort: use ReportLab's bundled Vera font (always available)
+    # WARNING: Vera is Latin-only — CJK text will render as missing glyphs
     import reportlab
     rl_fonts = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
     pdfmetrics.registerFont(TTFont("CJK", os.path.join(rl_fonts, "Vera.ttf")))
     pdfmetrics.registerFont(TTFont("CJK-Bold", os.path.join(rl_fonts, "VeraBd.ttf")))
+
+    import logging as _logging
+    _logger = _logging.getLogger(__name__)
+    _logger.error(
+        "NO CJK FONT FOUND — PDF will render Chinese/Japanese/Korean text as missing glyphs! "
+        "Fix: run 'shared/fonts/download.sh' or install system CJK fonts "
+        "(e.g., 'sudo apt install fonts-noto-cjk' or 'sudo yum install google-noto-sans-cjk-ttc-fonts')"
+    )
+    import warnings
+    warnings.warn(
+        "No CJK font found for PDF rendering. Chinese text will NOT display correctly. "
+        "Run shared/fonts/download.sh to fix.",
+        RuntimeWarning,
+        stacklevel=2,
+    )
 
 
 _register_fonts()
