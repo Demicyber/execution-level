@@ -16,60 +16,122 @@ type: engagement-plan
 customer: "测试科技"
 opportunity: Cloud Migration
 stage: Technical Validation
-win_strategy: Champion-led
-version: "1.0"
+source: new-logo
+created: "2026-01-01"
+version: "2026-05-01"
 ---
 
-## 📊 Opportunity Snapshot
+## 1. 📊 Opportunity Snapshot
 
-- **Deal Size:** $500K ARR
-- **Stage:** Technical Validation `{confidence:high}`
-- **Win Strategy:** Champion-led approach
+| Field | Value |
+|-------|-------|
+| Customer | 测试科技 · Tech · New Logo |
+| Opportunity Name | Cloud Migration |
+| Deal Value | $500K ARR |
+| Current Stage | Technical Validation |
+| Target Launch Date | 2026-Q3 |
 
-### Engagement Progress
-[████████░░░░░░░░] 50% — Technical Validation
+### Why Now
 
-## 👥 Key Stakeholders
+数据中心租约年底到期，必须在Q3前完成技术验证。
 
-### 王明
-- **Title:** CTO
-- **Engagement Priority:** high
-- **Role in This Deal:** decision-maker
-- **Current Stance:** supporter
-- **What They Care About:** Cost reduction, reliability
-- **Profiling:** Data-driven, prefers metrics
-- **What We Need From Them:** Technical sign-off
-- **How to Win Them:** Provide benchmark data
+### Deal Objective
 
-## 🗺️ Engagement Roadmap
+帮助客户完成核心工作负载迁移评估，锁定$500K ARR。
 
-| # | Milestone | Stakeholders | AWS Resources | Timeline | Status |
-|---|-----------|-------------|---------------|----------|--------|
-| 1 | Discovery | 王明 | SA | Week 1 | done |
-| 2 | POC | 王明 | SA, TAM | Week 3 | next |
+### Win Strategy
 
-## 📍 Next Milestone Detail
+Champion-led approach. 利用王明的技术信任推动。
 
-**Milestone:** POC Setup
+**Key Risks:** 竞争对手Azure正在接触CFO。
+
+### 📈 Engagement Progress
+
+[Prospect] ━━━ [Qualified] ━━━ [Tech Val] ━━━ [Biz Val] ━━━ [Committed]
+                                ▲ We are here
+
+## 2. 👥 Engagement Plan
+
+### 👥 Key Stakeholders
+
+**王明** — CTO
+
+| Dimension | Details |
+|---|---|
+| **Engagement Priority** | Must Meet — 技术决策签字人 [销售确认] |
+| **Role in This Deal** | Decision Maker — 架构评审有一票否决权 |
+| **Current Stance** | Supporter — 主动索要白皮书 |
+| **What They Care About** | Cost reduction, reliability |
+| **Profiling** | Data-driven, prefers metrics |
+| **What We Need From Them** | Technical sign-off |
+| **How to Win Them** | Provide benchmark data |
+
+**李芳** — VP Engineering
+
+| Dimension | Details |
+|---|---|
+| **Engagement Priority** | Important — 评估协调人 |
+| **Role in This Deal** | Evaluator — 技术评估负责人 |
+| **Current Stance** | Neutral — 首次接触 |
+| **What They Care About** | Migration risk control |
+| **Profiling** | Process-oriented, documentation-heavy |
+| **What We Need From Them** | Provide architecture docs |
+| **How to Win Them** | WAR demo first |
+
+### 📍 Engagement Roadmap
+
+| # | Milestone | Key Stakeholders | AWS Team | Status |
+|---|-----------|-----------------|----------|--------|
+| 1 | Discovery complete | 王明 | SA | Done |
+| 2 | POC validation | 王明, 李芳 | SA, TAM | **Next** ↓ |
+| 3 | Business case approved | CFO | AM, Deal Desk | Planned |
+
+### 📐 Estimate & Contingency
+
+| | Best Case | Worst Case |
+|---|---|---|
+| **Milestones to Close** | 3 | 5 |
+| **Timeline** | 6 weeks | 12 weeks |
+
+#### Stakeholder Risk & Leverage
+
+| At-Risk Stakeholder | Red Flag | Leverage Source | Plan B |
+|---|---|---|---|
+| CFO | Not contacted | 王明 intro | Industry event |
+
+#### Milestone Risk & Contingency
+
+| Milestone Node | Risk Item | Trigger Condition | Impact | Plan B |
+|---|---|---|---|---|
+| #2 POC | 🧑 CTO busy | 2 weeks no reply | +2 weeks | Informal tech chat |
+
+### 📋 Next Milestone Detail
+
+**Milestone #2** — 2026-06-01
+
 **Objective:** Prove <5ms latency at scale
 
-### Preparation
-- Prepare test environment
-- Gather baseline metrics
+**Customer Attendees & Target Outcome:**
+- 王明 (CTO) — Supporter, target Sponsor: approve POC scope
+- 李芳 (VP Eng) — Neutral, target Supporter: provide test environment
 
-## 🧠 Estimated Objections
+**AWS Team:** SA leads technical, TAM supports
 
-### "Migration risk is too high"
-- **Category:** risk-trust
-- **Likely From:** CTO
-- **Our Response:** Phased migration plan with rollback
-- **Plan B:** Start with non-critical workload
+**Key Questions & Discussion Points:**
+- Current architecture bottlenecks?
+- POC success criteria?
 
-## 📝 Execution Log
+## 3. 📝 Execution Log
 
-| Date | Event | Type |
-|------|-------|------|
-| 2026-05-01 | Initial call with CTO | update |
+### Engagement #1 — 2026-05-01 — 王明
+
+| Field | Details |
+|---|---|
+| **Planned** | Initial discovery call |
+| **Actual** | CTO confirmed migration interest |
+| **People Updates** | 王明: Neutral → Supporter |
+| **Key Learnings** | Budget approved for Q3 |
+| **Plan Adjustment** | None needed |
 """
 
 SAMPLE_CP = """\
@@ -85,7 +147,7 @@ stage: Technical Validation
 version: "1.0"
 ---
 
-## 1. Meeting Details
+## 1. 📋 Meeting Details
 
 **Customer:** 明华重工
 **Meeting:** Technical Deep Dive
@@ -100,12 +162,12 @@ version: "1.0"
 - Stance: `{stance:supporter}`
 - Our Goal: Secure technical validation commitment
 
-## 2. Target Meeting Outcomes
+## 2. 🎯 Target Meeting Outcomes
 
 - Validate technical architecture fit
 - Confirm POC scope and timeline
 
-## 3. Success Criteria
+## 3. ✅ Success Criteria
 
 | Perspective | Customer Outcome | Seller Outcome |
 |-------------|-----------------|----------------|
@@ -115,7 +177,7 @@ version: "1.0"
 
 **Disqualification Signals:** Budget freeze, competing project priority
 
-## 4. Information Exchange
+## 4. 🔄 Information Exchange
 
 ### Information to Gather
 - Current CI/CD pipeline details
@@ -125,14 +187,14 @@ version: "1.0"
 - AWS CodePipeline architecture
 - Reference customer results
 
-## 5. Potential Objections & Responses
+## 5. ⚡ Potential Objections & Responses
 
 | Objection | Category | Response | Fallback | Disqualifier? |
 |-----------|----------|----------|----------|---------------|
 | "Too complex" | capability | Step-by-step migration | Managed service option | No |
 | "Budget locked" | price-value | Phased approach | Pay-as-you-go | Yes if no budget in 6mo |
 
-## 6. Meeting Agenda
+## 6. 📅 Meeting Agenda
 
 | Time | Topic | Owner | Purpose |
 |------|-------|-------|---------|
@@ -141,7 +203,7 @@ version: "1.0"
 | 30-45 | Q&A | All | Address concerns |
 | 45-50 | Next Steps | AE | Agreement |
 
-## 7. Potential Next Steps
+## 7. 🚀 Potential Next Steps
 
 - **Primary Path:** POC kickoff within 2 weeks
 - **Fallback Path:** Schedule follow-up with security team
@@ -152,37 +214,34 @@ SAMPLE_EB = """\
 ---
 type: executive-briefing
 customer: "环球物流集团"
+opportunity: "Cloud Partnership"
 meeting_title: EBC Visit
 date: 2026-06-15
-classification: CONFIDENTIAL
-aws_executive: "VP, Greater China"
+time: "10:00-11:30 CST"
+format: "In-person"
+classification: "INTERNAL USE ONLY — AWS Confidential"
+requested_by: "Zhang Wei (AM)"
 version: "1.0"
 ---
 
-## 1. Meeting Logistics
+## 1. 📋 Meeting Logistics
 
 - **Date:** 2026-06-15
 - **Format:** In-person, Beijing Office
 - **AWS Executive:** VP, Greater China
 - **Duration:** 90 minutes
 
-## 2. Customer Attendee Background
+## 2. 👤 Customer Attendee Background
 
 **李总** — CEO
 
-**Title & Tenure:** CEO since 2019, former McKinsey partner
-**Strategic Priorities:** Digital transformation of logistics network
-**Attitude Toward AWS:** Cautiously optimistic, values reliability `{stance:neutral}`
-**Communication Style:** Big-picture thinker, asks strategic questions
+> 李总2019年出任CEO，前麦肯锡合伙人。Neutral — 对AWS持谨慎乐观态度，重视可靠性。大格局思考者，偏好战略性对话。核心关注物流网络数字化转型。与AWS的互动主要通过SA团队，合作2年。
 
 ### Company Profile
 
-- **Industry:** Logistics & Supply Chain
-- **Revenue:** $2.8B (2025)
-- **Employees:** 15,000+
-- **Cloud Status:** Early adoption, mostly on-premise
+> 环球物流集团，物流与供应链行业，2025年营收$2.8B，员工15000+。目前以本地部署为主，云采用处于早期阶段。
 
-## 3. Meeting Objectives
+## 3. 🎯 Meeting Objectives
 
 ### Success Definition
 Win CEO sponsorship for enterprise cloud strategy partnership.
@@ -207,12 +266,24 @@ This aligns with AWS Greater China's logistics vertical play.
 - Schedule follow-up with CTO for technical deep-dive
 - Share logistics industry reference architectures
 
-## 4. AWS Account Background
+## 4. 📊 AWS Account Background
 
-- **Current Spend:** $200K/month
-- **Growth Trajectory:** 30% YoY
-- **Key Workloads:** Data analytics, some ML experiments
-- **Relationship History:** 2 years, primarily through SA team
+| Field | Details |
+|---|---|
+| **Geo / Segment** | GCR / Enterprise |
+| **Current AWS Spend** | $200K/month |
+| **Expected Spend** | $300K/month |
+| **Commit / PPA Status** | No PPA yet |
+
+### Account Summary
+
+> 客户当前月支出$200K，YoY增长30%，主要工作负载为数据分析和部分ML实验。与AWS合作2年，主要通过SA团队。无已知活跃escalation。竞争态势：本地部署为主，Azure有少量presence。
+
+## 5. 📎 Appendix
+
+### A. Previous Meeting Notes & Action Items
+
+> 首次高管级会议，无历史记录。
 """
 
 SAMPLE_PMR = """\
@@ -222,21 +293,21 @@ customer: "明华重工"
 opportunity: DevOps Modernization
 meeting_title: Technical Deep Dive
 date: 2026-06-01
-attendees_customer: "张伟 (CTO), 李芳 (VP Eng)"
-attendees_aws: "SA: 陈明, AE: 王磊"
+recorded_by: "Agent (from sales debrief)"
+related_document: "call-plan-2026-05-28"
 version: "1.0"
 ---
 
-## 1. Outcome Assessment
+## 1. 📊 Outcome Assessment
 
-- **Overall Result:** `{result:achieved}`
-- **Meeting Objective:** Validate technical fit → Achieved
-- **Confidence for Next Step:** `{confidence:high}`
+| # | Target Meeting Outcome | Result | Evidence & Notes |
+|---|---|---|---|
+| 1 | Validate technical fit | Achieved | CTO said "this looks like the right architecture" |
+| 2 | Get POC commitment | Achieved | 2-week POC approved on the spot |
 
-### Key Win
-CTO explicitly said "this looks like the right architecture for us"
+**Stage Progression:** ( Qualified ) → ( Technical Validation ) — ✅ Achieved
 
-## 2. Meeting Insights
+## 2. 🔍 Meeting Insights
 
 ### Customer Sentiment
 Positive. CTO was engaged throughout, asked detailed questions about security model.
@@ -254,36 +325,37 @@ Positive. CTO was engaged throughout, asked detailed questions about security mo
 | Security requirements? | unanswered | Need follow-up with CISO |
 | Timeline pressure? | answered | Must migrate before Dec 2026 |
 
-## 3. What Changed — EP Update
+## 3. ✏️ What Changed — EP Update
 
-| Field | Before | After | Change |
-|-------|--------|-------|--------|
-| Stage | Qualified | Technical Validation | update |
-| CTO Stance | neutral | supporter | update |
-| Win Probability | 40% | 65% | update |
+| # | EP Section to Update | Change Type | What to Write |
+|---|---|---|---|
+| 1 | Key Stakeholders | Update | CTO stance: Neutral → Supporter |
+| 2 | Roadmap | Update | Stage progression confirmed |
+| 3 | Win Strategy | Add | Competing with Azure (incumbent) |
 
-### Execution Log Update
-- 2026-06-01: Technical deep dive — CTO confirmed architecture fit
+**Execution Log Update:** Milestone #1 Done — CTO confirmed architecture fit
 
 ### Agent Recommendation
 Accelerate POC setup. CTO momentum is high; delay risks losing attention to competing initiatives.
 
-## 4. Next Steps — Planned vs Actual
+## 4. 📋 Next Steps — Planned vs Actual
 
-| Planned | Actual | Gap |
-|---------|--------|-----|
-| Get POC commitment | Achieved — 2-week POC approved | None |
-| Understand security reqs | Partially — need CISO meeting | Follow-up needed |
+### Comparison
+
+| # | Planned (from Call Plan) | Actual (agreed in meeting) | Delta |
+|---|---|---|---|
+| 1 | Get POC commitment | Achieved — 2-week POC approved | On track |
+| 2 | Understand security reqs | Partially — need CISO meeting | Follow-up needed |
 
 ### Action Items
 
-| # | Action | Owner | Due | Status |
-|---|--------|-------|-----|--------|
-| 1 | Send POC proposal | SA 陈明 | 2026-06-03 | pending |
-| 2 | Schedule CISO meeting | AE 王磊 | 2026-06-05 | pending |
-| 3 | Share security whitepaper | SA 陈明 | 2026-06-02 | pending |
+| # | Priority | Action Item | Owner | ETA | Status |
+|---|---|---|---|---|---|
+| 1 | High | Send POC proposal | SA 陈明 (AWS) | 2026-06-03 | Open |
+| 2 | High | Schedule CISO meeting | AE 王磊 (AWS) | 2026-06-05 | Open |
+| 3 | Medium | Share security whitepaper | SA 陈明 (AWS) | 2026-06-02 | Open |
 
-## 5. Customer Recap Email
+## 5. ✉️ Customer Recap Email (Handoff)
 
 **Subject:** Thank You — Technical Deep Dive Follow-up
 
@@ -390,7 +462,7 @@ stage: Qualified
 version: "1.0"
 ---
 
-## 1. Meeting Details
+## 1. 📋 Meeting Details
 
 Test content.
 """
