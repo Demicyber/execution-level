@@ -237,6 +237,8 @@ def _render_block(block: dict, doc_type: str) -> str:
         return _render_bullet_list(block)
     elif block_type == "paragraph":
         return _render_paragraph(block)
+    elif block_type == "progress_bar":
+        return _render_progress_bar(block)
     elif block_type == "highlight":
         return _render_highlight(block)
     else:
@@ -641,6 +643,36 @@ def _render_bullet_list(block: dict) -> str:
 def _render_paragraph(block: dict) -> str:
     text = block.get("text", "")
     return f'  <p class="content-paragraph">{_render_inline(text)}</p>'
+
+
+def _render_progress_bar(block: dict) -> str:
+    """Render a metro-style progress bar with colored nodes and connectors."""
+    stages = block.get("stages", [])
+    current = block.get("current", 0)
+    if not stages:
+        return ""
+    
+    nodes_html = []
+    for idx, stage in enumerate(stages):
+        if idx < current:
+            state = "done"
+        elif idx == current:
+            state = "current"
+        else:
+            state = "planned"
+        
+        node = f'<div class="progress-node {state}">'
+        node += f'<div class="progress-dot"></div>'
+        node += f'<div class="progress-label">{_esc(stage)}</div>'
+        node += '</div>'
+        
+        if idx < len(stages) - 1:
+            connector_state = "done" if idx < current else "planned"
+            node += f'<div class="progress-connector {connector_state}"></div>'
+        
+        nodes_html.append(node)
+    
+    return f'  <div class="progress-bar-track">{"".join(nodes_html)}</div>'
 
 
 def _render_highlight(block: dict) -> str:

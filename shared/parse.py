@@ -232,6 +232,45 @@ def _parse_section_content(text: str) -> list[dict]:
             i += 1
             continue
         
+        # Progress bar pattern: [Stage] ━━━ [Stage] ... with optional ▲ We are here line
+        if re.match(r'^\[.+\].*━', line.strip()):
+            stages = re.findall(r'\[([^\]]+)\]', line)
+            # Determine current stage from ▲ marker or ● marker
+            current_idx = None
+            # Check for ● marker in the line
+            if '●' in line:
+                # Find which stage the ● is closest to
+                pos = line.index('●')
+                for idx, stage in enumerate(stages):
+                    stage_pos = line.index(f'[{stage}]')
+                    if stage_pos >= pos:
+                        current_idx = idx
+                        break
+                if current_idx is None:
+                    current_idx = len(stages) - 1
+            # Check next line for ▲ We are here
+            if i + 1 < len(lines) and '▲' in lines[i + 1]:
+                arrow_line = lines[i + 1]
+                arrow_pos = arrow_line.index('▲')
+                # Match arrow position to stage position
+                for idx, stage in enumerate(stages):
+                    stage_pos = line.find(f'[{stage}]')
+                    stage_end = stage_pos + len(f'[{stage}]')
+                    if arrow_pos <= stage_end:
+                        current_idx = idx
+                        break
+                i += 1  # consume the ▲ line
+            # Default: if no marker found, try to infer from "Done/Next" in roadmap context
+            if current_idx is None:
+                current_idx = 0
+            blocks.append({
+                "type": "progress_bar",
+                "stages": stages,
+                "current": current_idx,
+            })
+            i += 1
+            continue
+        
         # Bullet list
         if line.strip().startswith('- '):
             items = []

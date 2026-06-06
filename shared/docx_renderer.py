@@ -270,6 +270,8 @@ def _add_block(document, block, doc_type):
         _add_bullet_list(document, block)
     elif block_type == "paragraph":
         _add_paragraph(document, block)
+    elif block_type == "progress_bar":
+        _add_progress_bar(document, block)
     elif block_type == "highlight":
         _add_highlight(document, block)
     elif block_type == "objective":
@@ -499,6 +501,88 @@ def _add_paragraph(document, block):
         para = document.add_paragraph()
         run = para.add_run(_strip_markdown(text))
         run.font.size = Pt(10)
+
+
+def _add_progress_bar(document, block):
+    """Add a metro-style progress bar as a table for proper alignment."""
+    from docx.table import _Cell
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    
+    stages = block.get("stages", [])
+    current = block.get("current", 0)
+    if not stages:
+        return
+    
+    n = len(stages)
+    # Build a 2-row table: row 0 = node symbols + connectors, row 1 = labels
+    # Columns: stage, connector, stage, connector, ..., stage
+    col_count = n * 2 - 1  # stages + connectors interleaved
+    
+    table = document.add_table(rows=2, cols=col_count)
+    table.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    # Remove table borders
+    from docx.oxml.ns import qn
+    tbl = table._tbl
+    tblPr = tbl.tblPr if tbl.tblPr is not None else tbl._add_tblPr()
+    borders = tblPr.find(qn('w:tblBorders'))
+    if borders is not None:
+        tblPr.remove(borders)
+    # Set no borders explicitly
+    from docx.oxml import OxmlElement
+    borders = OxmlElement('w:tblBorders')
+    for edge in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):
+        el = OxmlElement(f'w:{edge}')
+        el.set(qn('w:val'), 'none')
+        el.set(qn('w:sz'), '0')
+        borders.append(el)
+    tblPr.append(borders)
+    
+    for idx in range(n):
+        col_idx = idx * 2  # stage columns at 0, 2, 4, ...
+        
+        # Row 0: Node symbol
+        cell = table.cell(0, col_idx)
+        cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if idx < current:
+            symbol, color = "●", RGBColor(0x05, 0x96, 0x69)
+            size = Pt(13)
+        elif idx == current:
+            symbol, color = "◉", RGBColor(0x6D, 0x28, 0xD9)
+            size = Pt(16)
+        else:
+            symbol, color = "○", RGBColor(0x9C, 0xA3, 0xAF)
+            size = Pt(13)
+        
+        run = cell.paragraphs[0].add_run(symbol)
+        run.font.size = size
+        run.font.color.rgb = color
+        run.bold = (idx == current)
+        
+        # Row 1: Label
+        label_cell = table.cell(1, col_idx)
+        label_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        if idx < current:
+            lbl_color = RGBColor(0x05, 0x96, 0x69)
+        elif idx == current:
+            lbl_color = RGBColor(0x6D, 0x28, 0xD9)
+        else:
+            lbl_color = RGBColor(0x9C, 0xA3, 0xAF)
+        
+        lbl_run = label_cell.paragraphs[0].add_run(stages[idx])
+        lbl_run.font.size = Pt(7)
+        lbl_run.font.color.rgb = lbl_color
+        lbl_run.bold = (idx == current)
+        
+        # Connector column (between stages)
+        if idx < n - 1:
+            conn_col = col_idx + 1
+            conn_cell = table.cell(0, conn_col)
+            conn_cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            conn_color = RGBColor(0x05, 0x96, 0x69) if idx < current else RGBColor(0xD1, 0xD5, 0xDB)
+            conn_run = conn_cell.paragraphs[0].add_run("━━━")
+            conn_run.font.size = Pt(9)
+            conn_run.font.color.rgb = conn_color
 
 
 def _add_highlight(document, block):

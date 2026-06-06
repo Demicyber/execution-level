@@ -838,6 +838,8 @@ def _build_block(block: dict, doc_type: str) -> list:
         return _build_bullets(block)
     elif block_type == "paragraph":
         return [Paragraph(_esc(block.get("text", "")), STYLES["body"]), Spacer(1, 2 * mm)]
+    elif block_type == "progress_bar":
+        return _build_progress_bar(block)
     elif block_type == "highlight":
         return _build_highlight(block)
     else:
@@ -1256,6 +1258,79 @@ def _build_highlight(block: dict) -> list:
         ("LEFTPADDING", (0, 0), (-1, -1), 8),
     ]))
     return [t, Spacer(1, 1.5 * mm)]
+
+
+def _build_progress_bar(block: dict) -> list:
+    """Build a metro-style progress bar using ReportLab Drawing."""
+    from reportlab.graphics.shapes import Drawing, Circle, Line, String
+    from reportlab.graphics import renderPDF
+    from reportlab.lib.enums import TA_CENTER
+    
+    stages = block.get("stages", [])
+    current = block.get("current", 0)
+    if not stages:
+        return []
+    
+    n = len(stages)
+    node_spacing = min(80, (CONTENT_W - 40) / max(n - 1, 1))
+    total_w = float(node_spacing * (n - 1) + 40)
+    drawing_h = 55
+    y_track = 35  # vertical position of the track line
+    y_label = 5   # vertical position of labels
+    
+    d = Drawing(total_w, drawing_h)
+    
+    start_x = 20
+    
+    for idx in range(n):
+        x = start_x + idx * node_spacing
+        
+        # Connector line (before this node, except first)
+        if idx > 0:
+            prev_x = start_x + (idx - 1) * node_spacing
+            line_color = C.ACHIEVED if idx <= current else colors.HexColor("#D1D5DB")
+            line = Line(prev_x + 8, y_track, x - 8, y_track)
+            line.strokeColor = line_color
+            line.strokeWidth = 3
+            d.add(line)
+        
+        # Node circle
+        if idx < current:
+            # Done — green filled
+            circle = Circle(x, y_track, 7)
+            circle.fillColor = C.ACHIEVED
+            circle.strokeColor = C.ACHIEVED
+            circle.strokeWidth = 0
+        elif idx == current:
+            # Current — purple with ring
+            ring = Circle(x, y_track, 11)
+            ring.fillColor = colors.HexColor("#EDE9FE")
+            ring.strokeColor = C.PRIMARY
+            ring.strokeWidth = 2
+            d.add(ring)
+            circle = Circle(x, y_track, 7)
+            circle.fillColor = C.PRIMARY
+            circle.strokeColor = C.PRIMARY
+            circle.strokeWidth = 0
+        else:
+            # Planned — gray outline
+            circle = Circle(x, y_track, 7)
+            circle.fillColor = colors.HexColor("#F9FAFB")
+            circle.strokeColor = colors.HexColor("#D1D5DB")
+            circle.strokeWidth = 2
+        d.add(circle)
+        
+        # Label
+        label_color = C.ACHIEVED if idx < current else (C.PRIMARY if idx == current else C.TEXT_SEC)
+        font_name = FONT_BOLD if idx == current else FONT
+        s = String(x, y_label, stages[idx])
+        s.fontSize = 7
+        s.fontName = font_name
+        s.fillColor = label_color
+        s.textAnchor = "middle"
+        d.add(s)
+    
+    return [Spacer(1, 3 * mm), d, Spacer(1, 3 * mm)]
 
 
 # ===== Utilities =====
