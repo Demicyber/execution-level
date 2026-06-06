@@ -30,6 +30,7 @@ LLM generates Structured Markdown (per-skill spec)
 ```
 
 ### Key Principles
+- **MD3 Purple + McKinsey hybrid** — rounded cards & pill badges (MD3) + tight typography, numbered exhibits & exhibit-style tables (McKinsey). Section headers show `N. 📊 Title`.
 - **Zero external dependencies at runtime** — no CDN, no Google Fonts download
 - **Self-contained HTML** — single .html file with all CSS inlined
 - **ReportLab for PDF** — direct dict→PDF rendering, no HTML intermediate step
