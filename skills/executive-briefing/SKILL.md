@@ -185,14 +185,40 @@ Cover in one focused paragraph:
 ```
 EB 生成完毕
     ↓
-① Quick Summary（对话中直接发送，3-5 行）
+① 将 markdown 保存为 .md 文件
     ↓
-② 完整文档 PDF（必须每次输出）
+② 强制调用渲染引擎生成 PDF/HTML/DOCX
     ↓
-③ HTML 同时保存（中间产物，也存档）
+③ Quick Summary（对话中直接发送，3-5 行）
     ↓
-④ Word 按需（销售明确要求时生成）
+④ 附件交付（PDF 必须，Word 按需）
 ```
+
+### ⚠️ 强制渲染调用（MANDATORY）
+
+**Agent 必须执行以下命令渲染文档，不可跳过、不可手动拼 HTML/PDF。**
+
+```bash
+# 1. 保存 markdown（路径按 Section 7 命名规范）
+# 假设文件存为 {output_dir}/EB_Customer_Date_Brief.md
+
+# 2. 渲染 PDF（必须）
+python -m shared {md_file} -f pdf -o {output_dir}/EB_Customer_Date_Brief.pdf --strict
+
+# 3. 渲染 HTML（必须，中间产物存档）
+python -m shared {md_file} -f html -o {output_dir}/EB_Customer_Date_Brief.html --strict
+
+# 4. 渲染 DOCX（按需，销售明确要求时）
+python -m shared {md_file} -f docx -o {output_dir}/EB_Customer_Date_Brief.docx --strict
+```
+
+**错误处理：**
+- 如果命令返回 ❌ Failed → 读取 error 信息，修正 markdown 中的格式问题，重新渲染
+- 如果有 ⚠️ Warnings → 评估是否需要修正（non-blocking，可继续交付）
+- **禁止**：直接用 Python 代码拼 HTML/PDF 绕过渲染引擎
+- **禁止**：跳过 `--strict` 参数（确保格式完全合规）
+
+**渲染引擎位置：** 本 repo 的 `shared/` 目录（`python -m shared` 即可调用）
 
 ### Quick Summary 格式
 
