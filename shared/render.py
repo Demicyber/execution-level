@@ -78,7 +78,7 @@ def render(
         result["doc_type"] = doc_type
         
         # 2. Validate (+ auto-fix)
-        validation = validate(doc)
+        validation = validate(doc, strict=strict)
         result["validation"] = {
             "valid": validation["valid"],
             "warnings": validation["warnings"],

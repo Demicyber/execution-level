@@ -132,11 +132,12 @@ REQUIRED_FRONTMATTER = {
 }
 
 
-def validate(doc: dict) -> dict:
+def validate(doc: dict, strict: bool = False) -> dict:
     """Validate a parsed document and auto-fix minor issues.
     
     Args:
         doc: Parsed document dict from parse.py
+        strict: If True, promote critical warnings (missing sections, invalid enums) to errors.
         
     Returns:
         {
@@ -159,11 +160,11 @@ def validate(doc: dict) -> dict:
     _validate_frontmatter(frontmatter, doc_type, warnings, errors)
     
     # 2. Check required sections and auto-fix missing ones
-    sections = _check_required_sections(sections, doc_type, warnings, auto_fixes)
+    sections = _check_required_sections(sections, doc_type, warnings, errors, auto_fixes, strict)
     doc["sections"] = sections
     
     # 3. Validate badge values
-    _validate_badges(sections, warnings)
+    _validate_badges(sections, warnings, errors, strict)
     
     # 4. Type-specific validations
     if doc_type == "engagement-plan":
@@ -197,7 +198,7 @@ def _validate_frontmatter(frontmatter: dict, doc_type: str, warnings: list, erro
                 warnings.append(f"Missing frontmatter field: {field}")
 
 
-def _check_required_sections(sections: list, doc_type: str, warnings: list, auto_fixes: list) -> list:
+def _check_required_sections(sections: list, doc_type: str, warnings: list, errors: list, auto_fixes: list, strict: bool = False) -> list:
     """Check for required sections, auto-insert missing ones with placeholder.
     
     Matching logic (in order):
@@ -244,16 +245,22 @@ def _check_required_sections(sections: list, doc_type: str, warnings: list, auto
             }
             sections.append(placeholder)
             auto_fixes.append(f"Auto-inserted missing section: {req_title}")
-            warnings.append(f"Section '{req_title}' was missing — placeholder added")
+            msg = f"Section '{req_title}' was missing — placeholder added"
+            if strict:
+                errors.append(msg)
+            else:
+                warnings.append(msg)
     
     return sections
 
 
-def _validate_badges(sections: list, warnings: list):
+def _validate_badges(sections: list, warnings: list, errors: list = None, strict: bool = False):
     """Walk through all content blocks and validate badge-like values."""
+    if errors is None:
+        errors = []
     for section in sections:
         for block in section.get("content", []):
-            _validate_block_badges(block, warnings)
+            _validate_block_badges(block, warnings, errors, strict)
 
 
 def _extract_badge_value(raw: str) -> str:
@@ -277,37 +284,42 @@ def _extract_badge_value(raw: str) -> str:
     return v.lower().strip()
 
 
-def _validate_block_badges(block: dict, warnings: list):
+def _validate_block_badges(block: dict, warnings: list, errors: list = None, strict: bool = False):
     """Validate badge values in a single content block."""
+    if errors is None:
+        errors = []
     block_type = block.get("type", "")
+    
+    # In strict mode, invalid enum values are errors; otherwise warnings
+    target = errors if strict else warnings
     
     if block_type == "stakeholder_card":
         # Extract badge value from "Value — explanation" pattern
         stance = _extract_badge_value(block.get("stance", ""))
         if stance and stance not in STANCE_VALUES:
-            warnings.append(f"Invalid stance value '{stance}' for {block.get('name', '?')}")
+            target.append(f"Invalid stance value '{stance}' for {block.get('name', '?')}")
         
         role = _extract_badge_value(block.get("role", ""))
         if role and role not in ROLE_VALUES:
-            warnings.append(f"Invalid role value '{role}' for {block.get('name', '?')}")
+            target.append(f"Invalid role value '{role}' for {block.get('name', '?')}")
         
         priority = _extract_badge_value(block.get("priority", ""))
         if priority and priority not in PRIORITY_VALUES:
-            warnings.append(f"Invalid priority value '{priority}' for {block.get('name', '?')}")
+            target.append(f"Invalid priority value '{priority}' for {block.get('name', '?')}")
     
     elif block_type == "milestone":
         status = block.get("status", "").lower().strip()
         if status and status not in MILESTONE_STATUS_VALUES:
-            warnings.append(f"Invalid milestone status '{status}' for milestone {block.get('number', '?')}")
+            target.append(f"Invalid milestone status '{status}' for milestone {block.get('number', '?')}")
     
     elif block_type == "objection":
         category = block.get("category", "").lower().strip()
         if category and category not in OBJECTION_CATEGORY_VALUES:
-            warnings.append(f"Invalid objection category '{category}' for '{block.get('title', '?')}'")
+            target.append(f"Invalid objection category '{category}' for '{block.get('title', '?')}'")
     
     elif block_type == "subsection":
         for sub_block in block.get("content", []):
-            _validate_block_badges(sub_block, warnings)
+            _validate_block_badges(sub_block, warnings, errors, strict)
 
 
 def _validate_ep(sections: list, warnings: list, errors: list):
