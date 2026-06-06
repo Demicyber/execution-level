@@ -25,16 +25,19 @@ ROLE_VALUES = {
 PRIORITY_VALUES = {"high", "medium", "low", "must-meet", "important", "nice-to-have"}
 MILESTONE_STATUS_VALUES = {"done", "next", "planned", "skipped"}
 CONFIDENCE_VALUES = {"high", "medium", "low"}
-OBJECTION_CATEGORY_VALUES = {"risk-trust", "risk/trust", "capability", "authority", "price-value", "price/competition", "status-quo", "status quo"}
+OBJECTION_CATEGORY_VALUES = {"risk-trust", "risk/trust", "capability", "authority", "authority/process", "price-value", "price/value", "price/competition", "status-quo", "status quo"}
 RESULT_VALUES = {"achieved", "partial", "not-achieved"}
-GAP_STATUS_VALUES = {"answered", "unanswered"}
+GAP_STATUS_VALUES = {"answered", "unanswered", "still a gap"}
 CHANGE_TYPE_VALUES = {"update", "add", "remove", "no-change", "confirm"}
 ACTION_STATUS_VALUES = {"pending", "open", "in-progress", "in progress", "done"}
+ACTION_PRIORITY_VALUES = {"high", "medium", "low"}
+NEXT_STEP_TIER_VALUES = {"ideal", "acceptable", "minimum"}
 
 ALL_BADGE_VALUES = (
     STANCE_VALUES | ROLE_VALUES | PRIORITY_VALUES | MILESTONE_STATUS_VALUES |
     CONFIDENCE_VALUES | OBJECTION_CATEGORY_VALUES | RESULT_VALUES |
-    GAP_STATUS_VALUES | CHANGE_TYPE_VALUES | ACTION_STATUS_VALUES
+    GAP_STATUS_VALUES | CHANGE_TYPE_VALUES | ACTION_STATUS_VALUES |
+    ACTION_PRIORITY_VALUES | NEXT_STEP_TIER_VALUES
 )
 
 # ===== Required Sections Per Document Type =====
@@ -57,12 +60,13 @@ REQUIRED_SECTIONS = {
         "Meeting Agenda",
         "Potential Next Steps",
     ],
-    # EB reference: ## 1-5 + Anticipated Concerns + Proposed Next Steps
+    # EB reference: ## 1-5 + subsections under ## 3 (Anticipated Concerns, Proposed Next Steps)
     "executive-briefing": [
         "Meeting Logistics",
         "Customer Attendee Background",
         "Meeting Objectives",
         "AWS Account Background",
+        "Appendix",
     ],
     # PMR reference: ## 1-5
     "post-meeting-report": [
@@ -99,16 +103,24 @@ SECTION_ALIASES = {
     "account background": ["AWS Account Background"],
     "attendee background": ["Customer Attendee Background"],
     "objectives": ["Meeting Objectives"],
+    "anticipated concerns": ["Meeting Objectives"],
+    "proposed next steps": ["Meeting Objectives"],
+    "landmines": ["Meeting Objectives"],
+    "company profile": ["Customer Attendee Background"],
     # PMR
     "action items": ["Next Steps"],
     "follow-up email draft": ["Customer Recap Email"],
     "follow-up email": ["Customer Recap Email"],
     "customer recap": ["Customer Recap Email"],
     "recap email": ["Customer Recap Email"],
+    "customer recap email (handoff)": ["Customer Recap Email"],
     "ep update": ["What Changed"],
     "changes": ["What Changed"],
     "ep changes": ["What Changed"],
     "stakeholder updates": ["What Changed"],
+    "what changed — ep update": ["What Changed"],
+    "next steps — planned vs actual": ["Next Steps"],
+    "planned vs actual": ["Next Steps"],
 }
 
 # Required frontmatter fields per type

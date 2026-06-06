@@ -11,8 +11,6 @@
 - Field names within stakeholder cards, milestone tables, etc. MUST use the exact names shown
 - Do NOT invent new sections, skip sections, reorder sections, or rename fields
 - Do NOT use alternative field names or legacy formats — only what is documented here
-- The Engagement Progress bar MUST appear inside the Opportunity Snapshot section (after Win Strategy)
-- The Engagement Roadmap MUST use TABLE format (not bullet-field milestones)
 - Stakeholder fields MUST use the 7 exact field names specified (Engagement Priority, Role in This Deal, Current Stance, What They Care About, Profiling, What We Need From Them, How to Win Them)
 - Violation of this spec will result in rendering failures. No exceptions.
 
@@ -39,14 +37,14 @@ version: "2026-03-20"
 
 ## Section Structure (fixed order, fixed headers)
 
-EP has 3 major sections matching the template:
-1. Opportunity Snapshot (including Engagement Progress)
-2. Engagement Plan (Key Stakeholders + Engagement Roadmap + Estimate & Contingency + Next Milestone Detail)
-3. Execution Log
+EP has 3 top-level `##` sections matching the reference template:
+1. `## 1. 📊 Opportunity Snapshot` — deal context + progress
+2. `## 2. 👥 Engagement Plan` — stakeholders, roadmap, estimate, next milestone (all as `###`)
+3. `## 3. 📝 Execution Log` — reverse-chronological engagement history
 
 ### Rules:
-1. Section headers MUST match exactly (emoji + text)
-2. Sub-sections use `###`
+1. Section headers use format: `## {N}. {emoji} {Title}` for top-level, `### {emoji} {Title}` for subsections
+2. Subsection headers use `###` (Key Stakeholders, Engagement Roadmap, Estimate & Contingency, Next Milestone Detail are ALL under `## 2.`)
 3. Stance/Role/Priority values written directly as field values (renderer maps to badge colors)
 4. Provenance labels use `[销售确认]` or `[网络搜索]` inline — no label = AI推断
 5. Tables use standard Markdown table syntax
@@ -54,10 +52,10 @@ EP has 3 major sections matching the template:
 
 ---
 
-## 📊 Opportunity Snapshot
+## 1. 📊 Opportunity Snapshot
 
 ```markdown
-## 📊 Opportunity Snapshot
+## 1. 📊 Opportunity Snapshot
 
 | Field | Value |
 |-------|-------|
@@ -96,42 +94,49 @@ EP has 3 major sections matching the template:
 
 ---
 
-## 👥 Key Stakeholders
+## 2. 👥 Engagement Plan
 
 ```markdown
-## 👥 Key Stakeholders
+## 2. 👥 Engagement Plan
+```
 
-### {Person Name}
-- **Engagement Priority:** {must-meet|important|nice-to-have} — {reason + time constraint}
-- **Role in This Deal:** {decision-maker|champion|influencer|blocker|evaluator|procurement} — {function + what they can block/enable}
-- **Current Stance:** {sponsor|supporter|neutral|non-supporter|adversary} — {evidence + attitude toward competition}
-- **What They Care About:** {specific business pressure/KPI + pressure source + time constraint}
-- **Profiling:** {communication style + decision mode + personal motivation + how to communicate}
-- **What We Need From Them:** {numbered, specific, verifiable asks + time}
-- **How to Win Them:** {ordered specific actions + political constraints + who from AWS engages}
+This is the core section containing 4 subsections (all `###` level):
 
-### {Person Name 2}
-...
+### 👥 Key Stakeholders
+
+```markdown
+### 👥 Key Stakeholders
+
+**{Person Name}** — {Title}
+
+| Dimension | Details |
+|---|---|
+| **Engagement Priority** | `{e.g., "Must Meet — 没有他的技术签字，采购不会放PO。必须在6月15日前 engage。"}` [销售确认] |
+| **Role in This Deal** | `{e.g., "Technical Evaluator — 负责架构评审，有一票否决权。"}` [销售确认] |
+| **Current Stance** | `{e.g., "Supporter — 在 WAR 后对30%成本优化潜力表现出浓厚兴趣，主动索要了详细报告。"}` |
+| **What They Care About** | `{e.g., "董事会要求Q4前降低云支出20%。上季度财报被点名基础设施成本超支。"}` [网络搜索] |
+| **Profiling** | `{e.g., "工程师出身，数据驱动。偏好30分钟 deep dive，入职8个月需要可见转型成果。"}` |
+| **What We Need From Them** | `{e.g., "1) 5月底前引荐 CFO。2) 分享内部评估标准文档。3) 6月架构评审会上呈现联合 case。"}` |
+| **How to Win Them** | `{e.g., "1) 先搞定 VP Eng — CTO 高度信任其技术判断。2) 提供 TCO 对比。3) 安排 peer-level briefing。"}` |
 ```
 
 **Constraints:**
 - Minimum 2 stakeholders, recommend 3-6
+- Each person uses table format with `| Dimension | Details |` header
 - `Engagement Priority`, `Role in This Deal`, `Current Stance` use enum values followed by detailed explanation
 - Each field must be actionable — not single-word labels
 - Provenance labels on assertions where applicable
 - Order by Priority (must-meet first)
 
----
-
-## 📍 Engagement Roadmap
+### 📍 Engagement Roadmap
 
 ```markdown
-## 📍 Engagement Roadmap
+### 📍 Engagement Roadmap
 
 | # | Milestone | Key Stakeholders | AWS Team | Status |
 |---|-----------|-----------------|----------|--------|
 | 1 | {outcome-oriented milestone description with customer action} | {names or roles} | {AM, SA, etc.} | Done |
-| 2 | {milestone description} | {names} | {team} | **Next ↓** |
+| 2 | {milestone description} | {names} | {team} | **Next** ↓ |
 | 3 | {milestone description} | {names} | {team} | Planned |
 | 4 | {milestone description} | {names} | {team} | Planned |
 | 5 | {milestone description} | {names} | {team} | Planned |
@@ -139,20 +144,18 @@ EP has 3 major sections matching the template:
 
 **Constraints:**
 - 3-7 milestones (covers full deal cycle)
-- Exactly ONE milestone has Status: `**Next ↓**` (the current focus, expanded in Next Milestone Detail)
+- Exactly ONE milestone has Status: `**Next** ↓` (the current focus, expanded in Next Milestone Detail)
 - Milestones before it: `Done`; after: `Planned`
 - Each milestone must be outcome-oriented with customer action (not activity-based)
-- Milestone description: 15-50 characters, [who] + [what action/decision] + [what output/authorization]
+- Status values: `Done`, `**Next** ↓`, `Planned`, `Skipped`
 
----
-
-## 📐 Estimate & Contingency
+### 📐 Estimate & Contingency
 
 ```markdown
-## 📐 Estimate & Contingency
+### 📐 Estimate & Contingency
 
 | | Best Case | Worst Case |
-|---|-----------|-----------|
+|---|-----------|-----------| 
 | **Milestones to Close** | {N} | {N} |
 | **Timeline** | {N weeks} | {N weeks} |
 
@@ -161,14 +164,12 @@ EP has 3 major sections matching the template:
 | At-Risk Stakeholder | Red Flag | Leverage Source | Plan B |
 |---------------------|----------|-----------------|--------|
 | {name} | {red flag type + detail} | {leverage person + relationship} | {ordered actions} |
-| {name2} | {red flag} | {leverage} | {plan b} |
 
 #### Milestone Risk & Contingency
 
 | Milestone Node | Risk Item | Trigger Condition | Impact | Plan B |
 |---------------|-----------|-------------------|--------|--------|
 | {#N milestone} | 🧑 {person risk} or 🚩 {process risk} | {specific trigger} | {time/scope impact} | {alternative path} |
-| {same or other} | 🚩 {risk} | {trigger} | {impact} | {plan b} |
 ```
 
 **Constraints:**
@@ -178,12 +179,10 @@ EP has 3 major sections matching the template:
 - All Plan B must pass "Tuesday Morning Test" (actionable immediately if Plan A fails)
 - Risk items tagged 🧑 (person) or 🚩 (process)
 
----
-
-## 📋 Next Milestone Detail
+### 📋 Next Milestone Detail
 
 ```markdown
-## 📋 Next Milestone Detail
+### 📋 Next Milestone Detail
 
 **Milestone #{n}** — {Target Date}
 
@@ -209,15 +208,15 @@ EP has 3 major sections matching the template:
 
 ---
 
-## 📝 Execution Log
+## 3. 📝 Execution Log
 
 ```markdown
-## 📝 Execution Log
+## 3. 📝 Execution Log
 
 ### Engagement #{n} — {Date} — {Attendees}
 
 | Field | Details |
-|-------|---------|
+|-------|---------| 
 | **Planned** | {what was planned per milestone description} |
 | **Actual** | {what actually happened — specific customer actions and responses} |
 | **People Updates** | {stance changes using Holden 5-level: Name: Old → New (evidence)} |
@@ -244,7 +243,7 @@ EP has 3 major sections matching the template:
 | Current Stance | `sponsor`, `supporter`, `neutral`, `non-supporter`, `adversary` |
 | Engagement Priority | `must-meet`, `important`, `nice-to-have` |
 | Role in This Deal | `decision-maker`, `champion`, `influencer`, `blocker`, `evaluator`, `procurement` |
-| Milestone Status | `Done`, `**Next ↓**`, `Planned`, `Skipped` |
+| Milestone Status | `Done`, `**Next** ↓`, `Planned`, `Skipped` |
 | Confidence | `high`, `medium`, `low` |
 
 ---
@@ -252,9 +251,9 @@ EP has 3 major sections matching the template:
 ## Validation Rules
 
 1. Frontmatter: all required fields present
-2. All required sections present (6 sections)
+2. All 3 top-level sections present (Opportunity Snapshot, Engagement Plan, Execution Log)
 3. Badge values match enum lists
-4. Exactly 1 milestone with Status: `**Next ↓**`
+4. Exactly 1 milestone with Status: `**Next** ↓`
 5. At least 2 stakeholders defined
 6. Next Milestone Detail aligns with `Next ↓` milestone in Roadmap
 7. Execution Log present (can be empty on first creation)
