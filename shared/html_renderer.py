@@ -278,8 +278,10 @@ def _render_cell_with_badges(cell: str) -> str:
         return f'<span class="badge {css_class}">{prefix} {_esc(cell.strip().title())}</span>'
 
     # Priority (action items + stakeholder)
-    if cell_lower in ("high", "medium", "low", "must-meet", "important", "nice-to-have"):
-        return f'<span class="badge badge-{cell_lower}">{_esc(cell.strip().title())}</span>'
+    if cell_lower in ("high", "medium", "low", "must-meet", "important", "nice-to-have") or \
+       cell_lower.replace(" ", "-") in ("must-meet", "nice-to-have"):
+        css = cell_lower.replace(" ", "-")
+        return f'<span class="badge badge-{css}">{_esc(cell.strip().title())}</span>'
 
     # Action Status
     if cell_lower in ("pending", "in-progress", "in progress", "done", "open"):
