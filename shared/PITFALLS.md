@@ -7,6 +7,9 @@
 
 ## 1. WeasyPrint Pitfalls (PDF Generation)
 
+> **NOTE:** WeasyPrint has been replaced by ReportLab as the primary PDF renderer.
+> This section is kept as historical context for why the switch was made.
+
 ### 1.1 CJK Font Performance
 - **Issue:** Noto Sans CJK (~20MB font) causes 6x slower PDF generation due to fonttools subsetting
 - **Fix:** WeasyPrint v63.0+ switched to `hb-subset` (harfbuzz) — **ensure we use WeasyPrint >= 63.0**

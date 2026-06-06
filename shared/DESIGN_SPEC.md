@@ -24,15 +24,15 @@ LLM generates Structured Markdown (per-skill spec)
           ▼                  ▼                  ▼
    ┌────────────┐    ┌────────────┐    ┌────────────┐
    │  html.py   │    │   pdf.py   │    │  docx.py   │
-   │ Self-contained│  │ WeasyPrint │    │ python-docx│
-   │ inline CSS │    │ from HTML  │    │ w/ template│
+   │ Self-contained│  │ ReportLab  │    │ python-docx│
+   │ inline CSS │    │ direct     │    │ w/ styles  │
    └────────────┘    └────────────┘    └────────────┘
 ```
 
 ### Key Principles
 - **Zero external dependencies at runtime** — no CDN, no Google Fonts download
 - **Self-contained HTML** — single .html file with all CSS inlined
-- **WeasyPrint for PDF** — Linux (Agent environment), system fonts pre-installed
+- **ReportLab for PDF** — direct dict→PDF rendering, no HTML intermediate step
 - **python-docx for Word** — with .docx style template for brand consistency
 - **Deterministic** — same Markdown input = identical output every time
 
@@ -481,14 +481,12 @@ shared/
 ├── parse.py                ← Markdown → structured dict
 ├── validate.py             ← Schema validation + auto-fix
 ├── html_renderer.py        ← Dict → self-contained HTML
-├── pdf_renderer.py         ← HTML → PDF via WeasyPrint
+├── pdf_renderer.py         ← DEPRECATED (WeasyPrint, kept for reference only)
+├── reportlab_renderer.py   ← Dict → PDF via ReportLab (primary PDF engine)
 ├── docx_renderer.py        ← Dict → styled Word doc
 ├── theme.css               ← Full CSS (inlined into HTML)
-├── template.docx           ← Word style template (optional — docx_renderer creates from scratch if absent)
-└── components/
-    ├── header.html         ← Shared header fragment
-    ├── stakeholder.html    ← Stakeholder card fragment
-    ├── roadmap.html        ← Timeline fragment (EP)
-    ├── objection.html      ← Objection card fragment (CP)
-    └── footer.html         ← Shared footer fragment
+├── fonts/
+│   ├── download.sh         ← Download Noto Sans SC Regular + Bold
+│   └── .gitignore          ← Ignores downloaded .ttf files
+└── requirements.txt        ← Python dependencies
 ```
