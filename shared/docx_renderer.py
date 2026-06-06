@@ -120,13 +120,13 @@ def render_docx(doc: dict, output_path: str) -> str:
     # Create document
     document = Document()
     
-    # Set default font
+    # Set default font (Calibri: universally available in Office on Windows + macOS)
     style = document.styles['Normal']
     font = style.font
-    font.name = 'Segoe UI'
+    font.name = 'Calibri'
     font.size = Pt(11)
-    
-    # Set CJK font
+
+    # Set CJK font (Microsoft YaHei: bundled with Windows + macOS Office)
     rPr = style.element.get_or_add_rPr()
     rFonts = OxmlElement('w:rFonts')
     rFonts.set(qn('w:eastAsia'), 'Microsoft YaHei')

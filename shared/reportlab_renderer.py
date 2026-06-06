@@ -4,7 +4,7 @@ from __future__ import annotations
 reportlab_renderer.py — Dict -> PDF via ReportLab (direct, no HTML intermediate).
 
 Design: MD3 Purple (#6D28D9) + white background + print-friendly.
-Font: Noto Sans SC (with STHeiti fallback for macOS dev).
+Fonts: Inter (Latin) + Noto Sans SC/TC (CJK) + Noto Emoji — all bundled.
 Badge style: outline (white/light bg + colored border + colored text).
 """
 
@@ -141,130 +141,61 @@ DOC_TYPE_LABELS = {
 
 
 # ===== Font Registration =====
-import platform
-
-
-def _find_system_cjk_fonts() -> list[tuple[str, str]]:
-    """Return candidate (regular, bold) font paths for the current OS.
-
-    Each entry is (regular_path, bold_path). bold_path may equal regular_path
-    if no separate bold variant is available.
-    """
-    system = platform.system()
-
-    candidates = []
-
-    if system == "Darwin":
-        # macOS: PingFang SC (10.11+), Hiragino Sans GB, STHeiti
-        candidates = [
-            ("/System/Library/Fonts/PingFang.ttc", "/System/Library/Fonts/PingFang.ttc", 0, 1),
-            ("/System/Library/Fonts/Supplemental/Songti.ttc", "/System/Library/Fonts/Supplemental/Songti.ttc", 0, 0),
-            ("/System/Library/Fonts/STHeiti Medium.ttc", "/System/Library/Fonts/STHeiti Medium.ttc", 0, 0),
-            ("/System/Library/Fonts/Hiragino Sans GB.ttc", "/System/Library/Fonts/Hiragino Sans GB.ttc", 0, 0),
-        ]
-    elif system == "Windows":
-        # Windows: Microsoft YaHei (Vista+), SimSun, SimHei
-        win_fonts = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
-        candidates = [
-            (os.path.join(win_fonts, "msyh.ttc"), os.path.join(win_fonts, "msyhbd.ttc"), 0, 0),
-            (os.path.join(win_fonts, "msyh.ttf"), os.path.join(win_fonts, "msyhbd.ttf"), None, None),
-            (os.path.join(win_fonts, "simhei.ttf"), os.path.join(win_fonts, "simhei.ttf"), None, None),
-            (os.path.join(win_fonts, "simsun.ttc"), os.path.join(win_fonts, "simsun.ttc"), 0, 0),
-        ]
-    else:
-        # Linux: Noto Sans CJK, WenQuanYi, Droid Sans Fallback
-        candidates = [
-            ("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc", "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc", 0, 0),
-            ("/usr/share/fonts/noto-cjk/NotoSansCJK-Regular.ttc", "/usr/share/fonts/noto-cjk/NotoSansCJK-Bold.ttc", 0, 0),
-            ("/usr/share/fonts/google-noto-cjk/NotoSansCJK-Regular.ttc", "/usr/share/fonts/google-noto-cjk/NotoSansCJK-Bold.ttc", 0, 0),
-            ("/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc", "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc", 0, 0),
-            ("/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc", "/usr/share/fonts/wenquanyi/wqy-microhei/wqy-microhei.ttc", 0, 0),
-            ("/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf", "/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf", None, None),
-        ]
-
-    return candidates
+_FONT_DIR = Path(__file__).parent / "fonts"
+_EMOJI_FONT_AVAILABLE = False
+_LATIN_FONT_AVAILABLE = False
 
 
 def _register_fonts():
-    """Register CJK fonts. Priority: bundled Noto Sans SC > system CJK font > Helvetica."""
-    font_dir = Path(__file__).parent / "fonts"
+    """Register all bundled fonts: Inter (Latin) + Noto Sans SC/TC (CJK) + Emoji.
 
-    # 1. Try bundled Noto Sans SC
-    noto_regular = font_dir / "NotoSansSC-Regular.ttf"
-    noto_bold = font_dir / "NotoSansSC-Bold.ttf"
+    All fonts are loaded from shared/fonts/ — no system font search needed.
+    Run shared/fonts/download.sh to install them.
+    """
+    global _EMOJI_FONT_AVAILABLE, _LATIN_FONT_AVAILABLE
 
-    if noto_regular.exists():
-        pdfmetrics.registerFont(TTFont("CJK", str(noto_regular)))
-        pdfmetrics.registerFont(TTFont("CJK-Bold", str(noto_bold if noto_bold.exists() else noto_regular)))
-        _register_emoji_font()
-        return
+    # 1. Latin: Inter
+    inter_regular = _FONT_DIR / "Inter-Regular.ttf"
+    inter_bold = _FONT_DIR / "Inter-Bold.ttf"
+    if inter_regular.exists():
+        pdfmetrics.registerFont(TTFont("Latin", str(inter_regular)))
+        pdfmetrics.registerFont(TTFont("Latin-Bold", str(inter_bold if inter_bold.exists() else inter_regular)))
+        _LATIN_FONT_AVAILABLE = True
 
-    # 2. Try system CJK fonts (OS-specific)
-    for entry in _find_system_cjk_fonts():
-        regular_path, bold_path, regular_idx, bold_idx = entry
-        if not os.path.exists(regular_path):
-            continue
+    # 2. CJK Simplified: Noto Sans SC
+    sc_regular = _FONT_DIR / "NotoSansSC-Regular.ttf"
+    sc_bold = _FONT_DIR / "NotoSansSC-Bold.ttf"
+    if sc_regular.exists():
+        pdfmetrics.registerFont(TTFont("CJK", str(sc_regular)))
+        pdfmetrics.registerFont(TTFont("CJK-Bold", str(sc_bold if sc_bold.exists() else sc_regular)))
+    else:
+        import warnings
+        warnings.warn(
+            "NotoSansSC not found — Chinese text will NOT display correctly in PDF. "
+            "Run shared/fonts/download.sh to fix.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        import reportlab
+        rl_fonts = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
+        pdfmetrics.registerFont(TTFont("CJK", os.path.join(rl_fonts, "Vera.ttf")))
+        pdfmetrics.registerFont(TTFont("CJK-Bold", os.path.join(rl_fonts, "VeraBd.ttf")))
+
+    # 3. CJK Traditional: Noto Sans TC (fallback for 繁体)
+    tc_regular = _FONT_DIR / "NotoSansTC-Regular.ttf"
+    tc_bold = _FONT_DIR / "NotoSansTC-Bold.ttf"
+    if tc_regular.exists():
+        pdfmetrics.registerFont(TTFont("CJK-TC", str(tc_regular)))
+        pdfmetrics.registerFont(TTFont("CJK-TC-Bold", str(tc_bold if tc_bold.exists() else tc_regular)))
+
+    # 4. Emoji: Noto Emoji
+    emoji_path = _FONT_DIR / "NotoEmoji-Regular.ttf"
+    if emoji_path.exists():
         try:
-            if regular_idx is not None:
-                pdfmetrics.registerFont(TTFont("CJK", regular_path, subfontIndex=regular_idx))
-            else:
-                pdfmetrics.registerFont(TTFont("CJK", regular_path))
-
-            bold_file = bold_path if os.path.exists(bold_path) else regular_path
-            if bold_idx is not None:
-                pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file, subfontIndex=bold_idx))
-            else:
-                pdfmetrics.registerFont(TTFont("CJK-Bold", bold_file))
-            _register_emoji_font()
-            return
+            pdfmetrics.registerFont(TTFont("Emoji", str(emoji_path)))
+            _EMOJI_FONT_AVAILABLE = True
         except Exception:
-            continue
-
-    # 3. Last resort: use ReportLab's bundled Vera font (always available)
-    # WARNING: Vera is Latin-only — CJK text will render as missing glyphs
-    import reportlab
-    rl_fonts = os.path.join(os.path.dirname(reportlab.__file__), "fonts")
-    pdfmetrics.registerFont(TTFont("CJK", os.path.join(rl_fonts, "Vera.ttf")))
-    pdfmetrics.registerFont(TTFont("CJK-Bold", os.path.join(rl_fonts, "VeraBd.ttf")))
-    _register_emoji_font()
-
-    import logging as _logging
-    _logger = _logging.getLogger(__name__)
-    _logger.error(
-        "NO CJK FONT FOUND — PDF will render Chinese/Japanese/Korean text as missing glyphs! "
-        "Fix: run 'shared/fonts/download.sh' or install system CJK fonts "
-        "(e.g., 'sudo apt install fonts-noto-cjk' or 'sudo yum install google-noto-sans-cjk-ttc-fonts')"
-    )
-    import warnings
-    warnings.warn(
-        "No CJK font found for PDF rendering. Chinese text will NOT display correctly. "
-        "Run shared/fonts/download.sh to fix.",
-        RuntimeWarning,
-        stacklevel=2,
-    )
-
-
-_EMOJI_FONT_AVAILABLE = False
-
-
-def _register_emoji_font():
-    """Register Noto Emoji font for emoji rendering in PDF."""
-    global _EMOJI_FONT_AVAILABLE
-    # Search paths for Noto Emoji
-    candidates = [
-        Path(__file__).parent / "fonts" / "NotoEmoji-Regular.ttf",
-        Path("/usr/share/fonts/google-noto-emoji/NotoEmoji-Regular.ttf"),
-        Path("/usr/share/fonts/truetype/noto/NotoEmoji-Regular.ttf"),
-        Path("/usr/share/fonts/noto-emoji/NotoEmoji-Regular.ttf"),
-    ]
-    for path in candidates:
-        if path.exists():
-            try:
-                pdfmetrics.registerFont(TTFont("Emoji", str(path)))
-                _EMOJI_FONT_AVAILABLE = True
-                return
-            except Exception:
-                continue
+            pass
 
 
 def _wrap_emoji(text: str) -> str:
@@ -305,6 +236,8 @@ _register_fonts()
 # ===== Styles =====
 FONT = "CJK"
 FONT_BOLD = "CJK-Bold"
+FONT_LATIN = "Latin" if _LATIN_FONT_AVAILABLE else "CJK"
+FONT_LATIN_BOLD = "Latin-Bold" if _LATIN_FONT_AVAILABLE else "CJK-Bold"
 
 PAGE_W, PAGE_H = A4
 MARGIN_L = 18 * mm

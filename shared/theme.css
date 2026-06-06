@@ -49,8 +49,9 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: "Amazon Ember", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans SC", "Noto Sans TC", "PingFang SC",
+               "Microsoft YaHei", sans-serif;
   font-size: 13px;
   line-height: 1.5;
   color: var(--color-text);

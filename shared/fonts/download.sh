@@ -1,53 +1,67 @@
 #!/bin/bash
-# Download Noto Sans SC fonts for ReportLab PDF rendering
-# Run this once on a new machine before generating PDFs
+# Download fonts for PDF rendering (Inter + Noto Sans SC/TC + Noto Emoji)
+# Run this once on a new machine before generating PDFs.
 #
-# ReportLab needs separate font files for Regular and Bold.
-# We download the static (non-variable) builds which have proper weight separation.
+# Font strategy:
+#   PDF  → Inter (Latin) + Noto Sans SC (简体) + Noto Sans TC (繁体) + Noto Emoji
+#   HTML → font-family declaration, relies on client system fonts
+#   Word → Calibri + Microsoft YaHei, relies on client Office fonts
 
-FONT_DIR="$(dirname "$0")"
+set -euo pipefail
+FONT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$FONT_DIR"
 
-echo "Downloading Noto Sans SC (Static builds)..."
+echo "=== Downloading Inter (Latin) ==="
+curl -fsSL -o Inter-Regular.ttf \
+  "https://github.com/rsms/inter/raw/master/docs/font-files/Inter-Regular.ttf"
+curl -fsSL -o Inter-Bold.ttf \
+  "https://github.com/rsms/inter/raw/master/docs/font-files/Inter-Bold.ttf"
 
-# Static Regular (weight 400)
-curl -sL "https://github.com/google/fonts/raw/main/ofl/notosanssc/static/NotoSansSC-Regular.ttf" -o NotoSansSC-Regular.ttf
+if [ ! -s Inter-Regular.ttf ] || [ ! -s Inter-Bold.ttf ]; then
+  echo "WARNING: Inter download failed. Falling back to Noto Sans SC for Latin."
+fi
 
-# Static Bold (weight 700)
-curl -sL "https://github.com/google/fonts/raw/main/ofl/notosanssc/static/NotoSansSC-Bold.ttf" -o NotoSansSC-Bold.ttf
+echo "=== Downloading Noto Sans SC (简体中文) ==="
+curl -fsSL -o NotoSansSC-Regular.ttf \
+  "https://github.com/google/fonts/raw/main/ofl/notosanssc/static/NotoSansSC-Regular.ttf"
+curl -fsSL -o NotoSansSC-Bold.ttf \
+  "https://github.com/google/fonts/raw/main/ofl/notosanssc/static/NotoSansSC-Bold.ttf"
 
 if [ ! -s NotoSansSC-Regular.ttf ] || [ ! -s NotoSansSC-Bold.ttf ]; then
-  echo "ERROR: Download failed. Falling back to variable font + fonttools extraction..."
-  
-  # Fallback: download variable font and extract instances
-  curl -sL "https://github.com/google/fonts/raw/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf" -o NotoSansSC-Variable.ttf
-  
+  echo "ERROR: Noto Sans SC download failed. Trying variable font fallback..."
+  curl -fsSL -o NotoSansSC-Variable.ttf \
+    "https://github.com/google/fonts/raw/main/ofl/notosanssc/NotoSansSC%5Bwght%5D.ttf"
   if command -v fonttools &> /dev/null || pip install fonttools -q 2>/dev/null; then
-    echo "Extracting weight instances from variable font..."
     fonttools instancer NotoSansSC-Variable.ttf wght=400 -o NotoSansSC-Regular.ttf 2>/dev/null
     fonttools instancer NotoSansSC-Variable.ttf wght=700 -o NotoSansSC-Bold.ttf 2>/dev/null
   else
-    echo "WARNING: fonttools not available. Copying variable font as both Regular and Bold."
-    echo "         Bold text will NOT render with proper weight."
+    echo "WARNING: fonttools not available. Copying variable font as both weights."
     cp NotoSansSC-Variable.ttf NotoSansSC-Regular.ttf
     cp NotoSansSC-Variable.ttf NotoSansSC-Bold.ttf
   fi
-  
   rm -f NotoSansSC-Variable.ttf
 fi
 
-echo "Done! Fonts installed:"
-ls -lh *.ttf 2>/dev/null || echo "No .ttf files found — download may have failed."
+echo "=== Downloading Noto Sans TC (繁體中文) ==="
+curl -fsSL -o NotoSansTC-Regular.ttf \
+  "https://github.com/google/fonts/raw/main/ofl/notosanstc/static/NotoSansTC-Regular.ttf"
+curl -fsSL -o NotoSansTC-Bold.ttf \
+  "https://github.com/google/fonts/raw/main/ofl/notosanstc/static/NotoSansTC-Bold.ttf"
 
-# Download Noto Emoji for emoji rendering in PDFs
-echo ""
-echo "Downloading Noto Emoji (black-and-white emoji for PDF)..."
-curl -sL "https://github.com/google/fonts/raw/main/ofl/notoemoji/static/NotoEmoji-Regular.ttf" -o NotoEmoji-Regular.ttf
+if [ ! -s NotoSansTC-Regular.ttf ] || [ ! -s NotoSansTC-Bold.ttf ]; then
+  echo "WARNING: Noto Sans TC download failed. Traditional Chinese may show as tofu."
+  rm -f NotoSansTC-Regular.ttf NotoSansTC-Bold.ttf
+fi
 
-if [ -s NotoEmoji-Regular.ttf ]; then
-  echo "Emoji font installed: $(ls -lh NotoEmoji-Regular.ttf)"
-else
+echo "=== Downloading Noto Emoji ==="
+curl -fsSL -o NotoEmoji-Regular.ttf \
+  "https://github.com/google/fonts/raw/main/ofl/notoemoji/static/NotoEmoji-Regular.ttf"
+
+if [ ! -s NotoEmoji-Regular.ttf ]; then
   echo "WARNING: Emoji font download failed. PDF emoji will be stripped."
-  echo "         Alternatively install system package: sudo yum install google-noto-emoji-fonts"
   rm -f NotoEmoji-Regular.ttf
 fi
+
+echo ""
+echo "=== Done! Fonts installed: ==="
+ls -lh *.ttf 2>/dev/null || echo "No .ttf files found — downloads may have failed."

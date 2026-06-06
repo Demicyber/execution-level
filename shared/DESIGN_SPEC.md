@@ -99,17 +99,32 @@ LLM generates Structured Markdown (per-skill spec)
 
 ### 2.2 Typography
 
-> **Note:** These values reflect the actual `theme.css` implementation.
+> **Note:** Three independent font strategies per output format.
 
+**PDF output (server-side, fonts embedded in file):**
+- Latin: Inter Regular/Bold
+- 简体中文: Noto Sans SC Regular/Bold
+- 繁体中文: Noto Sans TC Regular/Bold (fallback)
+- Emoji: Noto Emoji Regular
+- Run `shared/fonts/download.sh` to install all (~32MB total)
+
+**HTML output (client-side rendering, no fonts embedded):**
 ```css
 body {
-  font-family: "Amazon Ember", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans SC", "Noto Sans TC", "PingFang SC",
+               "Microsoft YaHei", sans-serif;
   font-size: 13px;
   line-height: 1.5;
   color: var(--color-text);
 }
+```
 
+**Word output (client-side rendering, no fonts embedded):**
+- Latin: Calibri (Office default, universally available)
+- 中文: Microsoft YaHei (set via `w:eastAsia` XML attribute)
+
+```css
 .doc-type-label {
   font-size: 10px;
   font-weight: 700;
@@ -125,8 +140,6 @@ body {
   letter-spacing: 0.02em;
 }
 ```
-
-**PDF Fonts:** Noto Sans SC (Regular/Bold) for CJK text + Noto Emoji (B&W) for emoji glyphs. Run `shared/fonts/download.sh` to install both.
 
 ### 2.3 Layout
 
@@ -505,7 +518,7 @@ shared/
 ├── docx_renderer.py        ← Dict → styled Word doc
 ├── theme.css               ← Full CSS (inlined into HTML)
 ├── fonts/
-│   ├── download.sh         ← Download Noto Sans SC Regular + Bold
-│   └── .gitignore          ← Ignores downloaded .ttf files
+│   ├── download.sh         ← Download Inter + Noto Sans SC/TC + Noto Emoji (~32MB)
+│   └── .gitignore          ← Ignores downloaded .ttf/.ttc/.otf files
 └── requirements.txt        ← Python dependencies
 ```

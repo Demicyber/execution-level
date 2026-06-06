@@ -15,11 +15,11 @@
 - **Fix:** WeasyPrint v63.0+ switched to `hb-subset` (harfbuzz) — **ensure we use WeasyPrint >= 63.0**
 - **Ref:** https://github.com/Kozea/WeasyPrint/issues/2120
 
-### 1.2 Font Installation (Linux)
-- **Required:** `google-noto-sans-cjk-ttc-fonts` package must be installed on the system
-- **Install:** `sudo yum install google-noto-sans-cjk-ttc-fonts` (Amazon Linux) or `sudo apt install fonts-noto-cjk` (Debian/Ubuntu)
-- **Verify:** `fc-list | grep -i "noto.*cjk"` should return results
-- **Pitfall:** If font not found, WeasyPrint silently falls back to system default → Chinese characters may render as boxes
+### 1.2 Font Installation
+- **No system font packages needed.** All PDF fonts are bundled in `shared/fonts/`.
+- **Install:** Run `bash shared/fonts/download.sh` once after clone (~32MB download).
+- **Verify:** `ls shared/fonts/*.ttf` should show Inter, NotoSansSC, NotoSansTC, NotoEmoji.
+- **Pitfall:** If fonts missing, ReportLab falls back to Vera (Latin-only) → Chinese renders as boxes.
 
 ### 1.3 CSS Features NOT Supported in WeasyPrint
 | CSS Feature | Status | Workaround |
@@ -122,18 +122,18 @@ Level 4: Total parse failure → return error message (never happens with sectio
 ### 3.1 CJK Font Setting
 ```python
 # WRONG: This only sets Western font
-run.font.name = "Noto Sans SC"
+run.font.name = "Microsoft YaHei"
 
 # CORRECT: Must also set East Asian font via XML
 from docx.oxml.ns import qn
 rPr = run._r.get_or_add_rPr()
 rFonts = rPr.get_or_add_rFonts()
-rFonts.set(qn('w:eastAsia'), 'Noto Sans SC')
-rFonts.set(qn('w:ascii'), 'Noto Sans SC')
-rFonts.set(qn('w:hAnsi'), 'Noto Sans SC')
+rFonts.set(qn('w:eastAsia'), 'Microsoft YaHei')
+rFonts.set(qn('w:ascii'), 'Calibri')
+rFonts.set(qn('w:hAnsi'), 'Calibri')
 ```
 
-**Best practice:** Set CJK font in `template.docx` Normal style → all text inherits it automatically. Avoid per-run XML manipulation.
+**Best practice:** Set in document Normal style once → all text inherits. Use Calibri (Latin) + Microsoft YaHei (CJK) — both universally available in Office.
 
 ### 3.2 Badge Rendering in Word
 Word has NO rounded-corner pills. Best approximation:
@@ -172,15 +172,14 @@ paragraph.paragraph_format.keep_with_next = True
 
 ```bash
 # Required on the agent's Linux environment:
-pip install weasyprint>=63.0 python-docx markdown pyyaml
+pip install reportlab>=4.0 python-docx pyyaml
 
-# System packages (for WeasyPrint):
-# Amazon Linux 2023:
-sudo yum install -y pango cairo gdk-pixbuf2 google-noto-sans-cjk-ttc-fonts
+# Fonts (bundled, no system packages needed):
+bash shared/fonts/download.sh
 
 # Verify:
-python3 -c "import weasyprint; print(weasyprint.__version__)"
-fc-list | grep -i "noto.*cjk"
+python3 -c "import reportlab; print(reportlab.Version)"
+ls shared/fonts/Inter-Regular.ttf shared/fonts/NotoSansSC-Regular.ttf
 ```
 
 ---
