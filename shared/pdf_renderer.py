@@ -1,14 +1,23 @@
 from __future__ import annotations
 
 """
-pdf_renderer.py — HTML -> PDF via WeasyPrint.
+pdf_renderer.py — DEPRECATED. Kept for reference only.
 
-Features:
-- Page header: [Doc Type] | [Customer] | [Date]    Page X/Y
-- Page footer: CONFIDENTIAL for EB
-- Tight pagination — no half-empty pages
-- A4 page size with compact margins
+This module used WeasyPrint (HTML → PDF) but has been replaced by
+reportlab_renderer.py (direct dict → PDF) which is faster, more reliable
+for CJK, and avoids WeasyPrint's CSS Grid/shadow limitations.
+
+DO NOT USE in production. Use `from .reportlab_renderer import render_pdf` instead.
+If you need to remove this file entirely, ensure no imports reference it.
 """
+
+import warnings
+
+warnings.warn(
+    "pdf_renderer.py is deprecated. Use reportlab_renderer.render_pdf() instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 import logging
 from pathlib import Path
@@ -17,23 +26,24 @@ logger = logging.getLogger(__name__)
 
 
 def render_pdf(html_content: str, output_path: str, frontmatter: dict | None = None) -> str:
-    """Render HTML string to PDF file using WeasyPrint.
+    """DEPRECATED: Render HTML string to PDF file using WeasyPrint.
 
-    Args:
-        html_content: Complete self-contained HTML string
-        output_path: Path to write the PDF file
-        frontmatter: Optional frontmatter dict for header/footer metadata
-
-    Returns:
-        Absolute path to the generated PDF file
+    This function is kept for backward compatibility only.
+    Use reportlab_renderer.render_pdf(doc, output_path) instead.
     """
+    warnings.warn(
+        "pdf_renderer.render_pdf() is deprecated. Use reportlab_renderer.render_pdf() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     try:
         from weasyprint import HTML, CSS
     except ImportError:
         raise RuntimeError(
-            "WeasyPrint is not installed. Install with: pip install weasyprint\n"
-            "On Linux, also install system dependencies: "
-            "apt-get install libpango1.0-dev libcairo2-dev libgdk-pixbuf2.0-dev"
+            "WeasyPrint is not installed. This renderer is deprecated — "
+            "use reportlab_renderer.render_pdf() instead.\n"
+            "If you still need WeasyPrint: pip install weasyprint"
         )
 
     output_path = str(Path(output_path).resolve())
@@ -43,7 +53,7 @@ def render_pdf(html_content: str, output_path: str, frontmatter: dict | None = N
     if margin_css:
         html_content = html_content.replace('</style>', f'\n{margin_css}\n</style>', 1)
 
-    # Inject PDF-specific overrides to eliminate excess whitespace
+    # Inject PDF-specific overrides
     pdf_overrides = """
 /* PDF-specific overrides */
 .page {
@@ -57,98 +67,54 @@ def render_pdf(html_content: str, output_path: str, frontmatter: dict | None = N
 }
 .section-header {
   break-after: avoid;
-  page-break-after: avoid;
-}
-.stakeholder-card, .objection-card, .milestone, .tier {
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-table {
-  break-inside: auto;
-  page-break-inside: auto;
-}
-table thead {
-  display: table-header-group;
-}
-tr {
-  break-inside: avoid;
-  page-break-inside: avoid;
 }
 """
     html_content = html_content.replace('</style>', f'\n{pdf_overrides}\n</style>', 1)
 
-    try:
-        html_doc = HTML(string=html_content)
-        html_doc.write_pdf(output_path)
-        logger.info(f"PDF generated: {output_path}")
-    except Exception as e:
-        logger.error(f"PDF generation failed with margin CSS: {e}")
-        try:
-            html_doc = HTML(string=html_content)
-            html_doc.write_pdf(output_path)
-        except Exception as e2:
-            raise RuntimeError(f"PDF generation failed: {e2}")
+    html_obj = HTML(string=html_content)
+    html_obj.write_pdf(output_path)
 
+    logger.info(f"[DEPRECATED WeasyPrint] PDF generated: {output_path}")
     return output_path
 
 
 def _build_margin_css(frontmatter: dict | None) -> str:
-    """Build @page margin CSS with header/footer."""
+    """Build @page margin CSS with header/footer content."""
     if not frontmatter:
         return ""
 
-    from parse import get_doc_type
+    doc_type = frontmatter.get("type", "").replace("-", " ").upper()
+    customer = frontmatter.get("customer", "")
+    date = frontmatter.get("date", "")
 
-    doc_type = get_doc_type(frontmatter)
-    customer = str(frontmatter.get("customer", ""))
-    date = str(frontmatter.get("date", frontmatter.get("version", "")))
+    header_left = f"{doc_type}" if doc_type else ""
+    header_center = f"{customer}" if customer else ""
+    header_right = f"{date}" if date else ""
 
-    type_labels = {
-        "engagement-plan": "ENGAGEMENT PLAN",
-        "call-plan": "CALL PLAN",
-        "executive-briefing": "EXECUTIVE BRIEFING",
-        "post-meeting-report": "POST-MEETING REPORT",
-    }
-    doc_label = type_labels.get(doc_type, "DOCUMENT")
-
-    header_left = f"{doc_label}  |  {customer}"
-    if date:
-        header_left += f"  |  {date}"
-
-    footer_content = ""
-    if doc_type == "executive-briefing":
-        footer_content = "INTERNAL USE ONLY — AWS Confidential"
-
-    css = f'''
+    css = f"""
 @page {{
   size: A4;
-  margin: 16mm 16mm 16mm 16mm;
-
+  margin: 20mm 15mm 20mm 15mm;
   @top-left {{
     content: "{header_left}";
-    font-size: 8px;
-    color: #57606A;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
-    border-bottom: 0.5px solid #D0D7DE;
-    padding-bottom: 4px;
+    font-size: 8pt;
+    color: #6B7280;
   }}
-
+  @top-center {{
+    content: "{header_center}";
+    font-size: 8pt;
+    color: #6B7280;
+  }}
   @top-right {{
-    content: "Page " counter(page) "/" counter(pages);
-    font-size: 8px;
-    color: #57606A;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    border-bottom: 0.5px solid #D0D7DE;
-    padding-bottom: 4px;
+    content: "{header_right}";
+    font-size: 8pt;
+    color: #6B7280;
   }}
-
-  @bottom-center {{
-    content: "{footer_content}";
-    font-size: 8px;
-    color: #CF222E;
-    font-weight: 700;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  @bottom-right {{
+    content: "Page " counter(page) " / " counter(pages);
+    font-size: 8pt;
+    color: #9CA3AF;
   }}
 }}
-'''
+"""
     return css
